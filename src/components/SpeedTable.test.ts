@@ -44,4 +44,12 @@ describe('SpeedTable Component', () => {
     const benchmarks = container.querySelectorAll('.speed-table-row:not(.header) .benchmark-cell');
     expect(benchmarks.length).toBe(8);
   });
+
+  it('renders speed watershed pin divider', () => {
+    renderSpeedTable(container, mockData, 'single');
+    const divider = container.querySelector('.speed-pin-divider');
+    expect(divider).toBeTruthy();
+    expect(divider?.querySelector('.pin-badge')).toBeTruthy();
+    expect(divider?.querySelector('.pin-tooltip')).toBeTruthy();
+  });
 });
