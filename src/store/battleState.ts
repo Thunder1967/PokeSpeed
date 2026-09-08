@@ -23,6 +23,18 @@ export const initialState: BattleState = {
       isAbilityBoost: false,
       abilityMultiplier: 1.0,
       isParalyzed: false,
+      baseSpeed: 100,
+    },
+    playerB: {
+      evs: 32,
+      nature: 1.1,
+      stages: 0,
+      isTailwind: false,
+      isScarf: false,
+      isAbilityBoost: false,
+      abilityMultiplier: 1.0,
+      isParalyzed: false,
+      baseSpeed: 100,
     }
   }
 };

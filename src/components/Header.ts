@@ -1,3 +1,5 @@
+import { battleStore } from '../store/battleState';
+
 export function renderHeader(container: HTMLElement) {
   const html = `
     <header class="w-full max-w-7xl mx-auto flex justify-between items-center p-4 bg-surface rounded-xl border border-white/10 shadow-lg mt-4 mb-6">
@@ -6,8 +8,8 @@ export function renderHeader(container: HTMLElement) {
           PokéSpeed
         </h1>
         <div class="hidden md:flex gap-2 bg-black/40 p-1 rounded-lg border border-white/5">
-          <button class="px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow">單打</button>
-          <button class="px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors">雙打</button>
+          <button id="btn-mode-single" class="px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors">單打</button>
+          <button id="btn-mode-double" class="px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors">雙打</button>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -22,6 +24,28 @@ export function renderHeader(container: HTMLElement) {
   document.getElementById('open-settings-btn')!.addEventListener('click', () => {
     if ((window as any).openSettingsDrawer) {
       (window as any).openSettingsDrawer();
+    }
+  });
+
+  const btnSingle = document.getElementById('btn-mode-single')!;
+  const btnDouble = document.getElementById('btn-mode-double')!;
+
+  btnSingle.addEventListener('click', () => {
+    battleStore.set(state => state.isDoubleBattle = false);
+  });
+
+  btnDouble.addEventListener('click', () => {
+    battleStore.set(state => state.isDoubleBattle = true);
+  });
+
+  // Update UI on state change
+  battleStore.subscribe(state => {
+    if (state.isDoubleBattle) {
+      btnSingle.className = "px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors";
+      btnDouble.className = "px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors";
+    } else {
+      btnSingle.className = "px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors";
+      btnDouble.className = "px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors";
     }
   });
 }

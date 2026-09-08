@@ -97,33 +97,53 @@ export function renderSpeedTable(
   const updateDynamicColumn = () => {
     const state = battleStore.get();
     const enemy = state.slots.enemy;
-    
-    for (const base of baseSpeeds) {
-      const dynamicEl = container.querySelector(`#dynamic-${base}`);
-      if (dynamicEl) {
-        let speed = calcBaseSpeedLv50(base, enemy.evs, enemy.nature);
-        
-        // Apply stages
-        if (enemy.stages > 0) speed = Math.floor(speed * ((2 + enemy.stages) / 2));
-        if (enemy.stages < 0) speed = Math.floor(speed * (2 / (2 - enemy.stages)));
-        
-        // Apply tailwind
-        if (enemy.isTailwind) speed = Math.floor(speed * 2);
-        
-        // Apply scarf
-        if (enemy.isScarf) speed = Math.floor(speed * 1.5);
-        
-        // Apply ability
-        if (enemy.isAbilityBoost) speed = Math.floor(speed * enemy.abilityMultiplier);
-        
-        // Apply paralysis
-        if (enemy.isParalyzed) speed = Math.floor(speed * 0.5);
+    const playerA = state.slots.playerA;
+    const playerB = state.slots.playerB;
 
-        dynamicEl.textContent = speed.toString();
+    const calcSpeed = (base: number, slot: typeof enemy) => {
+      let speed = calcBaseSpeedLv50(base, slot.evs, slot.nature);
+      if (slot.stages > 0) speed = Math.floor(speed * ((2 + slot.stages) / 2));
+      if (slot.stages < 0) speed = Math.floor(speed * (2 / (2 - slot.stages)));
+      if (slot.isTailwind) speed = Math.floor(speed * 2);
+      if (slot.isScarf) speed = Math.floor(speed * 1.5);
+      if (slot.isAbilityBoost) speed = Math.floor(speed * slot.abilityMultiplier);
+      if (slot.isParalyzed) speed = Math.floor(speed * 0.5);
+      return speed;
+    };
+
+    const speedA = calcSpeed(playerA.baseSpeed ?? 100, playerA);
+    const speedB = state.isDoubleBattle ? calcSpeed(playerB.baseSpeed ?? 100, playerB) : 0;
+    
+    rows.forEach(row => {
+      const base = parseInt((row as HTMLElement).dataset.base!, 10);
+      const dynamicEl = row.querySelector(`#dynamic-${base}`);
+      
+      if (dynamicEl) {
+        const enemySpeed = calcSpeed(base, enemy);
+        dynamicEl.textContent = enemySpeed.toString();
+
+        // Remove previous threat classes
+        row.classList.remove('threat-a', 'threat-b', 'threat-both');
+
+        // Apply new threat classes
+        const threatA = enemySpeed > speedA;
+        const threatB = state.isDoubleBattle && enemySpeed > speedB;
+
+        if (threatA && threatB) {
+          row.classList.add('threat-both');
+        } else if (threatA) {
+          row.classList.add('threat-a');
+        } else if (threatB) {
+          row.classList.add('threat-b');
+        }
       }
-    }
+    });
   };
 
-  battleStore.subscribe(updateDynamicColumn);
+  const unsubscribe = battleStore.subscribe(updateDynamicColumn);
   updateDynamicColumn(); // Initial calculation
+
+  return function cleanup() {
+    unsubscribe();
+  };
 }

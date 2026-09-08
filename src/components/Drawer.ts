@@ -47,11 +47,38 @@ export function renderDrawer(container: HTMLElement) {
             </label>
             <label class="flex items-center gap-2 text-sm bg-white/5 p-2 rounded cursor-pointer hover:bg-white/10">
               <input type="checkbox" id="enemy-para" class="accent-red-500">
-              ${Icons.paralysis} 麻痺
+              麻痺
             </label>
           </div>
         </div>
 
+        <!-- Player A Settings -->
+        <div class="space-y-4 mt-6">
+          <h3 class="text-lg font-bold text-blue-400 border-b border-blue-500/30 pb-2">我方 A (藍)</h3>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">對手種族值</label>
+            <input type="number" id="playerA-base" value="100" min="1" max="255" class="w-full bg-black/50 border border-white/10 rounded px-2 py-1 text-sm text-white">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">能力階級 (-6 ~ +6)</label>
+            <input type="range" id="playerA-stages" min="-6" max="6" value="0" class="w-full accent-blue-500">
+            <div class="text-right text-xs" id="playerA-stages-val">0</div>
+          </div>
+        </div>
+
+        <!-- Player B Settings (Double Battle Only) -->
+        <div id="playerB-section" class="space-y-4 mt-6 hidden">
+          <h3 class="text-lg font-bold text-yellow-400 border-b border-yellow-500/30 pb-2">我方 B (黃)</h3>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">對手種族值</label>
+            <input type="number" id="playerB-base" value="100" min="1" max="255" class="w-full bg-black/50 border border-white/10 rounded px-2 py-1 text-sm text-white">
+          </div>
+          <div>
+            <label class="block text-sm text-gray-400 mb-1">能力階級 (-6 ~ +6)</label>
+            <input type="range" id="playerB-stages" min="-6" max="6" value="0" class="w-full accent-yellow-500">
+            <div class="text-right text-xs" id="playerB-stages-val">0</div>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -137,5 +164,43 @@ export function renderDrawer(container: HTMLElement) {
   const ePara = document.getElementById('enemy-para') as HTMLInputElement;
   ePara.addEventListener('change', (e) => {
     battleStore.set(state => state.slots.enemy.isParalyzed = (e.target as HTMLInputElement).checked);
+  });
+
+  // Player A
+  const pABase = document.getElementById('playerA-base') as HTMLInputElement;
+  pABase.addEventListener('input', (e) => {
+    const val = parseInt((e.target as HTMLInputElement).value, 10);
+    if (!isNaN(val)) battleStore.set(state => state.slots.playerA.baseSpeed = val);
+  });
+  const pAStages = document.getElementById('playerA-stages') as HTMLInputElement;
+  const pAStagesVal = document.getElementById('playerA-stages-val')!;
+  pAStages.addEventListener('input', (e) => {
+    const val = parseInt((e.target as HTMLInputElement).value, 10);
+    pAStagesVal.textContent = (val > 0 ? '+' : '') + val.toString();
+    battleStore.set(state => state.slots.playerA.stages = val);
+  });
+
+  // Player B
+  const pBBase = document.getElementById('playerB-base') as HTMLInputElement;
+  pBBase.addEventListener('input', (e) => {
+    const val = parseInt((e.target as HTMLInputElement).value, 10);
+    if (!isNaN(val)) battleStore.set(state => state.slots.playerB.baseSpeed = val);
+  });
+  const pBStages = document.getElementById('playerB-stages') as HTMLInputElement;
+  const pBStagesVal = document.getElementById('playerB-stages-val')!;
+  pBStages.addEventListener('input', (e) => {
+    const val = parseInt((e.target as HTMLInputElement).value, 10);
+    pBStagesVal.textContent = (val > 0 ? '+' : '') + val.toString();
+    battleStore.set(state => state.slots.playerB.stages = val);
+  });
+
+  // Subscribe to store to show/hide player B
+  battleStore.subscribe(state => {
+    const pBSection = document.getElementById('playerB-section')!;
+    if (state.isDoubleBattle) {
+      pBSection.classList.remove('hidden');
+    } else {
+      pBSection.classList.add('hidden');
+    }
   });
 }

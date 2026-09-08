@@ -12,12 +12,30 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div id="drawer-mount"></div>
 `;
 
+import { battleStore } from './store/battleState';
+
+let cleanupTable: () => void;
+let currentMode = false; // false = single, true = double
+
+function updateTable(isDouble: boolean) {
+  if (cleanupTable) cleanupTable();
+  cleanupTable = renderSpeedTable(
+    document.getElementById('speed-table-mount')!,
+    championMB as any,
+    isDouble ? 'double' : 'single'
+  );
+}
+
+// Initial render
+updateTable(battleStore.get().isDoubleBattle);
+
+// Listen for mode changes
+battleStore.subscribe(state => {
+  if (state.isDoubleBattle !== currentMode) {
+    currentMode = state.isDoubleBattle;
+    updateTable(currentMode);
+  }
+});
+
 renderHeader(document.getElementById('header-mount')!);
-
-renderSpeedTable(
-  document.getElementById('speed-table-mount')!,
-  championMB as any,
-  'single'
-);
-
 renderDrawer(document.getElementById('drawer-mount')!);
