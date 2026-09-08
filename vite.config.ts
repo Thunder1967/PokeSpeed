@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   base: './', // For GitHub Pages relative paths
@@ -6,5 +6,8 @@ export default defineConfig({
     alias: {
       '@': '/src',
     },
+  },
+  test: {
+    environment: 'jsdom',
   },
 });

@@ -16,8 +16,10 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.5.0",
     "autoprefixer": "^10.5.5",
+    "jsdom": "^30.0.1",
     "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.13",
