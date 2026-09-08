@@ -115,9 +115,6 @@ export function renderHeader(container: HTMLElement) {
         const row = document.querySelector(`.speed-table-row[data-base="${base}"]`);
         if (row) {
           row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          if (!row.classList.contains('is-pinned')) {
-            row.classList.add('is-pinned');
-          }
         }
       }
       searchResults.classList.add('hidden');

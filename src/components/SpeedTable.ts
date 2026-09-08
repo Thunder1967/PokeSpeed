@@ -25,10 +25,10 @@ export function renderSpeedTable(
             <div class="benchmark-cell header">準速(32)</div>
             <div class="benchmark-cell header">無速(0)</div>
             <div class="benchmark-cell header">慢速(0-)</div>
-            <div class="benchmark-cell header">M 🧣</div>
-            <div class="benchmark-cell header">N 🧣</div>
-            <div class="benchmark-cell header">M -1</div>
-            <div class="benchmark-cell header">N -1</div>
+            <div class="benchmark-cell header">極速圍巾</div>
+            <div class="benchmark-cell header">準速圍巾</div>
+            <div class="benchmark-cell header">極速-1</div>
+            <div class="benchmark-cell header">準速-1</div>
           </div>
         </div>
       </div>
@@ -85,13 +85,7 @@ export function renderSpeedTable(
   html += `</div>`;
   container.innerHTML = html;
 
-  // Add pin functionality
   const rows = container.querySelectorAll('.speed-table-row');
-  rows.forEach(row => {
-    row.addEventListener('click', () => {
-      row.classList.toggle('is-pinned');
-    });
-  });
 
   // Add store listener to update dynamic column
   const updateDynamicColumn = () => {
