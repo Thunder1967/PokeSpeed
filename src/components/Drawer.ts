@@ -43,26 +43,26 @@ const slotConfigs: SlotUIConfig[] = [
   },
   {
     key: 'playerA',
-    title: '我方 A (藍)',
+    title: '我方 A (綠)',
     theme: {
-      title: 'text-blue-400',
-      border: 'border-blue-500/30',
-      accent: 'accent-blue-500',
-      activeNature: 'data-[active=true]:border-blue-500 data-[active=true]:bg-blue-500/20',
-      badge: 'bg-blue-500/20 text-blue-300'
+      title: 'text-emerald-400',
+      border: 'border-emerald-500/30',
+      accent: 'accent-emerald-500',
+      activeNature: 'data-[active=true]:border-emerald-500 data-[active=true]:bg-emerald-500/20',
+      badge: 'bg-emerald-500/20 text-emerald-300'
     },
     hasBaseSpeed: true,
     defaultBaseSpeed: 100
   },
   {
     key: 'playerB',
-    title: '我方 B (黃)',
+    title: '我方 B (紫)',
     theme: {
-      title: 'text-yellow-400',
-      border: 'border-yellow-500/30',
-      accent: 'accent-yellow-500',
-      activeNature: 'data-[active=true]:border-yellow-500 data-[active=true]:bg-yellow-500/20',
-      badge: 'bg-yellow-500/20 text-yellow-300'
+      title: 'text-purple-400',
+      border: 'border-purple-500/30',
+      accent: 'accent-purple-500',
+      activeNature: 'data-[active=true]:border-purple-500 data-[active=true]:bg-purple-500/20',
+      badge: 'bg-purple-500/20 text-purple-300'
     },
     hasBaseSpeed: true,
     defaultBaseSpeed: 100

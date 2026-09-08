@@ -16,10 +16,10 @@ export function createPinDividerHTML(item: PinDividerItem): string {
             <span class="pin-icon">${Icons.pin}</span>
             <span class="pin-label">我方 A & B: ${item.speed}</span>
             <div class="pin-tooltip">
-              <div class="tooltip-header text-pink-300 font-bold border-b border-white/10 pb-1 mb-1">📌 我方雙打同速錨點</div>
-              <div class="text-xs text-blue-300 font-semibold mb-1">${item.tooltipA}</div>
+              <div class="tooltip-header text-amber-300 font-bold border-b border-white/10 pb-1 mb-1">📌 我方雙打同速錨點</div>
+              <div class="text-xs text-emerald-300 font-semibold mb-1">${item.tooltipA}</div>
               <div class="border-t border-white/5 my-1"></div>
-              <div class="text-xs text-yellow-300 font-semibold">${item.tooltipB}</div>
+              <div class="text-xs text-purple-300 font-semibold">${item.tooltipB}</div>
             </div>
           </div>
         </div>
@@ -28,11 +28,11 @@ export function createPinDividerHTML(item: PinDividerItem): string {
     `;
   }
 
-  const isBlue = item.color === 'blue';
-  const colorClass = isBlue ? 'pin-blue' : 'pin-yellow';
-  const lineClass = isBlue ? 'line-blue' : 'line-yellow';
-  const badgeClass = isBlue ? 'badge-blue' : 'badge-yellow';
-  const headerColor = isBlue ? 'text-blue-300' : 'text-yellow-300';
+  const isEmerald = item.color === 'emerald';
+  const colorClass = isEmerald ? 'pin-emerald' : 'pin-violet';
+  const lineClass = isEmerald ? 'line-emerald' : 'line-violet';
+  const badgeClass = isEmerald ? 'badge-emerald' : 'badge-violet';
+  const headerColor = isEmerald ? 'text-emerald-300' : 'text-purple-300';
 
   return `
     <div class="speed-pin-divider ${colorClass}" data-pin="${item.slotKey}">

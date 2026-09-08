@@ -17,7 +17,7 @@ export interface PlayerPinInfo {
   slotKey: 'playerA' | 'playerB';
   label: string;
   speed: number;
-  color: 'blue' | 'yellow';
+  color: 'emerald' | 'violet';
   position: DividerPosition;
   tooltip: string;
 }
@@ -115,7 +115,7 @@ export function calcPinDividers(
         slotKey: 'playerA',
         label: '我方 A',
         speed: speedA,
-        color: 'blue',
+        color: 'emerald',
         position: posA,
         tooltip: tooltipA
       }
@@ -146,7 +146,7 @@ export function calcPinDividers(
       slotKey: 'playerA',
       label: '我方 A',
       speed: speedA,
-      color: 'blue',
+      color: 'emerald',
       position: posA,
       tooltip: tooltipA
     },
@@ -155,7 +155,7 @@ export function calcPinDividers(
       slotKey: 'playerB',
       label: '我方 B',
       speed: speedB,
-      color: 'yellow',
+      color: 'violet',
       position: posB,
       tooltip: tooltipB
     }

@@ -136,6 +136,7 @@ describe('pinDividerCalc module', () => {
       if (!result[0].isMerged) {
         expect(result[0].slotKey).toBe('playerA');
         expect(result[0].speed).toBe(167);
+        expect(result[0].color).toBe('emerald');
       }
     });
 
@@ -144,6 +145,10 @@ describe('pinDividerCalc module', () => {
       expect(result.length).toBe(2);
       expect(result[0].isMerged).toBe(false);
       expect(result[1].isMerged).toBe(false);
+      if (!result[0].isMerged && !result[1].isMerged) {
+        expect(result[0].color).toBe('emerald');
+        expect(result[1].color).toBe('violet');
+      }
     });
 
     it('merges pins for double battle when speeds tie', () => {
