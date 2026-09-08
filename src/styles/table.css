@@ -11,10 +11,21 @@
   flex-direction: row;
   width: 100%;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 4px solid transparent; /* Unified 4px left border to prevent column shifting */
 }
 
 .speed-table-header {
-  @apply bg-black/40 font-bold text-sm tracking-wider uppercase;
+  @apply bg-black/60 font-bold text-xs md:text-sm tracking-wider uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.speed-table-header .col-base,
+.speed-table-header .col-dynamic {
+  @apply text-xs md:text-sm font-bold text-gray-300 py-3;
+}
+
+.speed-table-header .col-sprites-container {
+  @apply flex items-center justify-center text-xs md:text-sm font-bold text-gray-300 py-3;
 }
 
 .speed-table-row {
@@ -83,13 +94,16 @@
 
 /* Multi-threat Row Colors */
 .threat-a {
-  @apply bg-blue-900/30 border-l-4 border-blue-500;
+  @apply bg-blue-900/30;
+  border-left-color: #3b82f6 !important;
 }
 .threat-b {
-  @apply bg-yellow-900/30 border-l-4 border-yellow-500;
+  @apply bg-yellow-900/30;
+  border-left-color: #eab308 !important;
 }
 .threat-both {
-  @apply bg-red-900/40 border-l-4 border-red-500;
+  @apply bg-red-900/40;
+  border-left-color: #ef4444 !important;
 }
 
 /* ========================================================
@@ -101,17 +115,31 @@
   flex-direction: row;
   width: 100%;
   position: relative;
-  height: 28px;
+  height: 24px;
+  margin: 1px 0;
   align-items: center;
   pointer-events: auto;
-  z-index: 25;
+  z-index: 35;
+  border-left: 4px solid transparent;
+  background: rgba(15, 23, 42, 0.3);
+}
+
+.speed-pin-divider.pin-blue {
+  border-left-color: #3b82f6 !important;
+}
+.speed-pin-divider.pin-yellow {
+  border-left-color: #eab308 !important;
+}
+.speed-pin-divider.pin-merged {
+  border-left-color: #ec4899 !important;
 }
 
 .speed-pin-divider .divider-cell {
   height: 100%;
   background: transparent !important;
-  border-right: none !important;
   pointer-events: none;
+  position: relative;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .speed-pin-divider .divider-line {
@@ -122,63 +150,75 @@
   height: 2px;
   transform: translateY(-50%);
   pointer-events: none;
-  z-index: 24;
+  z-index: 34;
 }
 
 .speed-pin-divider .divider-line.line-blue {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), #3b82f6 30%, #3b82f6 70%, rgba(59, 130, 246, 0.1));
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+  background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.4) 15%, #3b82f6 50%, rgba(59, 130, 246, 0.4) 85%, transparent 100%);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.9);
 }
 
 .speed-pin-divider .divider-line.line-yellow {
-  background: linear-gradient(90deg, rgba(234, 179, 8, 0.1), #eab308 30%, #eab308 70%, rgba(234, 179, 8, 0.1));
-  box-shadow: 0 0 10px rgba(234, 179, 8, 0.6);
+  background: linear-gradient(90deg, transparent 0%, rgba(234, 179, 8, 0.4) 15%, #eab308 50%, rgba(234, 179, 8, 0.4) 85%, transparent 100%);
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.9);
 }
 
 .speed-pin-divider .divider-line.line-merged {
-  background: linear-gradient(90deg, #3b82f6, #ec4899 50%, #eab308);
-  box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
+  background: linear-gradient(90deg, transparent 0%, #3b82f6 30%, #ec4899 50%, #eab308 70%, transparent 100%);
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.9);
+}
+
+.speed-pin-divider .col-dynamic {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
 }
 
 .pin-badge {
   pointer-events: auto;
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
+  gap: 5px;
+  padding: 2px 10px;
   border-radius: 9999px;
   font-size: 11px;
   font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   cursor: pointer;
-  z-index: 30;
+  z-index: 40;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   white-space: nowrap;
 }
 
 .pin-badge:hover {
-  transform: scale(1.05);
+  transform: translate(-50%, -50%) scale(1.06);
 }
 
 .pin-badge.badge-blue {
-  background: #1d4ed8;
-  color: #eff6ff;
-  border: 1px solid #60a5fa;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.5);
+  background: #090d16;
+  color: #60a5fa;
+  border: 1.5px solid #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6), 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 
 .pin-badge.badge-yellow {
-  background: #ca8a04;
-  color: #fefce8;
-  border: 1px solid #facc15;
-  box-shadow: 0 2px 8px rgba(202, 138, 4, 0.5);
+  background: #0d0f09;
+  color: #facc15;
+  border: 1.5px solid #eab308;
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.6), 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 
 .pin-badge.badge-merged {
-  background: linear-gradient(135deg, #2563eb, #db2777 50%, #d97706);
-  color: #ffffff;
-  border: 1px solid #f472b6;
-  box-shadow: 0 2px 10px rgba(219, 39, 119, 0.6);
+  background: #110914;
+  color: #f472b6;
+  border: 1.5px solid #ec4899;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.7), 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 
 .pin-icon svg {
@@ -189,17 +229,17 @@
 /* Tooltip */
 .pin-tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%) translateY(4px);
   width: max-content;
   max-width: 280px;
   padding: 10px 12px;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.98);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(59, 130, 246, 0.2);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
@@ -208,7 +248,8 @@
   text-align: left;
 }
 
-.pin-badge:hover .pin-tooltip {
+.pin-badge:hover .pin-tooltip,
+.pin-badge.active-tooltip .pin-tooltip {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(0);
@@ -222,5 +263,5 @@
   transform: translateX(-50%);
   border-width: 5px;
   border-style: solid;
-  border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent;
+  border-color: rgba(15, 23, 42, 0.98) transparent transparent transparent;
 }
