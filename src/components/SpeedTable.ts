@@ -1,4 +1,4 @@
-import { SpeedTableData, PokemonSpeedData } from '../types/pokemon';
+import { SpeedTableData } from '../types/pokemon';
 import { calcBaseSpeedLv50 } from '../utils/speedCalc';
 import '../styles/table.css';
 
