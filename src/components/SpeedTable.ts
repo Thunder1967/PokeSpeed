@@ -1,5 +1,6 @@
 import { SpeedTableData } from '../types/pokemon';
 import { calcBaseSpeedLv50 } from '../utils/speedCalc';
+import { battleStore } from '../store/battleState';
 import '../styles/table.css';
 
 export function renderSpeedTable(
@@ -83,4 +84,46 @@ export function renderSpeedTable(
 
   html += `</div>`;
   container.innerHTML = html;
+
+  // Add pin functionality
+  const rows = container.querySelectorAll('.speed-table-row');
+  rows.forEach(row => {
+    row.addEventListener('click', () => {
+      row.classList.toggle('is-pinned');
+    });
+  });
+
+  // Add store listener to update dynamic column
+  const updateDynamicColumn = () => {
+    const state = battleStore.get();
+    const enemy = state.slots.enemy;
+    
+    for (const base of baseSpeeds) {
+      const dynamicEl = container.querySelector(`#dynamic-${base}`);
+      if (dynamicEl) {
+        let speed = calcBaseSpeedLv50(base, enemy.evs, enemy.nature);
+        
+        // Apply stages
+        if (enemy.stages > 0) speed = Math.floor(speed * ((2 + enemy.stages) / 2));
+        if (enemy.stages < 0) speed = Math.floor(speed * (2 / (2 - enemy.stages)));
+        
+        // Apply tailwind
+        if (enemy.isTailwind) speed = Math.floor(speed * 2);
+        
+        // Apply scarf
+        if (enemy.isScarf) speed = Math.floor(speed * 1.5);
+        
+        // Apply ability
+        if (enemy.isAbilityBoost) speed = Math.floor(speed * enemy.abilityMultiplier);
+        
+        // Apply paralysis
+        if (enemy.isParalyzed) speed = Math.floor(speed * 0.5);
+
+        dynamicEl.textContent = speed.toString();
+      }
+    }
+  };
+
+  battleStore.subscribe(updateDynamicColumn);
+  updateDynamicColumn(); // Initial calculation
 }
