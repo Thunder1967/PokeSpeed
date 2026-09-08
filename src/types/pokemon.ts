@@ -28,7 +28,8 @@ export interface SlotState {
   stages: number; // -6 to +6
   isTailwind: boolean;
   isScarf: boolean;
-  isAbilityBoost: boolean; // 2.0x or 1.5x depending on ability (we can simplify by passing a multiplier, or a type. For now let's say abilityMultiplier)
-  abilityMultiplier: 2.0 | 1.5 | 1.0;
+  isAbilityBoost: boolean; // e.g. Swift Swim
+  abilityMultiplier: number; // e.g. 2.0 or 1.5
   isParalyzed: boolean;
+  baseSpeed?: number;
 }
