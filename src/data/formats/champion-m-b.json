@@ -1,0 +1,168 @@
+{
+  "30": [
+    {
+      "id": 591,
+      "formId": "amoonguss",
+      "nameZh": "敗露球菇",
+      "nameEn": "amoonguss",
+      "baseSpeed": 30,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/591.png",
+      "usageRankSingle": 7,
+      "usageRankDouble": 7
+    }
+  ],
+  "50": [
+    {
+      "id": 992,
+      "formId": "iron-hands",
+      "nameZh": "鐵臂膀",
+      "nameEn": "iron-hands",
+      "baseSpeed": 50,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/992.png",
+      "usageRankSingle": 11,
+      "usageRankDouble": 11
+    },
+    {
+      "id": 10193,
+      "formId": "calyrex-ice",
+      "nameZh": "蕾冠王 (白馬)",
+      "nameEn": "calyrex-ice",
+      "baseSpeed": 50,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10193.png",
+      "usageRankSingle": 15,
+      "usageRankDouble": 15
+    }
+  ],
+  "60": [
+    {
+      "id": 727,
+      "formId": "incineroar",
+      "nameZh": "熾焰咆哮虎",
+      "nameEn": "incineroar",
+      "baseSpeed": 60,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/727.png",
+      "usageRankSingle": 2,
+      "usageRankDouble": 2
+    }
+  ],
+  "80": [
+    {
+      "id": 149,
+      "formId": "dragonite",
+      "nameZh": "快龍",
+      "nameEn": "dragonite",
+      "baseSpeed": 80,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png",
+      "usageRankSingle": 12,
+      "usageRankDouble": 12
+    }
+  ],
+  "84": [
+    {
+      "id": 1000,
+      "formId": "gholdengo",
+      "nameZh": "賽富豪",
+      "nameEn": "gholdengo",
+      "baseSpeed": 84,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1000.png",
+      "usageRankSingle": 8,
+      "usageRankDouble": 8
+    }
+  ],
+  "85": [
+    {
+      "id": 812,
+      "formId": "rillaboom",
+      "nameZh": "轟擂金剛猩",
+      "nameEn": "rillaboom",
+      "baseSpeed": 85,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/812.png",
+      "usageRankSingle": 6,
+      "usageRankDouble": 6
+    }
+  ],
+  "91": [
+    {
+      "id": 10021,
+      "formId": "landorus-therian",
+      "nameZh": "土地雲 (靈獸)",
+      "nameEn": "landorus-therian",
+      "baseSpeed": 91,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10021.png",
+      "usageRankSingle": 13,
+      "usageRankDouble": 13
+    }
+  ],
+  "97": [
+    {
+      "id": 10191,
+      "formId": "urshifu-rapid-strike",
+      "nameZh": "武道熊師 (連擊)",
+      "nameEn": "urshifu-rapid-strike",
+      "baseSpeed": 97,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10191.png",
+      "usageRankSingle": 3,
+      "usageRankDouble": 3
+    }
+  ],
+  "100": [
+    {
+      "id": 1004,
+      "formId": "chi-yu",
+      "nameZh": "古劍豹",
+      "nameEn": "chi-yu",
+      "baseSpeed": 100,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1004.png",
+      "usageRankSingle": 10,
+      "usageRankDouble": 10
+    }
+  ],
+  "102": [
+    {
+      "id": 445,
+      "formId": "garchomp",
+      "nameZh": "烈咬陸鯊",
+      "nameEn": "garchomp",
+      "baseSpeed": 102,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/445.png",
+      "usageRankSingle": 5,
+      "usageRankDouble": 5
+    }
+  ],
+  "121": [
+    {
+      "id": 10019,
+      "formId": "tornadus-therian",
+      "nameZh": "龍捲雲 (靈獸)",
+      "nameEn": "tornadus-therian",
+      "baseSpeed": 121,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10019.png",
+      "usageRankSingle": 4,
+      "usageRankDouble": 4
+    }
+  ],
+  "135": [
+    {
+      "id": 987,
+      "formId": "flutter-mane",
+      "nameZh": "振翼髮",
+      "nameEn": "flutter-mane",
+      "baseSpeed": 135,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/987.png",
+      "usageRankSingle": 1,
+      "usageRankDouble": 1
+    }
+  ],
+  "150": [
+    {
+      "id": 10194,
+      "formId": "calyrex-shadow",
+      "nameZh": "蕾冠王 (黑馬)",
+      "nameEn": "calyrex-shadow",
+      "baseSpeed": 150,
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10194.png",
+      "usageRankSingle": 14,
+      "usageRankDouble": 14
+    }
+  ]
+}
