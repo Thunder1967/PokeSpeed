@@ -18,7 +18,7 @@ export interface BattleState {
   slots: {
     enemy: SlotState;
     playerA: SlotState;
-    playerB?: SlotState;
+    playerB: SlotState;
   };
 }
 
