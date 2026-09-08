@@ -91,3 +91,136 @@
 .threat-both {
   @apply bg-red-900/40 border-l-4 border-red-500;
 }
+
+/* ========================================================
+   SECTION: Speed Watershed Pin Divider
+   ======================================================== */
+
+.speed-pin-divider {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  position: relative;
+  height: 28px;
+  align-items: center;
+  pointer-events: auto;
+  z-index: 25;
+}
+
+.speed-pin-divider .divider-cell {
+  height: 100%;
+  background: transparent !important;
+  border-right: none !important;
+  pointer-events: none;
+}
+
+.speed-pin-divider .divider-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 24;
+}
+
+.speed-pin-divider .divider-line.line-blue {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), #3b82f6 30%, #3b82f6 70%, rgba(59, 130, 246, 0.1));
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+}
+
+.speed-pin-divider .divider-line.line-yellow {
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.1), #eab308 30%, #eab308 70%, rgba(234, 179, 8, 0.1));
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.6);
+}
+
+.speed-pin-divider .divider-line.line-merged {
+  background: linear-gradient(90deg, #3b82f6, #ec4899 50%, #eab308);
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
+}
+
+.pin-badge {
+  pointer-events: auto;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 30;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.pin-badge:hover {
+  transform: scale(1.05);
+}
+
+.pin-badge.badge-blue {
+  background: #1d4ed8;
+  color: #eff6ff;
+  border: 1px solid #60a5fa;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.5);
+}
+
+.pin-badge.badge-yellow {
+  background: #ca8a04;
+  color: #fefce8;
+  border: 1px solid #facc15;
+  box-shadow: 0 2px 8px rgba(202, 138, 4, 0.5);
+}
+
+.pin-badge.badge-merged {
+  background: linear-gradient(135deg, #2563eb, #db2777 50%, #d97706);
+  color: #ffffff;
+  border: 1px solid #f472b6;
+  box-shadow: 0 2px 10px rgba(219, 39, 119, 0.6);
+}
+
+.pin-icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Tooltip */
+.pin-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  width: max-content;
+  max-width: 280px;
+  padding: 10px 12px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+  z-index: 100;
+  text-align: left;
+}
+
+.pin-badge:hover .pin-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.pin-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent;
+}
