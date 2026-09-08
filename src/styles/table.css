@@ -31,7 +31,7 @@
 
 /* SECTION 2: Sprites (Independent Scroll) */
 .col-sprites-container {
-  @apply flex-shrink-0 w-48 md:w-80 border-right overflow-x-auto;
+  @apply flex-shrink-0 w-48 md:w-80 border-r overflow-x-auto;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
