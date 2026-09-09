@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { searchPokemon, getAllPokemon } from './pokemonSearch';
+import { searchPokemon, getAllPokemon, renderHeaderSearchItem, renderDrawerSearchItem } from './pokemonSearch';
 import { PokemonSpeedData, SpeedTableData } from '../types/pokemon';
 
 describe('searchPokemon', () => {
@@ -165,6 +165,40 @@ describe('getAllPokemon', () => {
 
   it('returns an empty array for empty table data', () => {
     expect(getAllPokemon({})).toEqual([]);
+  });
+});
+
+describe('Search Dropdown Renderers', () => {
+  const samplePokemon: PokemonSpeedData = {
+    id: 987,
+    formId: 'flutter-mane',
+    nameZh: '振翼髮',
+    nameEn: 'Flutter Mane',
+    baseSpeed: 135,
+    sprite: 'https://example.com/flutter.png',
+    usageRankSingle: 1,
+    usageRankDouble: 2
+  };
+
+  it('renders header search item with locale and attributes', () => {
+    const htmlZh = renderHeaderSearchItem(samplePokemon, 'zh-TW');
+    expect(htmlZh).toContain('data-base="135"');
+    expect(htmlZh).toContain('data-form-id="flutter-mane"');
+    expect(htmlZh).toContain('振翼髮');
+    expect(htmlZh).toContain('Flutter Mane');
+
+    const htmlEn = renderHeaderSearchItem(samplePokemon, 'en');
+    expect(htmlEn).toContain('Flutter Mane');
+  });
+
+  it('renders drawer search item with speed badge', () => {
+    const htmlZh = renderDrawerSearchItem(samplePokemon, 'zh-TW');
+    expect(htmlZh).toContain('data-form-id="flutter-mane"');
+    expect(htmlZh).toContain('135');
+    expect(htmlZh).toContain('振翼髮');
+
+    const htmlEn = renderDrawerSearchItem(samplePokemon, 'en');
+    expect(htmlEn).toContain('Flutter Mane');
   });
 });
 

@@ -1,7 +1,7 @@
 import { SpeedTableData, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
 import { calcBaseSpeedLv50, calcFinalSpeed } from '../utils/speedCalc';
 import { battleStore } from '../store/battleState';
-import { calcPinDividers, RowSpeedInfo } from '../utils/pinDividerCalc';
+import { calcPinDividers, RowSpeedInfo, PinDividerItem } from '../utils/pinDividerCalc';
 import { createPinDividerHTML } from './PinDivider';
 import { AppConfig, getAdaptiveSpriteLimit } from '../config/appConfig';
 import { escapeHtml, sanitizeUrl } from '../utils/security';
@@ -28,6 +28,72 @@ function renderSpriteImg(p: PokemonSpeedData): string {
   `.trim();
 }
 
+
+interface RowBenchmarkValues {
+  max: number;
+  neu: number;
+  zero: number;
+  neg: number;
+  mScarf: number;
+  nScarf: number;
+  mMinus1: number;
+  nMinus1: number;
+}
+
+function calcRowBenchmarkValues(base: number): RowBenchmarkValues {
+  const max = calcBaseSpeedLv50(base, 32, 1.1);
+  const neu = calcBaseSpeedLv50(base, 32, 1.0);
+  const zero = calcBaseSpeedLv50(base, 0, 1.0);
+  const neg = calcBaseSpeedLv50(base, 0, 0.9);
+  return {
+    max,
+    neu,
+    zero,
+    neg,
+    mScarf: Math.floor(max * 1.5),
+    nScarf: Math.floor(neu * 1.5),
+    mMinus1: Math.floor(max * (2 / 3)),
+    nMinus1: Math.floor(neu * (2 / 3))
+  };
+}
+
+function renderBenchmarkCells(bench: RowBenchmarkValues): string {
+  return `
+    <div class="benchmark-cell font-bold text-gray-200">${bench.max}</div>
+    <div class="benchmark-cell">${bench.neu}</div>
+    <div class="benchmark-cell">${bench.zero}</div>
+    <div class="benchmark-cell">${bench.neg}</div>
+    <div class="benchmark-cell text-purple-400">${bench.mScarf}</div>
+    <div class="benchmark-cell text-purple-400">${bench.nScarf}</div>
+    <div class="benchmark-cell text-orange-400">${bench.mMinus1}</div>
+    <div class="benchmark-cell text-orange-400">${bench.nMinus1}</div>
+  `;
+}
+
+function insertPinDividerElement(container: HTMLElement, dividerEl: HTMLElement, position: PinDividerItem['position']) {
+  if (position.type === 'top') {
+    const firstRow = container.querySelector('.speed-table-row');
+    if (firstRow) {
+      container.insertBefore(dividerEl, firstRow);
+    } else {
+      container.appendChild(dividerEl);
+    }
+  } else if (position.type === 'bottom') {
+    container.appendChild(dividerEl);
+  } else if (position.type === 'after' && position.afterBase !== undefined) {
+    const targetRow = container.querySelector(`.speed-table-row[data-base="${position.afterBase}"]`);
+    if (targetRow) {
+      let insertAfterNode: Element = targetRow;
+      while (
+        insertAfterNode.nextElementSibling &&
+        insertAfterNode.nextElementSibling.classList.contains('speed-pin-divider')
+      ) {
+        insertAfterNode = insertAfterNode.nextElementSibling;
+      }
+      insertAfterNode.after(dividerEl);
+    }
+  }
+}
 
 export function renderSpeedTable(
   container: HTMLElement,
@@ -83,14 +149,7 @@ export function renderSpeedTable(
     }
 
     // Calculate benchmarks
-    const max = calcBaseSpeedLv50(base, 32, 1.1);
-    const neu = calcBaseSpeedLv50(base, 32, 1.0);
-    const zero = calcBaseSpeedLv50(base, 0, 1.0);
-    const neg = calcBaseSpeedLv50(base, 0, 0.9);
-    const mScarf = Math.floor(max * 1.5);
-    const nScarf = Math.floor(neu * 1.5);
-    const mMinus1 = Math.floor(max * (2/3));
-    const nMinus1 = Math.floor(neu * (2/3));
+    const bench = calcRowBenchmarkValues(base);
 
     html += `
       <div class="speed-table-row" data-base="${base}">
@@ -111,14 +170,7 @@ export function renderSpeedTable(
         <div class="col-dynamic" id="dynamic-${base}">--</div>
         <div class="col-benchmarks-container">
           <div class="col-benchmarks">
-            <div class="benchmark-cell font-bold text-gray-200">${max}</div>
-            <div class="benchmark-cell">${neu}</div>
-            <div class="benchmark-cell">${zero}</div>
-            <div class="benchmark-cell">${neg}</div>
-            <div class="benchmark-cell text-purple-400">${mScarf}</div>
-            <div class="benchmark-cell text-purple-400">${nScarf}</div>
-            <div class="benchmark-cell text-orange-400">${mMinus1}</div>
-            <div class="benchmark-cell text-orange-400">${nMinus1}</div>
+            ${renderBenchmarkCells(bench)}
           </div>
         </div>
       </div>
@@ -145,6 +197,10 @@ export function renderSpeedTable(
     });
   }
 
+  const headerBenchmarkContainer = container.querySelector<HTMLElement>(
+    '.speed-table-header .col-benchmarks-container'
+  );
+
   const handleBenchmarkScroll = (event: Event) => {
     const sourceEl = event.currentTarget as HTMLElement;
     if (!sourceEl || isSyncingScroll) return;
@@ -153,11 +209,13 @@ export function renderSpeedTable(
     const newScrollLeft = sourceEl.scrollLeft;
     lastBenchmarkScrollLeft = newScrollLeft;
 
-    sourceEl.classList.add('is-scrolling');
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-      sourceEl.classList.remove('is-scrolling');
-    }, 400);
+    if (headerBenchmarkContainer) {
+      headerBenchmarkContainer.classList.add('is-scrolling');
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        headerBenchmarkContainer.classList.remove('is-scrolling');
+      }, 400);
+    }
 
     // Batch scrollLeft writes inside rAF to avoid layout thrashing
     requestAnimationFrame(() => {
@@ -247,28 +305,7 @@ export function renderSpeedTable(
           const dividerEl = tempDiv.firstElementChild as HTMLElement;
           if (!dividerEl) return;
 
-          if (item.position.type === 'top') {
-            const firstRow = tableContainer.querySelector('.speed-table-row');
-            if (firstRow) {
-              tableContainer.insertBefore(dividerEl, firstRow);
-            } else {
-              tableContainer.appendChild(dividerEl);
-            }
-          } else if (item.position.type === 'bottom') {
-            tableContainer.appendChild(dividerEl);
-          } else if (item.position.type === 'after' && item.position.afterBase !== undefined) {
-            const targetRow = tableContainer.querySelector(`.speed-table-row[data-base="${item.position.afterBase}"]`);
-            if (targetRow) {
-              let insertAfterNode: Element = targetRow;
-              while (
-                insertAfterNode.nextElementSibling && 
-                insertAfterNode.nextElementSibling.classList.contains('speed-pin-divider')
-              ) {
-                insertAfterNode = insertAfterNode.nextElementSibling;
-              }
-              insertAfterNode.after(dividerEl);
-            }
-          }
+          insertPinDividerElement(tableContainer, dividerEl, item.position);
 
           // Add touch/click listener on badge to toggle tooltip on mobile
           const badge = dividerEl.querySelector('.pin-badge');

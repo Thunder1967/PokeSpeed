@@ -1,4 +1,6 @@
-import { PokemonSpeedData, SpeedTableData } from '../types/pokemon';
+import { PokemonSpeedData, SpeedTableData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
+import { escapeHtml, sanitizeUrl } from './security';
+import { getPokemonDisplayNames, t, SupportedLocale } from '../i18n';
 
 /** WeakMap cache to avoid re-flattening the same data reference. */
 const flattenCache = new WeakMap<SpeedTableData, PokemonSpeedData[]>();
@@ -21,6 +23,57 @@ export function getAllPokemon(data: SpeedTableData): PokemonSpeedData[] {
   }
   flattenCache.set(data, list);
   return list;
+}
+
+/**
+ * Renders HTML for a single search result item in the global Header search dropdown.
+ */
+export function renderHeaderSearchItem(p: PokemonSpeedData, locale: SupportedLocale): string {
+  const dict = t(locale);
+  const { primary, secondary } = getPokemonDisplayNames(p, locale);
+  const safePrimary = escapeHtml(primary);
+  const safeSecondary = escapeHtml(secondary);
+  const safeSprite = sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE);
+  const safeFormId = escapeHtml(p.formId);
+
+  return `
+    <div class="search-item p-2 hover:bg-white/10 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0" 
+         data-base="${p.baseSpeed}" data-form-id="${safeFormId}">
+      <img src="${safeSprite}" class="w-8 h-8 object-contain flex-shrink-0" alt="${safePrimary}">
+      <div class="flex flex-col min-w-0 flex-1">
+        <span class="text-sm font-bold text-gray-200 truncate">${safePrimary}</span>
+        <span class="text-xs text-gray-400 truncate">${safeSecondary} (${dict.common.searchSpeedLabel}: ${p.baseSpeed} | ${dict.common.searchDoublesLabel}: #${p.usageRankDouble} | ${dict.common.searchSinglesLabel}: #${p.usageRankSingle})</span>
+      </div>
+    </div>
+  `.trim();
+}
+
+/**
+ * Renders HTML for a single search result item in the Battle Settings Drawer Pokemon dropdown.
+ */
+export function renderDrawerSearchItem(p: PokemonSpeedData, locale: SupportedLocale): string {
+  const dict = t(locale);
+  const { primary, secondary } = getPokemonDisplayNames(p, locale);
+  const safePrimary = escapeHtml(primary);
+  const safeSecondary = escapeHtml(secondary);
+  const safeSprite = sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE);
+  const safeFormId = escapeHtml(p.formId);
+
+  return `
+    <div class="slot-search-item p-2 hover:bg-white/10 cursor-pointer flex items-center justify-between gap-2 transition-colors" 
+         data-form-id="${safeFormId}">
+      <div class="flex items-center gap-2 min-w-0">
+        <img src="${safeSprite}" class="w-7 h-7 object-contain flex-shrink-0" alt="${safePrimary}" />
+        <div class="flex flex-col min-w-0">
+          <span class="text-xs font-bold text-gray-200 truncate">${safePrimary}</span>
+          <span class="text-[10px] text-gray-400 truncate">${safeSecondary}</span>
+        </div>
+      </div>
+      <span class="text-xs font-mono font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded flex-shrink-0">
+        ${dict.common.searchSpeedLabel} ${p.baseSpeed}
+      </span>
+    </div>
+  `.trim();
 }
 
 

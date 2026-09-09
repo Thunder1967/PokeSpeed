@@ -12,10 +12,12 @@ import { subscribeLocale } from './i18n';
 initImageFallback();
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div class="min-h-screen p-4 flex flex-col items-center gap-4">
-    <div id="header-mount" class="w-full"></div>
-    <div id="speed-table-mount" class="w-full"></div>
-    <div id="about-mount" class="w-full hidden"></div>
+  <div class="min-h-screen flex flex-col items-center">
+    <div id="header-mount" class="w-full sticky top-0 z-40"></div>
+    <div class="w-full max-w-7xl px-3 sm:px-4 py-3 sm:py-4 flex flex-col items-center gap-4">
+      <div id="speed-table-mount" class="w-full"></div>
+      <div id="about-mount" class="w-full hidden"></div>
+    </div>
   </div>
   <div id="drawer-mount"></div>
 `;

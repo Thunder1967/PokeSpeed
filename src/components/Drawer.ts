@@ -1,12 +1,12 @@
 import { battleStore } from '../store/battleState';
 import { Icons } from '../assets/icons';
 import { calcFinalSpeed } from '../utils/speedCalc';
-import { SpeedTableData, SlotState, PokemonSpeedData } from '../types/pokemon';
+import { SpeedTableData, SlotState, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
 
 import championMB from '../data/formats/champion-m-b.json';
-import { DEFAULT_SUBSTITUTE_SPRITE } from '../utils/pinDividerCalc';
-import { searchPokemon, getAllPokemon } from '../utils/pokemonSearch';
+import { searchPokemon, getAllPokemon, renderDrawerSearchItem } from '../utils/pokemonSearch';
 import { escapeHtml, clamp, sanitizeUrl } from '../utils/security';
+import { t, getLocale, subscribeLocale, TranslationSchema, SupportedLocale } from '../i18n';
 
 // Flatten all Pokemon from the format data
 const allPokemon = getAllPokemon(championMB as unknown as SpeedTableData);
@@ -19,9 +19,6 @@ function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): T {
     timer = setTimeout(() => fn(...args), ms);
   }) as unknown as T;
 }
-
-
-import { t, getLocale, subscribeLocale, TranslationSchema, SupportedLocale } from '../i18n';
 
 interface SlotUIConfig {
   key: 'enemy' | 'playerA' | 'playerB';
@@ -193,6 +190,24 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
   `;
 }
 
+let drawerController: {
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+} | null = null;
+
+export function openSettingsDrawer() {
+  drawerController?.open();
+}
+
+export function closeSettingsDrawer() {
+  drawerController?.close();
+}
+
+export function toggleSettingsDrawer() {
+  drawerController?.toggle();
+}
+
 export function renderDrawer(container: HTMLElement) {
   const html = `
     <div id="settings-drawer" class="fixed top-0 right-0 h-full bg-[#0f1219] border-l border-white/10 shadow-2xl transform translate-x-full transition-transform duration-300 ease-out z-50 flex flex-col drawer-double">
@@ -260,6 +275,12 @@ export function renderDrawer(container: HTMLElement) {
   closeBtn.addEventListener('click', closeDrawer);
   backdrop.addEventListener('click', closeDrawer);
 
+  drawerController = {
+    open: openDrawer,
+    close: closeDrawer,
+    toggle: toggleDrawer
+  };
+
   (window as any).openSettingsDrawer = openDrawer;
   (window as any).closeSettingsDrawer = closeDrawer;
   (window as any).toggleSettingsDrawer = toggleDrawer;
@@ -285,167 +306,242 @@ export function renderDrawer(container: HTMLElement) {
     }
   });
 
-  // Setup bindings for each slot
-  slotConfigs.forEach(cfg => {
-    const { key, isPlayerSlot } = cfg;
+function bindPlayerSlotSearch(key: 'playerA' | 'playerB', pokemonList: PokemonSpeedData[]) {
+  const searchInput = document.getElementById(`${key}-search-input`) as HTMLInputElement | null;
+  const searchDropdown = document.getElementById(`${key}-search-dropdown`);
+  const clearBtn = document.getElementById(`${key}-clear-pokemon`);
 
-    // Pokemon search & selector for playerA and playerB
-    if (isPlayerSlot) {
-      const searchInput = document.getElementById(`${key}-search-input`) as HTMLInputElement;
-      const searchDropdown = document.getElementById(`${key}-search-dropdown`);
-      const clearBtn = document.getElementById(`${key}-clear-pokemon`);
+  let currentMatches: PokemonSpeedData[] = [];
 
-      let currentMatches: PokemonSpeedData[] = [];
-
-      // Search input handler (debounced to reduce work during fast typing)
-      const handleSearchInput = debounce((query: string) => {
-        if (!query.trim()) {
-          currentMatches = [];
-          searchDropdown?.classList.add('hidden');
-          return;
-        }
-
-        const isDouble = battleStore.get().isDoubleBattle;
-        currentMatches = searchPokemon(allPokemon, query, isDouble, 6);
-
-        if (currentMatches.length > 0 && searchDropdown) {
-          const locale = getLocale();
-          const isEn = locale === 'en';
-          searchDropdown.innerHTML = currentMatches.map(p => {
-            const primaryName = isEn ? p.nameEn : p.nameZh;
-            const secondaryName = isEn ? p.nameZh : p.nameEn;
-            return `
-              <div class="slot-search-item p-2 hover:bg-white/10 cursor-pointer flex items-center justify-between gap-2 transition-colors" 
-                   data-form-id="${escapeHtml(p.formId)}">
-                <div class="flex items-center gap-2 min-w-0">
-                  <img src="${sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" class="w-7 h-7 object-contain flex-shrink-0" alt="${escapeHtml(primaryName)}" />
-                  <div class="flex flex-col min-w-0">
-                    <span class="text-xs font-bold text-gray-200 truncate">${escapeHtml(primaryName)}</span>
-                    <span class="text-[10px] text-gray-400 truncate">${escapeHtml(secondaryName)}</span>
-                  </div>
-                </div>
-                <span class="text-xs font-mono font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded flex-shrink-0">
-                  ${t().common.searchSpeedLabel} ${p.baseSpeed}
-                </span>
-              </div>
-            `;
-          }).join('');
-          searchDropdown.classList.remove('hidden');
-        } else if (searchDropdown) {
-          searchDropdown.innerHTML = `<div class="p-2.5 text-xs text-gray-500 text-center">${escapeHtml(t().common.searchNoResults)}</div>`;
-          searchDropdown.classList.remove('hidden');
-        }
-      }, 150);
-
-      searchInput?.addEventListener('input', (e) => {
-        handleSearchInput((e.target as HTMLInputElement).value);
-      });
-
-      // Handle Enter key on drawer search input
-      searchInput?.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          if (currentMatches.length > 0) {
-            e.preventDefault();
-            const top = currentMatches[0];
-            battleStore.set(state => {
-              (state.slots[key as 'playerA' | 'playerB'] as SlotState).pokemon = top;
-            });
-            searchDropdown?.classList.add('hidden');
-            if (searchInput) searchInput.value = '';
-          }
-        }
-      });
-
-      // Item selection from dropdown
-      searchDropdown?.addEventListener('click', (e) => {
-        const item = (e.target as HTMLElement).closest('.slot-search-item') as HTMLElement;
-        if (item) {
-          const formId = item.getAttribute('data-form-id');
-          const found = allPokemon.find(p => p.formId === formId);
-          if (found) {
-            battleStore.set(state => {
-              state.slots[key].pokemon = found;
-              state.slots[key].baseSpeed = found.baseSpeed;
-            });
-            searchDropdown.classList.add('hidden');
-            if (searchInput) searchInput.value = '';
-          }
-        }
-      });
-
-      // Clear button
-      clearBtn?.addEventListener('click', () => {
-        battleStore.set(state => {
-          state.slots[key].pokemon = null;
-          state.slots[key].baseSpeed = undefined;
-        });
-        setTimeout(() => searchInput?.focus(), 50);
-      });
-
-      // Close dropdown when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!searchInput?.contains(e.target as Node) && !searchDropdown?.contains(e.target as Node)) {
-          searchDropdown?.classList.add('hidden');
-        }
-      });
+  const handleSearchInput = debounce((query: string) => {
+    if (!query.trim()) {
+      currentMatches = [];
+      searchDropdown?.classList.add('hidden');
+      return;
     }
 
-    // EVs slider
-    const evsInput = document.getElementById(`${key}-evs`) as HTMLInputElement;
-    const evsVal = document.getElementById(`${key}-evs-val`)!;
-    evsInput.addEventListener('input', (e) => {
-      const rawVal = parseInt((e.target as HTMLInputElement).value, 10);
-      const val = clamp(rawVal, 0, 32, 32);
-      const actualEv = val === 32 ? 252 : (val === 0 ? 0 : val * 8 - 4);
-      evsVal.textContent = `${val} (${actualEv} EV)`;
-      battleStore.set(state => state.slots[key].evs = val);
-    });
+    const isDouble = battleStore.get().isDoubleBattle;
+    currentMatches = searchPokemon(pokemonList, query, isDouble, 6);
 
-    // Nature buttons
-    const natureBtns = document.querySelectorAll(`.${key}-nature`);
-    natureBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const target = e.currentTarget as HTMLButtonElement;
-        const val = parseFloat(target.dataset.val!);
-        const validNatures: Array<1.1 | 1.0 | 0.9> = [1.1, 1.0, 0.9];
-        const safeNature = validNatures.includes(val as any) ? (val as 1.1 | 1.0 | 0.9) : 1.0;
-        natureBtns.forEach(b => b.removeAttribute('data-active'));
-        target.setAttribute('data-active', 'true');
-        battleStore.set(state => state.slots[key].nature = safeNature);
-      });
-    });
-    // Default nature: 1.1 (first button)
-    (natureBtns[0] as HTMLButtonElement)?.setAttribute('data-active', 'true');
+    if (currentMatches.length > 0 && searchDropdown) {
+      const locale = getLocale();
+      searchDropdown.innerHTML = currentMatches
+        .map(p => renderDrawerSearchItem(p, locale))
+        .join('');
+      searchDropdown.classList.remove('hidden');
+    } else if (searchDropdown) {
+      searchDropdown.innerHTML = `<div class="p-2.5 text-xs text-gray-500 text-center">${escapeHtml(t().common.searchNoResults)}</div>`;
+      searchDropdown.classList.remove('hidden');
+    }
+  }, 150);
 
-    // Stages slider
-    const stagesInput = document.getElementById(`${key}-stages`) as HTMLInputElement;
-    const stagesVal = document.getElementById(`${key}-stages-val`)!;
-    stagesInput.addEventListener('input', (e) => {
-      const rawVal = parseInt((e.target as HTMLInputElement).value, 10);
-      const val = clamp(rawVal, -6, 6, 0);
-      stagesVal.textContent = val > 0 ? `+${val}` : `${val}`;
-      battleStore.set(state => state.slots[key].stages = val);
-    });
+  searchInput?.addEventListener('input', (e) => {
+    handleSearchInput((e.target as HTMLInputElement).value);
+  });
 
-    // Boolean modifiers (Tailwind, Scarf, Ability Boost, Paralysis)
-    const modifierCheckboxes: Array<{ id: string; prop: 'isTailwind' | 'isScarf' | 'isAbilityBoost' | 'isParalyzed' }> = [
-      { id: 'tailwind', prop: 'isTailwind' },
-      { id: 'scarf', prop: 'isScarf' },
-      { id: 'ability', prop: 'isAbilityBoost' },
-      { id: 'para', prop: 'isParalyzed' }
-    ];
-    modifierCheckboxes.forEach(({ id, prop }) => {
-      const input = document.getElementById(`${key}-${id}`) as HTMLInputElement | null;
-      input?.addEventListener('change', (e) => {
-        const checked = (e.target as HTMLInputElement).checked;
+  searchInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      if (currentMatches.length > 0) {
+        e.preventDefault();
+        const top = currentMatches[0];
         battleStore.set(state => {
-          state.slots[key][prop] = checked;
-          if (prop === 'isAbilityBoost') {
-            state.slots[key].abilityMultiplier = checked ? 2.0 : 1.0;
-          }
+          state.slots[key].pokemon = top;
+          state.slots[key].baseSpeed = top.baseSpeed;
         });
+        searchDropdown?.classList.add('hidden');
+        if (searchInput) searchInput.value = '';
+      }
+    }
+  });
+
+  searchDropdown?.addEventListener('click', (e) => {
+    const item = (e.target as HTMLElement).closest('.slot-search-item') as HTMLElement;
+    if (item) {
+      const formId = item.getAttribute('data-form-id');
+      const found = pokemonList.find(p => p.formId === formId);
+      if (found) {
+        battleStore.set(state => {
+          state.slots[key].pokemon = found;
+          state.slots[key].baseSpeed = found.baseSpeed;
+        });
+        searchDropdown.classList.add('hidden');
+        if (searchInput) searchInput.value = '';
+      }
+    }
+  });
+
+  clearBtn?.addEventListener('click', () => {
+    battleStore.set(state => {
+      state.slots[key].pokemon = null;
+      state.slots[key].baseSpeed = undefined;
+    });
+    setTimeout(() => searchInput?.focus(), 50);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!searchInput?.contains(e.target as Node) && !searchDropdown?.contains(e.target as Node)) {
+      searchDropdown?.classList.add('hidden');
+    }
+  });
+}
+
+function bindSlotControls(key: 'enemy' | 'playerA' | 'playerB') {
+  const evsInput = document.getElementById(`${key}-evs`) as HTMLInputElement | null;
+  const evsVal = document.getElementById(`${key}-evs-val`);
+  evsInput?.addEventListener('input', (e) => {
+    const rawVal = parseInt((e.target as HTMLInputElement).value, 10);
+    const val = clamp(rawVal, 0, 32, 32);
+    const actualEv = val === 32 ? 252 : (val === 0 ? 0 : val * 8 - 4);
+    if (evsVal) evsVal.textContent = `${val} (${actualEv} EV)`;
+    battleStore.set(state => { state.slots[key].evs = val; });
+  });
+
+  const natureBtns = document.querySelectorAll(`.${key}-nature`);
+  natureBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const target = e.currentTarget as HTMLButtonElement;
+      const val = parseFloat(target.dataset.val || '1.0');
+      const safeNature: 1.1 | 1.0 | 0.9 = (val === 1.1 || val === 0.9) ? val : 1.0;
+      natureBtns.forEach(b => b.removeAttribute('data-active'));
+      target.setAttribute('data-active', 'true');
+      battleStore.set(state => { state.slots[key].nature = safeNature; });
+    });
+  });
+  (natureBtns[0] as HTMLButtonElement)?.setAttribute('data-active', 'true');
+
+  const stagesInput = document.getElementById(`${key}-stages`) as HTMLInputElement | null;
+  const stagesVal = document.getElementById(`${key}-stages-val`);
+  stagesInput?.addEventListener('input', (e) => {
+    const rawVal = parseInt((e.target as HTMLInputElement).value, 10);
+    const val = clamp(rawVal, -6, 6, 0);
+    if (stagesVal) stagesVal.textContent = val > 0 ? `+${val}` : `${val}`;
+    battleStore.set(state => { state.slots[key].stages = val; });
+  });
+
+  const modifierCheckboxes: Array<{ id: string; prop: 'isTailwind' | 'isScarf' | 'isAbilityBoost' | 'isParalyzed' }> = [
+    { id: 'tailwind', prop: 'isTailwind' },
+    { id: 'scarf', prop: 'isScarf' },
+    { id: 'ability', prop: 'isAbilityBoost' },
+    { id: 'para', prop: 'isParalyzed' }
+  ];
+  modifierCheckboxes.forEach(({ id, prop }) => {
+    const input = document.getElementById(`${key}-${id}`) as HTMLInputElement | null;
+    input?.addEventListener('change', (e) => {
+      const checked = (e.target as HTMLInputElement).checked;
+      battleStore.set(state => {
+        state.slots[key][prop] = checked;
+        if (prop === 'isAbilityBoost') {
+          state.slots[key].abilityMultiplier = checked ? 2.0 : 1.0;
+        }
       });
     });
+  });
+}
+
+function updatePlayerSlotCard(
+  slotKey: 'playerA' | 'playerB',
+  slot: SlotState,
+  locale: SupportedLocale,
+  currentDict: TranslationSchema
+) {
+  const unselected = document.getElementById(`${slotKey}-pokemon-unselected`);
+  const selected = document.getElementById(`${slotKey}-pokemon-selected`);
+  const badge = document.getElementById(`${slotKey}-speed-badge`);
+  const img = document.getElementById(`${slotKey}-selected-img`) as HTMLImageElement | null;
+
+  if (slot.pokemon) {
+    unselected?.classList.add('hidden');
+    selected?.classList.remove('hidden');
+    selected?.classList.add('flex');
+
+    const isEn = locale === 'en';
+    const primaryName = isEn ? slot.pokemon.nameEn : slot.pokemon.nameZh;
+    const secondaryName = isEn ? slot.pokemon.nameZh : slot.pokemon.nameEn;
+
+    if (img) img.src = sanitizeUrl(slot.pokemon.sprite, DEFAULT_SUBSTITUTE_SPRITE);
+    const nameZh = document.getElementById(`${slotKey}-selected-name-zh`);
+    if (nameZh) nameZh.textContent = primaryName;
+    const nameEn = document.getElementById(`${slotKey}-selected-name-en`);
+    if (nameEn) nameEn.textContent = secondaryName;
+    const base = document.getElementById(`${slotKey}-selected-base`);
+    if (base) base.textContent = `${currentDict.common.searchSpeedLabel} ${slot.pokemon.baseSpeed}`;
+
+    if (badge) {
+      const speed = calcFinalSpeed(slot.pokemon.baseSpeed, slot);
+      badge.textContent = currentDict.drawer.realSpeedBadge(speed);
+    }
+  } else {
+    unselected?.classList.remove('hidden');
+    selected?.classList.add('hidden');
+    selected?.classList.remove('flex');
+    if (img) img.src = DEFAULT_SUBSTITUTE_SPRITE;
+    if (badge) badge.textContent = currentDict.drawer.realSpeedBadge('--');
+  }
+}
+
+function updateSlotTranslations(cfg: SlotUIConfig, dict: TranslationSchema) {
+  const { key, isPlayerSlot } = cfg;
+  const slotTitle = document.getElementById(`${key}-slot-title`);
+  if (slotTitle) slotTitle.textContent = getSlotTitle(key, dict);
+
+  if (!isPlayerSlot) {
+    const benchmarkBadge = document.getElementById(`${key}-benchmark-badge`);
+    if (benchmarkBadge) benchmarkBadge.textContent = dict.drawer.speedBenchmarkBadge;
+  } else {
+    const pLabel = document.getElementById(`${key}-pokemon-label`);
+    if (pLabel) pLabel.textContent = dict.drawer.selectedPokemon;
+
+    const sHint = document.getElementById(`${key}-search-hint`);
+    if (sHint) sHint.textContent = dict.drawer.searchHint;
+
+    const uTitle = document.getElementById(`${key}-unselected-title`);
+    if (uTitle) uTitle.textContent = dict.drawer.notSelected;
+
+    const uDesc = document.getElementById(`${key}-unselected-desc`);
+    if (uDesc) uDesc.textContent = dict.drawer.clickToSearchHint;
+
+    const sInput = document.getElementById(`${key}-search-input`) as HTMLInputElement | null;
+    if (sInput) sInput.placeholder = dict.drawer.searchPokemonPlaceholder;
+
+    const clearText = document.getElementById(`${key}-clear-pokemon-text`);
+    if (clearText) clearText.textContent = dict.drawer.clearSelection;
+  }
+
+  const evsLabel = document.getElementById(`${key}-evs-label`);
+  if (evsLabel) evsLabel.textContent = dict.drawer.evs;
+
+  const natureLabel = document.getElementById(`${key}-nature-label`);
+  if (natureLabel) natureLabel.textContent = dict.drawer.nature;
+
+  const btn11 = document.getElementById(`${key}-nature-btn-11`);
+  if (btn11) btn11.textContent = dict.drawer.naturePositive;
+  const btn10 = document.getElementById(`${key}-nature-btn-10`);
+  if (btn10) btn10.textContent = dict.drawer.natureNeutral;
+  const btn09 = document.getElementById(`${key}-nature-btn-09`);
+  if (btn09) btn09.textContent = dict.drawer.natureNegative;
+
+  const stagesLabel = document.getElementById(`${key}-stages-label`);
+  if (stagesLabel) stagesLabel.textContent = dict.drawer.stages;
+
+  const twText = document.getElementById(`${key}-tailwind-text`);
+  if (twText) twText.innerHTML = `${Icons.tailwind} ${dict.drawer.tailwind}`;
+
+  const scText = document.getElementById(`${key}-scarf-text`);
+  if (scText) scText.innerHTML = `${Icons.scarf} ${dict.drawer.choiceScarf}`;
+
+  const abText = document.getElementById(`${key}-ability-text`);
+  if (abText) abText.innerHTML = `${Icons.abilityBoost} ${dict.drawer.speedAbility}`;
+
+  const paText = document.getElementById(`${key}-para-text`);
+  if (paText) paText.innerHTML = `${Icons.paralysis} ${dict.drawer.paralysis}`;
+}
+
+  // Setup bindings for each slot
+  slotConfigs.forEach(cfg => {
+    if (cfg.isPlayerSlot) {
+      bindPlayerSlotSearch(cfg.key as 'playerA' | 'playerB', allPokemon);
+    }
+    bindSlotControls(cfg.key);
   });
 
   // Sync state to UI (mode changes, initial values)
@@ -487,45 +583,8 @@ export function renderDrawer(container: HTMLElement) {
     }
     updateDrawerBounds();
 
-    // Helper to update player pokemon card & real speed badge
-    const updatePlayerSlotCard = (slotKey: 'playerA' | 'playerB', slot: SlotState) => {
-      const unselected = document.getElementById(`${slotKey}-pokemon-unselected`);
-      const selected = document.getElementById(`${slotKey}-pokemon-selected`);
-      const badge = document.getElementById(`${slotKey}-speed-badge`);
-      const img = document.getElementById(`${slotKey}-selected-img`) as HTMLImageElement | null;
-
-      if (slot.pokemon) {
-        unselected?.classList.add('hidden');
-        selected?.classList.remove('hidden');
-        selected?.classList.add('flex');
-
-        const isEn = locale === 'en';
-        const primaryName = isEn ? slot.pokemon.nameEn : slot.pokemon.nameZh;
-        const secondaryName = isEn ? slot.pokemon.nameZh : slot.pokemon.nameEn;
-
-        if (img) img.src = slot.pokemon.sprite || DEFAULT_SUBSTITUTE_SPRITE;
-        const nameZh = document.getElementById(`${slotKey}-selected-name-zh`);
-        if (nameZh) nameZh.textContent = primaryName;
-        const nameEn = document.getElementById(`${slotKey}-selected-name-en`);
-        if (nameEn) nameEn.textContent = secondaryName;
-        const base = document.getElementById(`${slotKey}-selected-base`);
-        if (base) base.textContent = `${currentDict.common.searchSpeedLabel} ${slot.pokemon.baseSpeed}`;
-
-        if (badge) {
-          const speed = calcFinalSpeed(slot.pokemon.baseSpeed, slot);
-          badge.textContent = currentDict.drawer.realSpeedBadge(speed);
-        }
-      } else {
-        unselected?.classList.remove('hidden');
-        selected?.classList.add('hidden');
-        selected?.classList.remove('flex');
-        if (img) img.src = DEFAULT_SUBSTITUTE_SPRITE;
-        if (badge) badge.textContent = currentDict.drawer.realSpeedBadge('--');
-      }
-    };
-
-    updatePlayerSlotCard('playerA', state.slots.playerA);
-    updatePlayerSlotCard('playerB', state.slots.playerB);
+    updatePlayerSlotCard('playerA', state.slots.playerA, locale, currentDict);
+    updatePlayerSlotCard('playerB', state.slots.playerB, locale, currentDict);
   };
 
   // Function to update all text elements in drawer when locale changes
@@ -536,63 +595,7 @@ export function renderDrawer(container: HTMLElement) {
     const closeText = document.getElementById('close-drawer-text');
     if (closeText) closeText.textContent = dict.drawer.close;
 
-    slotConfigs.forEach(cfg => {
-      const { key, isPlayerSlot } = cfg;
-      const slotTitle = document.getElementById(`${key}-slot-title`);
-      if (slotTitle) slotTitle.textContent = getSlotTitle(key, dict);
-
-      if (!isPlayerSlot) {
-        const benchmarkBadge = document.getElementById(`${key}-benchmark-badge`);
-        if (benchmarkBadge) benchmarkBadge.textContent = dict.drawer.speedBenchmarkBadge;
-      } else {
-        const pLabel = document.getElementById(`${key}-pokemon-label`);
-        if (pLabel) pLabel.textContent = dict.drawer.selectedPokemon;
-
-        const sHint = document.getElementById(`${key}-search-hint`);
-        if (sHint) sHint.textContent = dict.drawer.searchHint;
-
-        const uTitle = document.getElementById(`${key}-unselected-title`);
-        if (uTitle) uTitle.textContent = dict.drawer.notSelected;
-
-        const uDesc = document.getElementById(`${key}-unselected-desc`);
-        if (uDesc) uDesc.textContent = dict.drawer.clickToSearchHint;
-
-        const sInput = document.getElementById(`${key}-search-input`) as HTMLInputElement;
-        if (sInput) sInput.placeholder = dict.drawer.searchPokemonPlaceholder;
-
-        const clearText = document.getElementById(`${key}-clear-pokemon-text`);
-        if (clearText) clearText.textContent = dict.drawer.clearSelection;
-      }
-
-      const evsLabel = document.getElementById(`${key}-evs-label`);
-      if (evsLabel) evsLabel.textContent = dict.drawer.evs;
-
-      const natureLabel = document.getElementById(`${key}-nature-label`);
-      if (natureLabel) natureLabel.textContent = dict.drawer.nature;
-
-      const btn11 = document.getElementById(`${key}-nature-btn-11`);
-      if (btn11) btn11.textContent = dict.drawer.naturePositive;
-      const btn10 = document.getElementById(`${key}-nature-btn-10`);
-      if (btn10) btn10.textContent = dict.drawer.natureNeutral;
-      const btn09 = document.getElementById(`${key}-nature-btn-09`);
-      if (btn09) btn09.textContent = dict.drawer.natureNegative;
-
-      const stagesLabel = document.getElementById(`${key}-stages-label`);
-      if (stagesLabel) stagesLabel.textContent = dict.drawer.stages;
-
-      const twText = document.getElementById(`${key}-tailwind-text`);
-      if (twText) twText.innerHTML = `${Icons.tailwind} ${dict.drawer.tailwind}`;
-
-      const scText = document.getElementById(`${key}-scarf-text`);
-      if (scText) scText.innerHTML = `${Icons.scarf} ${dict.drawer.choiceScarf}`;
-
-      const abText = document.getElementById(`${key}-ability-text`);
-      if (abText) abText.innerHTML = `${Icons.abilityBoost} ${dict.drawer.speedAbility}`;
-
-      const paText = document.getElementById(`${key}-para-text`);
-      if (paText) paText.innerHTML = `${Icons.paralysis} ${dict.drawer.paralysis}`;
-    });
-
+    slotConfigs.forEach(cfg => updateSlotTranslations(cfg, dict));
     updateDrawerState();
   };
 

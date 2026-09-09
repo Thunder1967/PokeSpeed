@@ -19,17 +19,35 @@
 }
 
 .speed-table-header {
-  @apply bg-black/60 font-bold text-xs md:text-sm tracking-wider uppercase rounded-t-xl;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  @apply font-bold text-xs md:text-sm tracking-wider uppercase rounded-t-xl;
+  position: sticky;
+  top: var(--table-header-top, 0px);
+  z-index: 30;
+  background: #0d121d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5);
 }
 
-.speed-table-header .col-base,
+.speed-table-header .col-base {
+  @apply text-xs md:text-sm font-bold text-gray-300 py-3;
+  position: sticky;
+  left: 0;
+  z-index: 35;
+  background: #0d121d;
+}
+
 .speed-table-header .col-dynamic {
   @apply text-xs md:text-sm font-bold text-gray-300 py-3;
+  background: #0d121d;
 }
 
 .speed-table-header .col-sprites-container {
   @apply flex items-center justify-center text-xs md:text-sm font-bold text-gray-300 py-3;
+  background: #0d121d;
+}
+
+.speed-table-header .col-benchmarks-container {
+  background: #0d121d;
 }
 
 .speed-table-row {
@@ -38,7 +56,7 @@
 
 /* SECTION 1: Base Speed (Sticky Left) */
 .col-base {
-  @apply flex-shrink-0 w-16 md:w-24 flex items-center justify-center font-bold text-lg md:text-xl z-30 bg-surface;
+  @apply flex-shrink-0 w-16 md:w-24 flex items-center justify-center font-bold text-lg md:text-xl z-10 bg-surface;
   position: sticky;
   left: 0;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
@@ -122,57 +140,71 @@
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* SECTION 4: Benchmarks (Synchronized Themed Scroll) */
+/* SECTION 4: Benchmarks */
 .col-benchmarks-container {
   @apply flex-grow overflow-x-auto;
+}
+
+/* Hide scrollbars completely on all data rows and divider cells */
+.speed-table-row .col-benchmarks-container,
+.speed-pin-divider .col-benchmarks-container {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.speed-table-row .col-benchmarks-container::-webkit-scrollbar,
+.speed-pin-divider .col-benchmarks-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Single Unified Themed Scrollbar on Header Only */
+.speed-table-header .col-benchmarks-container {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
   transition: scrollbar-color 0.2s ease-in-out;
 }
 
-/* Default Webkit scrollbar: 5px slim height, invisible thumb & track */
-.col-benchmarks-container::-webkit-scrollbar {
-  height: 5px;
+.speed-table-header .col-benchmarks-container::-webkit-scrollbar {
+  height: 4px;
   background: transparent;
 }
 
-.col-benchmarks-container::-webkit-scrollbar-track {
+.speed-table-header .col-benchmarks-container::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 9999px;
   margin: 0 4px;
   transition: background 0.2s ease-in-out;
 }
 
-.col-benchmarks-container::-webkit-scrollbar-thumb {
+.speed-table-header .col-benchmarks-container::-webkit-scrollbar-thumb {
   background: transparent;
   border-radius: 9999px;
   transition: all 0.2s ease-in-out;
 }
 
-/* On hover of row/header, or when scrolling: show modern neon themed scrollbar */
-.speed-table-row:hover .col-benchmarks-container,
+/* Show scrollbar on header when hovered or actively scrolling */
 .speed-table-header:hover .col-benchmarks-container,
-.col-benchmarks-container:hover,
-.col-benchmarks-container.is-scrolling {
+.speed-table-header .col-benchmarks-container:hover,
+.speed-table-header .col-benchmarks-container.is-scrolling {
   scrollbar-color: rgba(96, 165, 250, 0.6) rgba(15, 23, 42, 0.6);
 }
 
-.speed-table-row:hover .col-benchmarks-container::-webkit-scrollbar-track,
 .speed-table-header:hover .col-benchmarks-container::-webkit-scrollbar-track,
-.col-benchmarks-container:hover::-webkit-scrollbar-track,
-.col-benchmarks-container.is-scrolling::-webkit-scrollbar-track {
+.speed-table-header .col-benchmarks-container:hover::-webkit-scrollbar-track,
+.speed-table-header .col-benchmarks-container.is-scrolling::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.6);
 }
 
-.speed-table-row:hover .col-benchmarks-container::-webkit-scrollbar-thumb,
 .speed-table-header:hover .col-benchmarks-container::-webkit-scrollbar-thumb,
-.col-benchmarks-container:hover::-webkit-scrollbar-thumb,
-.col-benchmarks-container.is-scrolling::-webkit-scrollbar-thumb {
+.speed-table-header .col-benchmarks-container:hover::-webkit-scrollbar-thumb,
+.speed-table-header .col-benchmarks-container.is-scrolling::-webkit-scrollbar-thumb {
   background: linear-gradient(90deg, #3b82f6, #8b5cf6);
   box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
 }
 
-.col-benchmarks-container::-webkit-scrollbar-thumb:hover {
+.speed-table-header .col-benchmarks-container::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(90deg, #60a5fa, #a78bfa) !important;
   box-shadow: 0 0 10px rgba(96, 165, 250, 0.8) !important;
 }

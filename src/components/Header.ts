@@ -1,17 +1,18 @@
 import { battleStore } from '../store/battleState';
 import championMB from '../data/formats/champion-m-b.json';
-import { SpeedTableData, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
+import { SpeedTableData, PokemonSpeedData } from '../types/pokemon';
 import { focusAndHighlightPokemon } from './SpeedTable';
-import { searchPokemon, getAllPokemon } from '../utils/pokemonSearch';
-import { escapeHtml, sanitizeUrl } from '../utils/security';
+import { searchPokemon, getAllPokemon, renderHeaderSearchItem } from '../utils/pokemonSearch';
+import { escapeHtml } from '../utils/security';
 import { getLocale, setLocale, t, subscribeLocale, SupportedLocale } from '../i18n';
+import { toggleSettingsDrawer } from './Drawer';
 
 export function renderHeader(container: HTMLElement) {
   const currentLang = getLocale();
   const dict = t(currentLang);
 
   const html = `
-    <header class="w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center p-4 bg-surface rounded-xl border border-white/10 shadow-lg mt-4 mb-6 gap-4">
+    <header class="w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center py-2.5 px-3 sm:px-4 gap-3 md:gap-4">
       <div class="flex items-center gap-4 w-full md:w-auto justify-between">
         <a href="#/" id="logo-link" class="text-2xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 select-none cursor-pointer hover:opacity-90 transition-opacity" title="PokéSpeed">
           PokéSpeed
@@ -91,11 +92,7 @@ export function renderHeader(container: HTMLElement) {
   const openSettingsBtn = document.getElementById('open-settings-btn')!;
   openSettingsBtn.addEventListener('click', () => {
     ensureTableView();
-    if ((window as any).toggleSettingsDrawer) {
-      (window as any).toggleSettingsDrawer();
-    } else if ((window as any).openSettingsDrawer) {
-      (window as any).openSettingsDrawer();
-    }
+    toggleSettingsDrawer();
   });
 
   const langSelect = document.getElementById('lang-select') as HTMLSelectElement;
@@ -143,22 +140,9 @@ export function renderHeader(container: HTMLElement) {
     const currentDict = t(locale);
 
     if (currentMatches.length > 0) {
-      searchResults.innerHTML = currentMatches.map(p => {
-        const isEn = locale === 'en';
-        const primaryName = isEn ? p.nameEn : p.nameZh;
-        const secondaryName = isEn ? p.nameZh : p.nameEn;
-
-        return `
-          <div class="search-item p-2 hover:bg-white/10 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0" 
-               data-base="${p.baseSpeed}" data-form-id="${escapeHtml(p.formId)}">
-            <img src="${sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" class="w-8 h-8 object-contain flex-shrink-0" alt="${escapeHtml(primaryName)}">
-            <div class="flex flex-col min-w-0 flex-1">
-              <span class="text-sm font-bold text-gray-200 truncate">${escapeHtml(primaryName)}</span>
-              <span class="text-xs text-gray-400 truncate">${escapeHtml(secondaryName)} (${currentDict.common.searchSpeedLabel}: ${p.baseSpeed} | ${currentDict.common.searchDoublesLabel}: #${p.usageRankDouble} | ${currentDict.common.searchSinglesLabel}: #${p.usageRankSingle})</span>
-            </div>
-          </div>
-        `;
-      }).join('');
+      searchResults.innerHTML = currentMatches
+        .map(p => renderHeaderSearchItem(p, locale))
+        .join('');
       searchResults.classList.remove('hidden');
     } else {
       searchResults.innerHTML = `<div class="p-3 text-sm text-gray-500 text-center">${escapeHtml(currentDict.common.searchNoResults)}</div>`;
@@ -241,4 +225,24 @@ export function renderHeader(container: HTMLElement) {
       renderSearchResults();
     }
   });
+
+  // Dynamic header height measurement for persistent sticky coordination
+  const updateHeaderHeight = () => {
+    const height = container.offsetHeight;
+    if (height > 0) {
+      document.documentElement.style.setProperty('--header-height', `${height}px`);
+      document.documentElement.style.setProperty('--table-header-top', `${height}px`);
+    }
+  };
+
+  // Observe container size changes (e.g. responsive wrap, window resize, content changes)
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(() => {
+      updateHeaderHeight();
+    });
+    ro.observe(container);
+  }
+
+  // Initial measurement
+  updateHeaderHeight();
 }
