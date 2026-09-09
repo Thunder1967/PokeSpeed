@@ -136,6 +136,52 @@ PokeSpeed/
 
 ---
 
+## 🔄 更新單雙打數據 (Updating Pokémon Data)
+
+寶可夢速度與排位熱門度數據儲存於 `src/data/formats/champion-m-b.json`。專案提供**自動化管線**與**手動微調**兩種更新方式：
+
+### 方式一：使用自動化同步腳本 (推薦)
+專案在 `scripts/sync-data.ts` 中封裝了自動化管線，可自動自 **Pokémon Showdown**、**PokeAPI** 與 **Smogon 天梯榜單**抓取並組裝最新單雙打數據：
+
+```bash
+# 預設執行：自動探測最新月份與 1500 分段，更新 champion-m-b.json
+npm run sync:data
+
+# 強制略過本機快取，重新抓取遠端資料
+npx tsx scripts/sync-data.ts --force
+
+# 指定月份 (如 2026-02)
+npx tsx scripts/sync-data.ts --month=2026-02
+
+# 指定天梯分段門檻 (如 1760 高端分段)
+npx tsx scripts/sync-data.ts --cutoff=1760
+
+# 組合參數範例
+npx tsx scripts/sync-data.ts --month=2026-02 --cutoff=1760 --force
+```
+
+### 方式二：手動修改資料檔
+若僅需個別微調少數寶可夢的單雙打排名或百分比，可直接編輯 `src/data/formats/champion-m-b.json`：
+```json
+{
+  "id": 1003,
+  "formId": "ting-lu",
+  "nameZh": "古鼎鹿",
+  "nameEn": "Ting-Lu",
+  "baseSpeed": 45,
+  "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tinglu.png",
+  "usageRankSingle": 12,        // 單打天梯排名 (數值越小越熱門，未上榜填 999)
+  "usageRankDouble": 28,        // 雙打天梯排名 (數值越小越熱門，未上榜填 999)
+  "usagePercentSingle": 8.42,   // 單打使用率百分比 (%)
+  "usagePercentDouble": 5.16    // 雙打使用率百分比 (%)
+}
+```
+
+> [!TIP]
+> **繁體中文特殊譯名微調**：如需強制指定特定型態或新寶可夢之中文譯名，可至 `scripts/lib/name-override.json` 進行編輯。
+
+---
+
 ## 🧪 測試與品質檢查 (Testing & Quality)
 
 專案具備完整的自動化品質檢查體系：
