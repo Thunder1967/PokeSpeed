@@ -1,9 +1,13 @@
 /* Four-Section Sticky Table Layout */
 
 .speed-table-container {
-  @apply w-full max-w-7xl mx-auto overflow-hidden bg-surface rounded-xl border border-white/10 shadow-2xl;
+  @apply w-full max-w-7xl mx-auto bg-surface rounded-xl border border-white/10 shadow-2xl;
   display: flex;
   flex-direction: column;
+}
+
+#speed-table-mount {
+  position: relative;
 }
 
 .speed-table-header, .speed-table-row {
@@ -15,7 +19,7 @@
 }
 
 .speed-table-header {
-  @apply bg-black/60 font-bold text-xs md:text-sm tracking-wider uppercase;
+  @apply bg-black/60 font-bold text-xs md:text-sm tracking-wider uppercase rounded-t-xl;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -40,32 +44,76 @@
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* SECTION 2: Sprites (Independent Scroll) */
+/* SECTION 2: Sprites (Independent Scroll & Expandable) */
 .col-sprites-container {
-  @apply flex-shrink-0 w-48 md:w-80 border-r overflow-x-auto;
+  @apply flex-shrink-0 w-52 sm:w-72 md:w-80 lg:w-[440px] xl:w-[500px] border-r relative flex items-center overflow-hidden px-2;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 56px;
 }
 
-/* Hide scrollbar for sprites container */
-.col-sprites-container::-webkit-scrollbar {
+.speed-table-row.is-expanded .col-sprites-container {
+  @apply items-start py-2.5;
+}
+
+/* Sprites scroll track */
+.col-sprites {
+  @apply flex items-center h-full gap-1.5;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.col-sprites::-webkit-scrollbar {
   display: none;
 }
-.col-sprites-container {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
 
-.col-sprites {
-  @apply flex items-center h-full px-2 gap-1;
-  width: max-content;
+.speed-table-row.is-expanded .col-sprites {
+  flex-wrap: wrap;
+  overflow-x: visible;
+  width: 100%;
 }
 
 .sprite-img {
-  @apply w-10 h-10 md:w-12 md:h-12 object-contain filter drop-shadow-md transition-transform hover:scale-125;
+  @apply w-10 h-10 md:w-12 md:h-12 flex-shrink-0 object-contain filter drop-shadow-md transition-transform hover:scale-125;
+}
+
+.hidden-sprites {
+  display: contents;
+}
+
+.hidden-sprites.is-hidden {
+  display: none !important;
 }
 
 .more-btn {
-  @apply text-xs bg-white/10 hover:bg-white/20 px-2 py-1 rounded-full cursor-pointer transition-colors ml-2 whitespace-nowrap;
+  @apply flex-shrink-0 text-xs font-bold bg-blue-600/30 text-blue-200 hover:bg-blue-600/50 hover:text-white px-2.5 py-1 rounded-full cursor-pointer transition-all ml-1.5 mr-1 whitespace-nowrap border border-blue-400/40 shadow-lg backdrop-blur-md select-none self-center;
+}
+
+.more-btn.expanded {
+  @apply bg-amber-600/35 text-amber-200 hover:bg-amber-600/55 hover:text-white border-amber-400/50;
+}
+
+.speed-table-row.is-expanded .more-btn {
+  @apply self-start mt-2;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    transform: scale(1.25);
+    filter: drop-shadow(0 0 10px #3b82f6) drop-shadow(0 0 20px #60a5fa);
+  }
+  50% {
+    transform: scale(1.4);
+    filter: drop-shadow(0 0 16px #60a5fa) drop-shadow(0 0 28px #93c5fd);
+  }
+}
+
+.sprite-focus-glow {
+  animation: pulse-glow 0.8s ease-in-out 3;
+  z-index: 50;
+  position: relative;
 }
 
 /* SECTION 3: Dynamic Calculation (Sticky Middle) */
@@ -74,9 +122,63 @@
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* SECTION 4: Benchmarks (Independent Scroll) */
+/* SECTION 4: Benchmarks (Synchronized Themed Scroll) */
 .col-benchmarks-container {
   @apply flex-grow overflow-x-auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.2s ease-in-out;
+}
+
+/* Default Webkit scrollbar: 5px slim height, invisible thumb & track */
+.col-benchmarks-container::-webkit-scrollbar {
+  height: 5px;
+  background: transparent;
+}
+
+.col-benchmarks-container::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+  margin: 0 4px;
+  transition: background 0.2s ease-in-out;
+}
+
+.col-benchmarks-container::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* On hover of row/header, or when scrolling: show modern neon themed scrollbar */
+.speed-table-row:hover .col-benchmarks-container,
+.speed-table-header:hover .col-benchmarks-container,
+.col-benchmarks-container:hover,
+.col-benchmarks-container.is-scrolling {
+  scrollbar-color: rgba(96, 165, 250, 0.6) rgba(15, 23, 42, 0.6);
+}
+
+.speed-table-row:hover .col-benchmarks-container::-webkit-scrollbar-track,
+.speed-table-header:hover .col-benchmarks-container::-webkit-scrollbar-track,
+.col-benchmarks-container:hover::-webkit-scrollbar-track,
+.col-benchmarks-container.is-scrolling::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.speed-table-row:hover .col-benchmarks-container::-webkit-scrollbar-thumb,
+.speed-table-header:hover .col-benchmarks-container::-webkit-scrollbar-thumb,
+.col-benchmarks-container:hover::-webkit-scrollbar-thumb,
+.col-benchmarks-container.is-scrolling::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
+}
+
+.col-benchmarks-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #60a5fa, #a78bfa) !important;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.8) !important;
+}
+
+.speed-pin-divider .col-benchmarks-container {
+  overflow: hidden !important;
 }
 
 .col-benchmarks {
@@ -119,7 +221,7 @@
   margin: 1px 0;
   align-items: center;
   pointer-events: auto;
-  z-index: 35;
+  z-index: 20; /* strictly below drawer (z-50) */
   border-left: 4px solid transparent;
   background: rgba(15, 23, 42, 0.3);
 }
@@ -150,7 +252,7 @@
   height: 2px;
   transform: translateY(-50%);
   pointer-events: none;
-  z-index: 10;
+  z-index: 10; /* strictly below drawer (z-50) */
 }
 
 .speed-pin-divider .divider-line.line-emerald {
@@ -174,7 +276,7 @@
   align-items: center;
   justify-content: center;
   overflow: visible;
-  z-index: 50;
+  z-index: 25; /* strictly below drawer (z-50) */
 }
 
 .pin-badge {
@@ -185,84 +287,88 @@
   transform: translate(-50%, -50%);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 10px;
-  border-radius: 9999px;
-  font-size: 11px;
-  font-weight: 700;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  justify-content: center;
   cursor: pointer;
-  z-index: 60;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  white-space: nowrap;
+  z-index: 25; /* strictly below drawer (z-50) */
+  transition: transform 0.15s ease, filter 0.15s ease;
+  user-select: none;
 }
 
 .pin-badge:hover {
-  transform: translate(-50%, -50%) scale(1.06);
+  transform: translate(-50%, -50%) scale(1.15);
+  z-index: 25; /* stays at 25, NEVER above drawer */
 }
 
-.pin-badge.badge-emerald {
-  background: #04140d !important;
-  color: #34d399;
-  border: 1.5px solid #10b981;
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 2px 8px rgba(0, 0, 0, 0.9);
+.pin-avatar-img {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.pin-badge.badge-violet {
-  background: #11071f !important;
-  color: #c084fc;
-  border: 1.5px solid #8b5cf6;
-  box-shadow: 0 0 12px rgba(139, 92, 246, 0.6), 0 2px 8px rgba(0, 0, 0, 0.9);
+/* Embedded template kept hidden; displayed via #floating-pin-tooltip portal */
+.pin-badge .pin-tooltip {
+  display: none !important;
 }
 
-.pin-badge.badge-merged {
-  background: #190e10 !important;
-  color: #fbbf24;
-  border: 1.5px solid #f59e0b;
-  box-shadow: 0 0 14px rgba(245, 158, 11, 0.6), 0 2px 8px rgba(0, 0, 0, 0.9);
-}
-
-.pin-icon svg {
-  width: 12px;
-  height: 12px;
-}
-
-/* Tooltip */
-.pin-tooltip {
-  position: absolute;
-  bottom: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  width: max-content;
-  max-width: 280px;
-  padding: 10px 12px;
-  background: rgba(15, 23, 42, 0.98);
-  backdrop-filter: blur(12px);
+/* Floating Tooltip Card (Rendered at root level above Battle Settings Drawer) */
+#floating-pin-tooltip {
+  position: fixed;
+  z-index: 100; /* strictly above #settings-drawer (z-50) */
+  width: 290px;
+  max-width: 90vw;
+  padding: 12px 14px;
+  background: rgba(15, 20, 29, 0.98);
+  backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.7);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+  transform: translateY(4px);
   pointer-events: none;
-  z-index: 100;
   text-align: left;
 }
 
-.pin-badge:hover .pin-tooltip,
-.pin-badge.active-tooltip .pin-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
+#floating-pin-tooltip.pin-tooltip-merged {
+  width: 320px;
 }
 
-.pin-tooltip::after {
+#floating-pin-tooltip.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+#floating-pin-tooltip::after {
   content: '';
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: var(--arrow-left, 50%);
   transform: translateX(-50%);
-  border-width: 5px;
+  border-width: 6px;
   border-style: solid;
-  border-color: rgba(15, 23, 42, 0.98) transparent transparent transparent;
+  border-color: rgba(15, 20, 29, 0.98) transparent transparent transparent;
 }
+
+#floating-pin-tooltip.tooltip-bottom::after {
+  top: auto;
+  bottom: 100%;
+  border-color: transparent transparent rgba(15, 20, 29, 0.98) transparent;
+}
+
+/* Battle Settings Drawer Overlay Styling */
+#settings-drawer {
+  width: 100%;
+  max-width: 92vw;
+  background: #0f1219 !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: -20px 0 40px rgba(0, 0, 0, 0.9), -4px 0 12px rgba(0, 0, 0, 0.6);
+  overflow-x: hidden;
+}
+
+#slots-container,
+.auto-fit-slots {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 1rem !important;
+}
+

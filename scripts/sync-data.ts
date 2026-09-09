@@ -1,7 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
-
-const API_BASE = 'https://pokeapi.co/api/v2/pokemon/';
+import { initLocalization, getTraditionalChineseName } from './lib/localization.js';
+import { getLegalSpecies, toShowdownId, resolveBestSpriteUrl } from './lib/showdown-parser.js';
+import { fetchSmogonLadderStats } from './lib/smogon-stats.js';
 
 interface PokemonSpeedData {
   id: number;
@@ -12,86 +13,144 @@ interface PokemonSpeedData {
   sprite: string;
   usageRankSingle: number;
   usageRankDouble: number;
+  usagePercentSingle?: number;
+  usagePercentDouble?: number;
 }
 
-// Map english names to chinese names manually for testing
-const zhNames: Record<string, string> = {
-  "flutter-mane": "振翼髮",
-  "incineroar": "熾焰咆哮虎",
-  "urshifu-rapid-strike": "武道熊師 (連擊)",
-  "tornadus-therian": "龍捲雲 (靈獸)",
-  "garchomp": "烈咬陸鯊",
-  "rillaboom": "轟擂金剛猩",
-  "amoonguss": "敗露球菇",
-  "gholdengo": "賽富豪",
-  "ogerpon-hearthflame": "厄鬼椪 (火灶面具)",
-  "chi-yu": "古劍豹", // Wait chi-yu is 古玉魚, chien-pao is 古劍豹. Let's fix this
-  "iron-hands": "鐵臂膀",
-  "dragonite": "快龍",
-  "landorus-therian": "土地雲 (靈獸)",
-  "calyrex-shadow": "蕾冠王 (黑馬)",
-  "calyrex-ice": "蕾冠王 (白馬)"
-};
-
-async function fetchPokemonData(formId: string, index: number): Promise<PokemonSpeedData> {
-  console.log(`Fetching data for ${formId}...`);
-  const res = await fetch(`${API_BASE}${formId}`);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch ${formId}: ${res.statusText}`);
-  }
-  const data = await res.json();
-  
-  const baseSpeed = data.stats.find((s: any) => s.stat.name === 'speed')?.base_stat || 0;
-  
-  // Using official pixel sprite
-  const sprite = data.sprites.front_default || '';
-
-  return {
-    id: data.id,
-    formId,
-    nameZh: zhNames[formId] || formId,
-    nameEn: data.name,
-    baseSpeed,
-    sprite,
-    usageRankSingle: index + 1, // Mock ranking
-    usageRankDouble: index + 1, // Mock ranking
-  };
+function toKebabCase(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 }
 
 async function main() {
-  const formatArg = process.argv.find((arg: string) => arg.startsWith('--format='));
+  const args = process.argv.slice(2);
+  const formatArg = args.find(a => a.startsWith('--format='));
+  const monthArg = args.find(a => a.startsWith('--month='));
+  const cutoffArg = args.find(a => a.startsWith('--cutoff='));
+  const force = args.includes('--force');
+
   const rawFormat = formatArg ? formatArg.split('=')[1] : 'm-b';
-  const format = rawFormat.startsWith('champion') ? rawFormat : `champion-${rawFormat}`;
+  const regulation = rawFormat.replace(/^champion-/, '');
+  const formatName = `champion-${regulation}`;
+  const requestedMonth = monthArg ? monthArg.split('=')[1] : undefined;
+  const cutoff = cutoffArg ? parseInt(cutoffArg.split('=')[1], 10) : 1500;
 
-  const rosterPath = path.resolve(process.cwd(), `scripts/rosters/${format}.json`);
-  const outPath = path.resolve(process.cwd(), `src/data/formats/${format}.json`);
+  console.log(`====================================================`);
+  console.log(`PokéSpeed Data Pipeline: Regulation ${regulation.toUpperCase()}`);
+  console.log(`====================================================`);
 
-  const rosterStr = await fs.readFile(rosterPath, 'utf8');
-  const roster: string[] = JSON.parse(rosterStr);
+  // Step 1: Initialize Localization dictionary
+  console.log(`[Step 1/5] Initializing PokeAPI localization dictionary...`);
+  await initLocalization(force);
 
-  const results: Record<number, PokemonSpeedData[]> = {};
+  // Step 2: Fetch legal species from Pokemon Showdown
+  console.log(`[Step 2/5] Fetching legal species from Pokémon Showdown (${regulation})...`);
+  const legalSpecies = await getLegalSpecies(regulation, force);
+  console.log(`Found ${legalSpecies.size} legal species entries for Regulation ${regulation.toUpperCase()}.`);
 
-  for (let i = 0; i < roster.length; i++) {
-    const formId = roster[i];
-    try {
-      const data = await fetchPokemonData(formId, i);
-      if (!results[data.baseSpeed]) {
-        results[data.baseSpeed] = [];
-      }
-      results[data.baseSpeed].push(data);
-    } catch (err) {
-      console.error(`Error processing ${formId}:`, err);
+  // Step 3: Fetch Smogon Stats (Singles & Doubles ladder rankings)
+  console.log(`[Step 3/5] Fetching Smogon Stats ladder rankings...`);
+  const stats = await fetchSmogonLadderStats(regulation, requestedMonth, cutoff, force);
+
+  // Step 4: Assemble PokemonSpeedData entries with accurate sprite resolution
+  console.log(`[Step 4/5] Resolving sprites and assembling speed entries...`);
+  const allEntries: PokemonSpeedData[] = [];
+  const rosterFormIds: string[] = [];
+
+  const speciesList = Array.from(legalSpecies.entries());
+  const batchSize = 30;
+
+  for (let i = 0; i < speciesList.length; i += batchSize) {
+    const chunk = speciesList.slice(i, i + batchSize);
+    const chunkEntries = await Promise.all(
+      chunk.map(async ([id, entry]) => {
+        const poke = entry.pokedex;
+        const formId = toKebabCase(poke.name);
+
+        const nameZh = getTraditionalChineseName(id, {
+          num: poke.num,
+          name: poke.name,
+          forme: poke.forme,
+          baseSpecies: poke.baseSpecies,
+        });
+
+        // Lookup ladder ranking by normalized ID
+        const normId = toShowdownId(poke.name);
+        const doubleStats = stats.doubles.get(normId) || stats.doubles.get(id);
+        const singleStats = stats.singles.get(normId) || stats.singles.get(id);
+
+        // Resolve accurate sprite URL (handles Megas, Regional forms, and normal Pokémon)
+        const sprite = await resolveBestSpriteUrl(id, poke);
+
+        const item: PokemonSpeedData = {
+          id: poke.num,
+          formId,
+          nameZh,
+          nameEn: poke.name,
+          baseSpeed: poke.baseStats.spe,
+          sprite,
+          usageRankSingle: singleStats ? singleStats.rank : 999,
+          usageRankDouble: doubleStats ? doubleStats.rank : 999,
+          usagePercentSingle: singleStats ? singleStats.usagePercent : 0,
+          usagePercentDouble: doubleStats ? doubleStats.usagePercent : 0,
+        };
+
+        return { formId, item };
+      })
+    );
+
+    for (const { formId, item } of chunkEntries) {
+      rosterFormIds.push(formId);
+      allEntries.push(item);
     }
   }
 
-  await fs.mkdir(path.dirname(outPath), { recursive: true });
-  await fs.writeFile(outPath, JSON.stringify(results, null, 2), 'utf8');
-  
-  // Also write an index.ts to export it
-  const indexPath = path.resolve(process.cwd(), `src/data/formats/index.ts`);
-  await fs.writeFile(indexPath, `export { default as championMB } from './champion-m-b.json';\n`, 'utf8');
+  // Step 5: Group by baseSpeed and sort internally by usageRankDouble
+  console.log(`[Step 5/5] Grouping by speed and sorting by popularity...`);
+  const groupedData: Record<number, PokemonSpeedData[]> = {};
 
-  console.log(`Successfully generated ${outPath}`);
+  for (const p of allEntries) {
+    if (!groupedData[p.baseSpeed]) {
+      groupedData[p.baseSpeed] = [];
+    }
+    groupedData[p.baseSpeed].push(p);
+  }
+
+  // Sort each row so most popular Pokemon appear first in Doubles
+  for (const speed of Object.keys(groupedData)) {
+    const numSpeed = Number(speed);
+    groupedData[numSpeed].sort((a, b) => a.usageRankDouble - b.usageRankDouble);
+  }
+
+  // File outputs
+  const outDir = path.resolve(process.cwd(), 'src/data/formats');
+  const rosterDir = path.resolve(process.cwd(), 'scripts/rosters');
+  await fs.mkdir(outDir, { recursive: true });
+  await fs.mkdir(rosterDir, { recursive: true });
+
+  const outPath = path.join(outDir, `${formatName}.json`);
+  const rosterPath = path.join(rosterDir, `${formatName}.json`);
+
+  await fs.writeFile(outPath, JSON.stringify(groupedData, null, 2), 'utf8');
+  await fs.writeFile(rosterPath, JSON.stringify(rosterFormIds, null, 2), 'utf8');
+
+  // Update src/data/formats/index.ts
+  const indexPath = path.join(outDir, 'index.ts');
+  const indexContent = `export { default as championMB } from './champion-m-b.json';\n`;
+  await fs.writeFile(indexPath, indexContent, 'utf8');
+
+  console.log(`----------------------------------------------------`);
+  console.log(`[Success] Output generated successfully!`);
+  console.log(`  Format Data:   ${outPath}`);
+  console.log(`  Roster List:   ${rosterPath}`);
+  console.log(`  Total Pokémon: ${allEntries.length}`);
+  console.log(`  Speed Tiers:   ${Object.keys(groupedData).length} distinct base speeds`);
+  console.log(`----------------------------------------------------`);
 }
 
-main().catch(console.error);
+main().catch(err => {
+  console.error('[Error] Pipeline failed:', err);
+  process.exit(1);
+});

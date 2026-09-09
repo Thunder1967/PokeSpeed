@@ -1,7 +1,7 @@
 import './styles/main.css';
 import { renderHeader } from './components/Header';
 import { renderSpeedTable } from './components/SpeedTable';
-import { renderDrawer } from './components/Drawer';
+import { renderDrawer, updateDrawerBounds } from './components/Drawer';
 import championMB from './data/formats/champion-m-b.json';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -24,6 +24,7 @@ function updateTable(isDouble: boolean) {
     championMB as any,
     isDouble ? 'double' : 'single'
   );
+  updateDrawerBounds();
 }
 
 // Initial render

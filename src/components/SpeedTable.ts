@@ -1,15 +1,22 @@
-import { SpeedTableData } from '../types/pokemon';
+import { SpeedTableData, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
 import { calcBaseSpeedLv50 } from '../utils/speedCalc';
 import { battleStore } from '../store/battleState';
 import { calcPinDividers, RowSpeedInfo } from '../utils/pinDividerCalc';
 import { createPinDividerHTML } from './PinDivider';
+import { AppConfig, getAdaptiveSpriteLimit } from '../config/appConfig';
 import '../styles/table.css';
+
+let lastBenchmarkScrollLeft = 0;
+let activeHiddenPokemonsMap = new Map<number, PokemonSpeedData[]>();
 
 export function renderSpeedTable(
   container: HTMLElement,
   data: SpeedTableData,
   mode: 'single' | 'double'
 ) {
+  const limit = getAdaptiveSpriteLimit();
+  activeHiddenPokemonsMap.clear();
+
   // Sort base speeds descending
   const baseSpeeds = Object.keys(data)
     .map(Number)
@@ -20,7 +27,7 @@ export function renderSpeedTable(
       <div class="speed-table-header">
         <div class="col-base">種族</div>
         <div class="col-sprites-container">寶可夢</div>
-        <div class="col-dynamic">動態實數</div>
+        <div class="col-dynamic">敵方實數</div>
         <div class="col-benchmarks-container">
           <div class="col-benchmarks">
             <div class="benchmark-cell header">極速(32+)</div>
@@ -44,9 +51,11 @@ export function renderSpeedTable(
       mode === 'single' ? a.usageRankSingle - b.usageRankSingle : a.usageRankDouble - b.usageRankDouble
     );
 
-    const displayCount = Math.min(10, pokemons.length);
-    const displayed = pokemons.slice(0, displayCount);
-    const hiddenCount = pokemons.length - displayCount;
+    const visiblePokemons = pokemons.slice(0, limit);
+    const hiddenPokemons = pokemons.slice(limit);
+    if (hiddenPokemons.length > 0) {
+      activeHiddenPokemonsMap.set(base, hiddenPokemons);
+    }
 
     // Calculate benchmarks
     const max = calcBaseSpeedLv50(base, 32, 1.1);
@@ -62,10 +71,23 @@ export function renderSpeedTable(
       <div class="speed-table-row" data-base="${base}">
         <div class="col-base">${base}</div>
         <div class="col-sprites-container">
-          <div class="col-sprites">
-            ${displayed.map(p => `<img src="${p.sprite}" alt="${p.nameZh}" title="${p.nameZh}" class="sprite-img" />`).join('')}
-            ${hiddenCount > 0 ? `<div class="more-btn">+${hiddenCount} 更多</div>` : ''}
+          <div class="col-sprites" data-base="${base}">
+            ${visiblePokemons.map(p => `
+              <img src="${p.sprite || DEFAULT_SUBSTITUTE_SPRITE}" alt="${p.nameZh}" 
+                   title="${p.nameZh} (${p.nameEn})\n單打排名: #${p.usageRankSingle}\n雙打排名: #${p.usageRankDouble}" 
+                   class="sprite-img" data-form-id="${p.formId}"
+                   loading="${AppConfig.table.sprites.loadingStrategy}"
+                   onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
+            `).join('')}
+            ${hiddenPokemons.length > 0 ? `
+              <div class="hidden-sprites is-hidden" id="hidden-sprites-${base}"></div>
+            ` : ''}
           </div>
+          ${hiddenPokemons.length > 0 ? `
+            <button type="button" class="more-btn" data-base="${base}" data-count="${hiddenPokemons.length}">
+              +${hiddenPokemons.length} 更多
+            </button>
+          ` : ''}
         </div>
         <div class="col-dynamic" id="dynamic-${base}">--</div>
         <div class="col-benchmarks-container">
@@ -90,6 +112,49 @@ export function renderSpeedTable(
   const rows = container.querySelectorAll('.speed-table-row');
   const tableContainer = container.querySelector('.speed-table-container') as HTMLElement;
 
+  // Synchronized horizontal scrolling for Section 4: Benchmarks
+  const benchmarkContainers = container.querySelectorAll<HTMLElement>(
+    '.col-benchmarks-container:not(.divider-cell)'
+  );
+  let isSyncingScroll = false;
+  let scrollTimeout: any = null;
+
+  // Restore previous scrollLeft if table was re-rendered (e.g. mode switch)
+  if (lastBenchmarkScrollLeft > 0) {
+    benchmarkContainers.forEach(el => {
+      el.scrollLeft = lastBenchmarkScrollLeft;
+    });
+  }
+
+  const handleBenchmarkScroll = (event: Event) => {
+    const sourceEl = event.currentTarget as HTMLElement;
+    if (!sourceEl || isSyncingScroll) return;
+
+    isSyncingScroll = true;
+    const newScrollLeft = sourceEl.scrollLeft;
+    lastBenchmarkScrollLeft = newScrollLeft;
+
+    sourceEl.classList.add('is-scrolling');
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      sourceEl.classList.remove('is-scrolling');
+    }, 400);
+
+    benchmarkContainers.forEach(targetEl => {
+      if (targetEl !== sourceEl && targetEl.scrollLeft !== newScrollLeft) {
+        targetEl.scrollLeft = newScrollLeft;
+      }
+    });
+
+    requestAnimationFrame(() => {
+      isSyncingScroll = false;
+    });
+  };
+
+  benchmarkContainers.forEach(el => {
+    el.addEventListener('scroll', handleBenchmarkScroll, { passive: true });
+  });
+
   // Add store listener to update dynamic column & pin divider
   const updateDynamicColumn = () => {
     const state = battleStore.get();
@@ -108,8 +173,11 @@ export function renderSpeedTable(
       return speed;
     };
 
-    const speedA = calcSpeed(playerA.baseSpeed ?? 100, playerA);
-    const speedB = state.isDoubleBattle ? calcSpeed(playerB.baseSpeed ?? 100, playerB) : 0;
+    const hasPlayerA = playerA.baseSpeed !== undefined;
+    const hasPlayerB = state.isDoubleBattle && playerB.baseSpeed !== undefined;
+
+    const speedA = hasPlayerA ? calcSpeed(playerA.baseSpeed!, playerA) : 0;
+    const speedB = hasPlayerB ? calcSpeed(playerB.baseSpeed!, playerB) : 0;
     const rowSpeedInfos: RowSpeedInfo[] = [];
     
     rows.forEach(row => {
@@ -124,9 +192,9 @@ export function renderSpeedTable(
         // Remove previous threat classes
         row.classList.remove('threat-a', 'threat-b', 'threat-both');
 
-        // Apply new threat classes
-        const threatA = enemySpeed > speedA;
-        const threatB = state.isDoubleBattle && enemySpeed > speedB;
+        // Apply new threat classes only if players are actively configured
+        const threatA = hasPlayerA && enemySpeed > speedA;
+        const threatB = hasPlayerB && enemySpeed > speedB;
 
         if (threatA && threatB) {
           row.classList.add('threat-both');
@@ -204,11 +272,149 @@ export function renderSpeedTable(
   };
   document.addEventListener('click', onDocClick);
 
+  // Lazy population helper for deferred hidden sprites
+  const populateHiddenSprites = (base: number | string) => {
+    const hiddenContainer = container.querySelector(`#hidden-sprites-${base}`);
+    if (hiddenContainer && hiddenContainer.children.length === 0) {
+      const list = activeHiddenPokemonsMap.get(Number(base)) || [];
+      hiddenContainer.innerHTML = list.map(p => `
+        <img src="${p.sprite || DEFAULT_SUBSTITUTE_SPRITE}" alt="${p.nameZh}" 
+             title="${p.nameZh} (${p.nameEn})\n單打排名: #${p.usageRankSingle}\n雙打排名: #${p.usageRankDouble}" 
+             class="sprite-img" data-form-id="${p.formId}"
+             loading="${AppConfig.table.sprites.loadingStrategy}"
+             onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
+      `).join('');
+    }
+  };
+
+  // Click listener for .more-btn expansion
+  const onTableClick = (e: MouseEvent) => {
+    const btn = (e.target as HTMLElement).closest('.more-btn') as HTMLElement;
+    if (btn) {
+      e.stopPropagation();
+      const base = btn.dataset.base;
+      const count = btn.dataset.count;
+      const row = container.querySelector(`.speed-table-row[data-base="${base}"]`);
+      const hiddenContainer = container.querySelector(`#hidden-sprites-${base}`);
+      if (row && hiddenContainer) {
+        const isHidden = hiddenContainer.classList.contains('is-hidden');
+        if (isHidden) {
+          populateHiddenSprites(base!);
+          hiddenContainer.classList.remove('is-hidden');
+          row.classList.add('is-expanded');
+          btn.classList.add('expanded');
+          btn.textContent = '收合';
+        } else {
+          hiddenContainer.classList.add('is-hidden');
+          row.classList.remove('is-expanded');
+          btn.classList.remove('expanded');
+          btn.textContent = `+${count} 更多`;
+        }
+      }
+    }
+  };
+  container.addEventListener('click', onTableClick);
+
+  // Resize listener to re-evaluate sprite limits if window crosses adaptive breakpoints
+  let currentLimit = limit;
+  let resizeTimer: any = null;
+  const onResize = () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const newLimit = getAdaptiveSpriteLimit();
+      if (newLimit !== currentLimit) {
+        currentLimit = newLimit;
+        renderSpeedTable(container, data, mode);
+      }
+    }, 200);
+  };
+  window.addEventListener('resize', onResize);
+
   const unsubscribe = battleStore.subscribe(updateDynamicColumn);
   updateDynamicColumn(); // Initial calculation
 
   return function cleanup() {
     unsubscribe();
     document.removeEventListener('click', onDocClick);
+    container.removeEventListener('click', onTableClick);
+    window.removeEventListener('resize', onResize);
+    clearTimeout(scrollTimeout);
+    clearTimeout(resizeTimer);
+    benchmarkContainers.forEach(el => {
+      el.removeEventListener('scroll', handleBenchmarkScroll);
+    });
   };
 }
+
+/**
+ * Smoothly scrolls to a Pokemon row, expands the row if hidden, vertically centers the row in viewport,
+ * and highlights the target sprite
+ */
+export function focusAndHighlightPokemon(formId: string, baseSpeed: number | string) {
+  const row = document.querySelector(`.speed-table-row[data-base="${baseSpeed}"]`) as HTMLElement | null;
+  if (!row) return;
+
+  const hiddenContainer = row.querySelector(`#hidden-sprites-${baseSpeed}`);
+  const moreBtn = row.querySelector(`.more-btn[data-base="${baseSpeed}"]`) as HTMLElement;
+
+  // On-demand populate hidden sprites if not already populated
+  if (hiddenContainer && hiddenContainer.children.length === 0) {
+    const list = activeHiddenPokemonsMap.get(Number(baseSpeed)) || [];
+    hiddenContainer.innerHTML = list.map(p => `
+      <img src="${p.sprite || DEFAULT_SUBSTITUTE_SPRITE}" alt="${p.nameZh}" 
+           title="${p.nameZh} (${p.nameEn})\n單打排名: #${p.usageRankSingle}\n雙打排名: #${p.usageRankDouble}" 
+           class="sprite-img" data-form-id="${p.formId}"
+           loading="${AppConfig.table.sprites.loadingStrategy}"
+           onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
+    `).join('');
+  }
+
+  const targetImg = row.querySelector(`img[data-form-id="${formId}"]`) as HTMLElement;
+
+  if (hiddenContainer && hiddenContainer.contains(targetImg) && hiddenContainer.classList.contains('is-hidden')) {
+    hiddenContainer.classList.remove('is-hidden');
+    row.classList.add('is-expanded');
+    if (moreBtn) {
+      moreBtn.classList.add('expanded');
+      moreBtn.textContent = '收合';
+    }
+  }
+
+  // Smoothly center the row vertically in the browser viewport
+  const rowRect = row.getBoundingClientRect();
+  const docTop = rowRect.top + window.scrollY;
+  const targetY = Math.max(
+    0,
+    Math.min(
+      document.documentElement.scrollHeight - window.innerHeight,
+      Math.round(docTop - (window.innerHeight - row.offsetHeight) / 2)
+    )
+  );
+
+  window.scrollTo({
+    top: targetY,
+    behavior: 'smooth'
+  });
+
+  if (targetImg) {
+    // Horizontally scroll only within col-sprites without interfering with window vertical scroll
+    const colSprites = row.querySelector('.col-sprites') as HTMLElement | null;
+    if (colSprites) {
+      const spriteRect = targetImg.getBoundingClientRect();
+      const containerRect = colSprites.getBoundingClientRect();
+      if (spriteRect.left < containerRect.left) {
+        colSprites.scrollBy({ left: spriteRect.left - containerRect.left - 12, behavior: 'smooth' });
+      } else if (spriteRect.right > containerRect.right) {
+        colSprites.scrollBy({ left: spriteRect.right - containerRect.right + 12, behavior: 'smooth' });
+      }
+    }
+
+    targetImg.classList.remove('sprite-focus-glow');
+    void targetImg.offsetWidth;
+    targetImg.classList.add('sprite-focus-glow');
+    setTimeout(() => {
+      targetImg.classList.remove('sprite-focus-glow');
+    }, 2500);
+  }
+}
+

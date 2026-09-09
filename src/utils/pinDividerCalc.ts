@@ -1,5 +1,7 @@
 import { SlotState } from '../types/pokemon';
 
+export const DEFAULT_SUBSTITUTE_SPRITE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png';
+
 export interface RowSpeedInfo {
   baseSpeed: number;
   dynamicSpeed: number;
@@ -19,6 +21,13 @@ export interface PlayerPinInfo {
   speed: number;
   color: 'emerald' | 'violet';
   position: DividerPosition;
+  pokemon: {
+    nameZh: string;
+    nameEn: string;
+    sprite: string;
+    baseSpeed: number;
+  };
+  slotState: SlotState;
   tooltip: string;
 }
 
@@ -27,7 +36,21 @@ export interface MergedPinInfo {
   label: string;
   speed: number;
   position: DividerPosition;
+  pokemonA: {
+    nameZh: string;
+    nameEn: string;
+    sprite: string;
+    baseSpeed: number;
+  };
+  slotStateA: SlotState;
   tooltipA: string;
+  pokemonB: {
+    nameZh: string;
+    nameEn: string;
+    sprite: string;
+    baseSpeed: number;
+  };
+  slotStateB: SlotState;
   tooltipB: string;
 }
 
@@ -37,29 +60,30 @@ export type PinDividerItem =
 
 /**
  * Calculates where the divider should be placed given rows sorted descending by base/speed.
- * Everything ABOVE the divider has dynamicSpeed > playerSpeed.
- * Everything BELOW the divider has dynamicSpeed <= playerSpeed.
+ * Everything ABOVE the divider has dynamicSpeed >= playerSpeed (faster or tied).
+ * Everything BELOW the divider has dynamicSpeed < playerSpeed (slower).
+ * When dynamicSpeed === playerSpeed (tie), the divider is placed BELOW the tied row (同速時在同速種族值下方).
  */
 export function findDividerPosition(rows: RowSpeedInfo[], playerSpeed: number): DividerPosition {
   if (rows.length === 0) {
     return { type: 'top' };
   }
 
-  // If player speed is greater than or equal to the fastest row, it goes at the very top (0 rows outspeed)
-  if (playerSpeed >= rows[0].dynamicSpeed) {
+  // If player speed is strictly greater than the fastest row, it goes at the very top (0 rows outspeed/tie)
+  if (playerSpeed > rows[0].dynamicSpeed) {
     return { type: 'top' };
   }
 
-  // If player speed is strictly less than the slowest row, it goes at the bottom (all rows outspeed)
-  if (playerSpeed < rows[rows.length - 1].dynamicSpeed) {
+  // If player speed is less than or equal to the slowest row, it goes below the last row (bottom)
+  if (playerSpeed <= rows[rows.length - 1].dynamicSpeed) {
     return { type: 'bottom' };
   }
 
-  // Find first row where dynamicSpeed <= playerSpeed
-  // The divider should be placed right AFTER rows[i-1] (which is > playerSpeed)
+  // Find first row where dynamicSpeed is strictly less than playerSpeed.
+  // Rows before i have dynamicSpeed >= playerSpeed (either faster or tied).
+  // The divider is placed after rows[i-1].
   for (let i = 0; i < rows.length; i++) {
-    if (rows[i].dynamicSpeed <= playerSpeed) {
-      // Divider is between rows[i-1] and rows[i]
+    if (rows[i].dynamicSpeed < playerSpeed) {
       return {
         type: 'after',
         afterBase: rows[i - 1].baseSpeed
@@ -86,8 +110,10 @@ export function formatSlotTooltip(slot: SlotState, label: string, realSpeed: num
 
   const buffStr = buffs.length > 0 ? buffs.join(' ') : '常規狀態';
   const stageStr = stageText ? ` | ${stageText}` : '';
+  const pokeName = slot.pokemon ? `${slot.pokemon.nameZh} (${slot.pokemon.nameEn})` : label;
+  const baseSpeed = slot.pokemon?.baseSpeed ?? slot.baseSpeed ?? 100;
 
-  return `${label} (種族 ${slot.baseSpeed ?? 100})
+  return `${pokeName} (種族 ${baseSpeed})
 實數: ${realSpeed}
 努力值: ${actualEv} (${slot.evs}) | 性格: ${natureText}${stageStr}
 狀態: ${buffStr}`;
@@ -96,6 +122,7 @@ export function formatSlotTooltip(slot: SlotState, label: string, realSpeed: num
 /**
  * Calculates pin divider items for battle slots.
  * Handles single/double battle modes and merges pins when speeds tie.
+ * If a slot has no pokemon/baseSpeed selected, it generates no pin.
  */
 export function calcPinDividers(
   rows: RowSpeedInfo[],
@@ -105,23 +132,66 @@ export function calcPinDividers(
   slotB: SlotState,
   speedB: number
 ): PinDividerItem[] {
-  const posA = findDividerPosition(rows, speedA);
-  const tooltipA = formatSlotTooltip(slotA, '我方 A', speedA);
+  const hasA = slotA.baseSpeed !== undefined;
+  const hasB = isDouble && slotB.baseSpeed !== undefined;
 
-  if (!isDouble) {
+  if (!hasA && !hasB) {
+    return [];
+  }
+
+  const pokeA = {
+    nameZh: slotA.pokemon?.nameZh ?? '我方 A',
+    nameEn: slotA.pokemon?.nameEn ?? 'Player A',
+    sprite: (slotA.pokemon?.sprite && slotA.pokemon.sprite.trim() !== '') ? slotA.pokemon.sprite : DEFAULT_SUBSTITUTE_SPRITE,
+    baseSpeed: slotA.baseSpeed ?? 100
+  };
+
+  const pokeB = {
+    nameZh: slotB.pokemon?.nameZh ?? '我方 B',
+    nameEn: slotB.pokemon?.nameEn ?? 'Player B',
+    sprite: (slotB.pokemon?.sprite && slotB.pokemon.sprite.trim() !== '') ? slotB.pokemon.sprite : DEFAULT_SUBSTITUTE_SPRITE,
+    baseSpeed: slotB.baseSpeed ?? 100
+  };
+
+  if (hasA && !hasB) {
+    const posA = findDividerPosition(rows, speedA);
+    const tooltipA = formatSlotTooltip(slotA, '我方 A', speedA);
     return [
       {
         isMerged: false,
         slotKey: 'playerA',
-        label: '我方 A',
+        label: pokeA.nameZh,
         speed: speedA,
         color: 'emerald',
         position: posA,
+        pokemon: pokeA,
+        slotState: slotA,
         tooltip: tooltipA
       }
     ];
   }
 
+  if (!hasA && hasB) {
+    const posB = findDividerPosition(rows, speedB);
+    const tooltipB = formatSlotTooltip(slotB, '我方 B', speedB);
+    return [
+      {
+        isMerged: false,
+        slotKey: 'playerB',
+        label: pokeB.nameZh,
+        speed: speedB,
+        color: 'violet',
+        position: posB,
+        pokemon: pokeB,
+        slotState: slotB,
+        tooltip: tooltipB
+      }
+    ];
+  }
+
+  // Both A and B are active
+  const posA = findDividerPosition(rows, speedA);
+  const tooltipA = formatSlotTooltip(slotA, '我方 A', speedA);
   const posB = findDividerPosition(rows, speedB);
   const tooltipB = formatSlotTooltip(slotB, '我方 B', speedB);
 
@@ -131,10 +201,14 @@ export function calcPinDividers(
     return [
       {
         isMerged: true,
-        label: '我方 A & B',
+        label: `${pokeA.nameZh} & ${pokeB.nameZh}`,
         speed: speedA,
         position: posA,
+        pokemonA: pokeA,
+        slotStateA: slotA,
         tooltipA,
+        pokemonB: pokeB,
+        slotStateB: slotB,
         tooltipB
       }
     ];
@@ -144,19 +218,23 @@ export function calcPinDividers(
     {
       isMerged: false,
       slotKey: 'playerA',
-      label: '我方 A',
+      label: pokeA.nameZh,
       speed: speedA,
       color: 'emerald',
       position: posA,
+      pokemon: pokeA,
+      slotState: slotA,
       tooltip: tooltipA
     },
     {
       isMerged: false,
       slotKey: 'playerB',
-      label: '我方 B',
+      label: pokeB.nameZh,
       speed: speedB,
       color: 'violet',
       position: posB,
+      pokemon: pokeB,
+      slotState: slotB,
       tooltip: tooltipB
     }
   ];

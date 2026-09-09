@@ -32,4 +32,10 @@ export interface SlotState {
   abilityMultiplier: number; // e.g. 2.0 or 1.5
   isParalyzed: boolean;
   baseSpeed?: number;
+  pokemon?: PokemonSpeedData | null;
 }
+
+import { AppConfig } from '../config/appConfig';
+
+export const DEFAULT_SUBSTITUTE_SPRITE = AppConfig.table.sprites.fallbackSubstitute;
+

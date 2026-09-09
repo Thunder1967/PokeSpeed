@@ -23,7 +23,8 @@ export const initialState: BattleState = {
       isAbilityBoost: false,
       abilityMultiplier: 1.0,
       isParalyzed: false,
-      baseSpeed: 100,
+      baseSpeed: undefined,
+      pokemon: null,
     },
     playerB: {
       evs: 32,
@@ -34,7 +35,8 @@ export const initialState: BattleState = {
       isAbilityBoost: false,
       abilityMultiplier: 1.0,
       isParalyzed: false,
-      baseSpeed: 100,
+      baseSpeed: undefined,
+      pokemon: null,
     }
   }
 };

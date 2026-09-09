@@ -1,36 +1,886 @@
 {
+  "20": [
+    {
+      "id": 324,
+      "formId": "torkoal",
+      "nameZh": "煤炭龜",
+      "nameEn": "Torkoal",
+      "baseSpeed": 20,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/torkoal.png",
+      "usageRankSingle": 118,
+      "usageRankDouble": 26,
+      "usagePercentSingle": 0.759,
+      "usagePercentDouble": 6.16331
+    },
+    {
+      "id": 323,
+      "formId": "camerupt-mega",
+      "nameZh": "超級噴火駝",
+      "nameEn": "Camerupt-Mega",
+      "baseSpeed": 20,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/camerupt-mega.png",
+      "usageRankSingle": 211,
+      "usageRankDouble": 54,
+      "usagePercentSingle": 0.15094,
+      "usagePercentDouble": 2.94875
+    },
+    {
+      "id": 302,
+      "formId": "sableye-mega",
+      "nameZh": "超級勾魂眼",
+      "nameEn": "Sableye-Mega",
+      "baseSpeed": 20,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sableye-mega.png",
+      "usageRankSingle": 123,
+      "usageRankDouble": 188,
+      "usagePercentSingle": 0.71645,
+      "usagePercentDouble": 0.2465
+    }
+  ],
+  "28": [
+    {
+      "id": 713,
+      "formId": "avalugg",
+      "nameZh": "冰岩怪",
+      "nameEn": "Avalugg",
+      "baseSpeed": 28,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/avalugg.png",
+      "usageRankSingle": 205,
+      "usageRankDouble": 270,
+      "usagePercentSingle": 0.1698,
+      "usagePercentDouble": 0.03808
+    }
+  ],
+  "29": [
+    {
+      "id": 858,
+      "formId": "hatterene",
+      "nameZh": "布莉姆溫",
+      "nameEn": "Hatterene",
+      "baseSpeed": 29,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/hatterene.png",
+      "usageRankSingle": 81,
+      "usageRankDouble": 75,
+      "usagePercentSingle": 1.76211,
+      "usagePercentDouble": 1.27214
+    },
+    {
+      "id": 683,
+      "formId": "aromatisse",
+      "nameZh": "芳香精",
+      "nameEn": "Aromatisse",
+      "baseSpeed": 29,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/aromatisse.png",
+      "usageRankSingle": 304,
+      "usageRankDouble": 163,
+      "usagePercentSingle": 0.00467,
+      "usagePercentDouble": 0.3367
+    },
+    {
+      "id": 518,
+      "formId": "musharna",
+      "nameZh": "夢夢蝕",
+      "nameEn": "Musharna",
+      "baseSpeed": 29,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/musharna.png",
+      "usageRankSingle": 174,
+      "usageRankDouble": 232,
+      "usagePercentSingle": 0.30937,
+      "usagePercentDouble": 0.09634
+    }
+  ],
   "30": [
     {
-      "id": 591,
-      "formId": "amoonguss",
-      "nameZh": "敗露球菇",
-      "nameEn": "amoonguss",
+      "id": 199,
+      "formId": "slowking-galar",
+      "nameZh": "呆呆王 (伽勒爾)",
+      "nameEn": "Slowking-Galar",
       "baseSpeed": 30,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/591.png",
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/slowking-galar.png",
+      "usageRankSingle": 78,
+      "usageRankDouble": 100,
+      "usagePercentSingle": 1.92695,
+      "usagePercentDouble": 0.84062
+    },
+    {
+      "id": 143,
+      "formId": "snorlax",
+      "nameZh": "卡比獸",
+      "nameEn": "Snorlax",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/snorlax.png",
+      "usageRankSingle": 66,
+      "usageRankDouble": 108,
+      "usagePercentSingle": 2.54881,
+      "usagePercentDouble": 0.70131
+    },
+    {
+      "id": 460,
+      "formId": "abomasnow-mega",
+      "nameZh": "超級暴雪王",
+      "nameEn": "Abomasnow-Mega",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/abomasnow-mega.png",
+      "usageRankSingle": 172,
+      "usageRankDouble": 112,
+      "usagePercentSingle": 0.31426,
+      "usagePercentDouble": 0.6559
+    },
+    {
+      "id": 208,
+      "formId": "steelix-mega",
+      "nameZh": "超級大鋼蛇",
+      "nameEn": "Steelix-Mega",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/steelix-mega.png",
+      "usageRankSingle": 206,
+      "usageRankDouble": 123,
+      "usagePercentSingle": 0.16864,
+      "usagePercentDouble": 0.57146
+    },
+    {
+      "id": 563,
+      "formId": "cofagrigus",
+      "nameZh": "死神棺",
+      "nameEn": "Cofagrigus",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/cofagrigus.png",
+      "usageRankSingle": 213,
+      "usageRankDouble": 139,
+      "usagePercentSingle": 0.14543,
+      "usagePercentDouble": 0.44795
+    },
+    {
+      "id": 80,
+      "formId": "slowbro-mega",
+      "nameZh": "超級呆殼獸",
+      "nameEn": "Slowbro-Mega",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/slowbro-mega.png",
+      "usageRankSingle": 95,
+      "usageRankDouble": 158,
+      "usagePercentSingle": 1.2993,
+      "usagePercentDouble": 0.36528
+    },
+    {
+      "id": 867,
+      "formId": "runerigus",
+      "nameZh": "死神板",
+      "nameEn": "Runerigus",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/runerigus.png",
+      "usageRankSingle": 223,
+      "usageRankDouble": 172,
+      "usagePercentSingle": 0.11778,
+      "usagePercentDouble": 0.29914
+    },
+    {
+      "id": 579,
+      "formId": "reuniclus",
+      "nameZh": "人造細胞卵",
+      "nameEn": "Reuniclus",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/reuniclus.png",
+      "usageRankSingle": 240,
+      "usageRankDouble": 200,
+      "usagePercentSingle": 0.09252,
+      "usagePercentDouble": 0.19799
+    },
+    {
+      "id": 199,
+      "formId": "slowking",
+      "nameZh": "呆呆王",
+      "nameEn": "Slowking",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/slowking.png",
+      "usageRankSingle": 102,
+      "usageRankDouble": 210,
+      "usagePercentSingle": 1.16277,
+      "usagePercentDouble": 0.14998
+    },
+    {
+      "id": 80,
+      "formId": "slowbro",
+      "nameZh": "呆殼獸",
+      "nameEn": "Slowbro",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/slowbro.png",
+      "usageRankSingle": 147,
+      "usageRankDouble": 228,
+      "usagePercentSingle": 0.47759,
+      "usagePercentDouble": 0.09946
+    },
+    {
+      "id": 80,
+      "formId": "slowbro-galar",
+      "nameZh": "呆殼獸 (伽勒爾)",
+      "nameEn": "Slowbro-Galar",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/slowbro-galar.png",
+      "usageRankSingle": 195,
+      "usageRankDouble": 233,
+      "usagePercentSingle": 0.20162,
+      "usagePercentDouble": 0.09439
+    },
+    {
+      "id": 842,
+      "formId": "appletun",
+      "nameZh": "豐蜜龍",
+      "nameEn": "Appletun",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/appletun.png",
+      "usageRankSingle": 234,
+      "usageRankDouble": 248,
+      "usagePercentSingle": 0.1003,
+      "usagePercentDouble": 0.073
+    },
+    {
+      "id": 208,
+      "formId": "steelix",
+      "nameZh": "大鋼蛇",
+      "nameEn": "Steelix",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/steelix.png",
+      "usageRankSingle": 242,
+      "usageRankDouble": 255,
+      "usagePercentSingle": 0.08439,
+      "usagePercentDouble": 0.06396
+    },
+    {
+      "id": 411,
+      "formId": "bastiodon",
+      "nameZh": "護城龍",
+      "nameEn": "Bastiodon",
+      "baseSpeed": 30,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/bastiodon.png",
+      "usageRankSingle": 283,
+      "usageRankDouble": 268,
+      "usagePercentSingle": 0.0275,
+      "usagePercentDouble": 0.03935
+    }
+  ],
+  "32": [
+    {
+      "id": 618,
+      "formId": "stunfisk",
+      "nameZh": "泥巴魚",
+      "nameEn": "Stunfisk",
+      "baseSpeed": 32,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/stunfisk.png",
+      "usageRankSingle": 262,
+      "usageRankDouble": 277,
+      "usagePercentSingle": 0.05428,
+      "usagePercentDouble": 0.03063
+    },
+    {
+      "id": 618,
+      "formId": "stunfisk-galar",
+      "nameZh": "泥巴魚 (伽勒爾)",
+      "nameEn": "Stunfisk-Galar",
+      "baseSpeed": 32,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/stunfisk-galar.png",
+      "usageRankSingle": 250,
+      "usageRankDouble": 285,
+      "usagePercentSingle": 0.07508,
+      "usagePercentDouble": 0.02352
+    }
+  ],
+  "33": [
+    {
+      "id": 740,
+      "formId": "crabominable-mega",
+      "nameZh": "超級好勝毛蟹",
+      "nameEn": "Crabominable-Mega",
+      "baseSpeed": 33,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/crabominable-mega.png",
+      "usageRankSingle": 188,
+      "usageRankDouble": 122,
+      "usagePercentSingle": 0.20962,
+      "usagePercentDouble": 0.57296
+    }
+  ],
+  "35": [
+    {
+      "id": 748,
+      "formId": "toxapex",
+      "nameZh": "超壞星",
+      "nameEn": "Toxapex",
+      "baseSpeed": 35,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/toxapex.png",
+      "usageRankSingle": 22,
+      "usageRankDouble": 50,
+      "usagePercentSingle": 6.99879,
+      "usagePercentDouble": 3.06483
+    },
+    {
+      "id": 750,
+      "formId": "mudsdale",
+      "nameZh": "重泥挽馬",
+      "nameEn": "Mudsdale",
+      "baseSpeed": 35,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/mudsdale.png",
+      "usageRankSingle": 208,
+      "usageRankDouble": 116,
+      "usagePercentSingle": 0.16008,
+      "usagePercentDouble": 0.65137
+    },
+    {
+      "id": 442,
+      "formId": "spiritomb",
+      "nameZh": "花岩怪",
+      "nameEn": "Spiritomb",
+      "baseSpeed": 35,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/spiritomb.png",
+      "usageRankSingle": 203,
+      "usageRankDouble": 185,
+      "usagePercentSingle": 0.18344,
+      "usagePercentDouble": 0.25309
+    },
+    {
+      "id": 934,
+      "formId": "garganacl",
+      "nameZh": "鹽石巨靈",
+      "nameEn": "Garganacl",
+      "baseSpeed": 35,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/garganacl.png",
+      "usageRankSingle": 152,
+      "usageRankDouble": 204,
+      "usagePercentSingle": 0.44007,
+      "usagePercentDouble": 0.18051
+    }
+  ],
+  "36": [
+    {
+      "id": 780,
+      "formId": "drampa-mega",
+      "nameZh": "超級老翁龍",
+      "nameEn": "Drampa-Mega",
+      "baseSpeed": 36,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/drampa-mega.png",
+      "usageRankSingle": 220,
+      "usageRankDouble": 111,
+      "usagePercentSingle": 0.12966,
+      "usagePercentDouble": 0.66094
+    },
+    {
+      "id": 780,
+      "formId": "drampa",
+      "nameZh": "老翁龍",
+      "nameEn": "Drampa",
+      "baseSpeed": 36,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/drampa.png",
+      "usageRankSingle": 267,
+      "usageRankDouble": 159,
+      "usagePercentSingle": 0.04933,
+      "usagePercentDouble": 0.36279
+    }
+  ],
+  "38": [
+    {
+      "id": 713,
+      "formId": "avalugg-hisui",
+      "nameZh": "冰岩怪 (洗翠)",
+      "nameEn": "Avalugg-Hisui",
+      "baseSpeed": 38,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/avalugg-hisui.png",
+      "usageRankSingle": 239,
+      "usageRankDouble": 213,
+      "usagePercentSingle": 0.09486,
+      "usagePercentDouble": 0.13878
+    }
+  ],
+  "40": [
+    {
+      "id": 464,
+      "formId": "rhyperior",
+      "nameZh": "超甲狂犀",
+      "nameEn": "Rhyperior",
+      "baseSpeed": 40,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/rhyperior.png",
+      "usageRankSingle": 199,
+      "usageRankDouble": 168,
+      "usagePercentSingle": 0.19539,
+      "usagePercentDouble": 0.3079
+    },
+    {
+      "id": 168,
+      "formId": "ariados",
+      "nameZh": "阿利多斯",
+      "nameEn": "Ariados",
+      "baseSpeed": 40,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/ariados.png",
+      "usageRankSingle": 230,
+      "usageRankDouble": 222,
+      "usagePercentSingle": 0.10774,
+      "usagePercentDouble": 0.10503
+    },
+    {
+      "id": 323,
+      "formId": "camerupt",
+      "nameZh": "噴火駝",
+      "nameEn": "Camerupt",
+      "baseSpeed": 40,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/camerupt.png",
+      "usageRankSingle": 294,
+      "usageRankDouble": 286,
+      "usagePercentSingle": 0.01433,
+      "usagePercentDouble": 0.02177
+    },
+    {
+      "id": 205,
+      "formId": "forretress",
+      "nameZh": "佛烈托斯",
+      "nameEn": "Forretress",
+      "baseSpeed": 40,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/forretress.png",
+      "usageRankSingle": 182,
+      "usageRankDouble": 294,
+      "usagePercentSingle": 0.26,
+      "usagePercentDouble": 0.01533
+    }
+  ],
+  "42": [
+    {
+      "id": 752,
+      "formId": "araquanid",
+      "nameZh": "滴蛛霸",
+      "nameEn": "Araquanid",
+      "baseSpeed": 42,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/araquanid.png",
+      "usageRankSingle": 79,
+      "usageRankDouble": 83,
+      "usagePercentSingle": 1.77712,
+      "usagePercentDouble": 1.1642
+    }
+  ],
+  "43": [
+    {
+      "id": 740,
+      "formId": "crabominable",
+      "nameZh": "好勝毛蟹",
+      "nameEn": "Crabominable",
+      "baseSpeed": 43,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/crabominable.png",
+      "usageRankSingle": 270,
+      "usageRankDouble": 274,
+      "usagePercentSingle": 0.04085,
+      "usagePercentDouble": 0.03566
+    }
+  ],
+  "44": [
+    {
+      "id": 652,
+      "formId": "chesnaught-mega",
+      "nameZh": "超級布里卡隆",
+      "nameEn": "Chesnaught-Mega",
+      "baseSpeed": 44,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/chesnaught-mega.png",
+      "usageRankSingle": 117,
+      "usageRankDouble": 117,
+      "usagePercentSingle": 0.7735,
+      "usagePercentDouble": 0.64103
+    },
+    {
+      "id": 691,
+      "formId": "dragalge-mega",
+      "nameZh": "超級毒藻龍",
+      "nameEn": "Dragalge-Mega",
+      "baseSpeed": 44,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/dragalge-mega.gif",
+      "usageRankSingle": 57,
+      "usageRankDouble": 118,
+      "usagePercentSingle": 3.29378,
+      "usagePercentDouble": 0.63672
+    },
+    {
+      "id": 1019,
+      "formId": "hydrapple",
+      "nameZh": "蜜集大蛇",
+      "nameEn": "Hydrapple",
+      "baseSpeed": 44,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/hydrapple.png",
+      "usageRankSingle": 145,
+      "usageRankDouble": 174,
+      "usagePercentSingle": 0.47879,
+      "usagePercentDouble": 0.29538
+    },
+    {
+      "id": 691,
+      "formId": "dragalge",
+      "nameZh": "毒藻龍",
+      "nameEn": "Dragalge",
+      "baseSpeed": 44,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/dragalge.png",
+      "usageRankSingle": 258,
+      "usageRankDouble": 217,
+      "usagePercentSingle": 0.06431,
+      "usagePercentDouble": 0.12923
+    }
+  ],
+  "45": [
+    {
+      "id": 939,
+      "formId": "bellibolt",
+      "nameZh": "電肚蛙",
+      "nameEn": "Bellibolt",
+      "baseSpeed": 45,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/bellibolt.png",
+      "usageRankSingle": 40,
+      "usageRankDouble": 114,
+      "usagePercentSingle": 4.79057,
+      "usagePercentDouble": 0.65284
+    },
+    {
+      "id": 534,
+      "formId": "conkeldurr",
+      "nameZh": "修建老匠",
+      "nameEn": "Conkeldurr",
+      "baseSpeed": 45,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/conkeldurr.png",
+      "usageRankSingle": 109,
+      "usageRankDouble": 136,
+      "usagePercentSingle": 0.85593,
+      "usagePercentDouble": 0.46521
+    },
+    {
+      "id": 181,
+      "formId": "ampharos-mega",
+      "nameZh": "超級電龍",
+      "nameEn": "Ampharos-Mega",
+      "baseSpeed": 45,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/ampharos-mega.png",
+      "usageRankSingle": 196,
+      "usageRankDouble": 144,
+      "usagePercentSingle": 0.20147,
+      "usagePercentDouble": 0.41697
+    }
+  ],
+  "47": [
+    {
+      "id": 450,
+      "formId": "hippowdon",
+      "nameZh": "河馬獸",
+      "nameEn": "Hippowdon",
+      "baseSpeed": 47,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/hippowdon.png",
       "usageRankSingle": 7,
-      "usageRankDouble": 7
+      "usageRankDouble": 110,
+      "usagePercentSingle": 14.55816,
+      "usagePercentDouble": 0.66504
+    }
+  ],
+  "48": [
+    {
+      "id": 132,
+      "formId": "ditto",
+      "nameZh": "百變怪",
+      "nameEn": "Ditto",
+      "baseSpeed": 48,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/ditto.png",
+      "usageRankSingle": 60,
+      "usageRankDouble": 133,
+      "usagePercentSingle": 3.03996,
+      "usagePercentDouble": 0.48865
     }
   ],
   "50": [
     {
-      "id": 992,
-      "formId": "iron-hands",
-      "nameZh": "鐵臂膀",
-      "nameEn": "iron-hands",
+      "id": 983,
+      "formId": "kingambit",
+      "nameZh": "仆刀將軍",
+      "nameEn": "Kingambit",
       "baseSpeed": 50,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/992.png",
-      "usageRankSingle": 11,
-      "usageRankDouble": 11
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/kingambit.png",
+      "usageRankSingle": 13,
+      "usageRankDouble": 1,
+      "usagePercentSingle": 9.59602,
+      "usagePercentDouble": 32.50878
     },
     {
-      "id": 10193,
-      "formId": "calyrex-ice",
-      "nameZh": "蕾冠王 (白馬)",
-      "nameEn": "calyrex-ice",
+      "id": 302,
+      "formId": "sableye",
+      "nameZh": "勾魂眼",
+      "nameEn": "Sableye",
       "baseSpeed": 50,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10193.png",
-      "usageRankSingle": 15,
-      "usageRankDouble": 15
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sableye.png",
+      "usageRankSingle": 99,
+      "usageRankDouble": 33,
+      "usagePercentSingle": 1.21008,
+      "usagePercentDouble": 4.67932
+    },
+    {
+      "id": 303,
+      "formId": "mawile-mega",
+      "nameZh": "超級大嘴娃",
+      "nameEn": "Mawile-Mega",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/mawile-mega.png",
+      "usageRankSingle": 63,
+      "usageRankDouble": 35,
+      "usagePercentSingle": 2.93034,
+      "usagePercentDouble": 4.34767
+    },
+    {
+      "id": 45,
+      "formId": "vileplume",
+      "nameZh": "霸王花",
+      "nameEn": "Vileplume",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/vileplume.png",
+      "usageRankSingle": 105,
+      "usageRankDouble": 104,
+      "usagePercentSingle": 1.01589,
+      "usagePercentDouble": 0.789
+    },
+    {
+      "id": 184,
+      "formId": "azumarill",
+      "nameZh": "瑪力露麗",
+      "nameEn": "Azumarill",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/azumarill.png",
+      "usageRankSingle": 68,
+      "usageRankDouble": 105,
+      "usagePercentSingle": 2.44959,
+      "usagePercentDouble": 0.74505
+    },
+    {
+      "id": 306,
+      "formId": "aggron-mega",
+      "nameZh": "超級波士可多拉",
+      "nameEn": "Aggron-Mega",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/aggron-mega.png",
+      "usageRankSingle": 138,
+      "usageRankDouble": 121,
+      "usagePercentSingle": 0.53887,
+      "usagePercentDouble": 0.58597
+    },
+    {
+      "id": 531,
+      "formId": "audino",
+      "nameZh": "差不多娃娃",
+      "nameEn": "Audino",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/audino.png",
+      "usageRankSingle": 184,
+      "usageRankDouble": 146,
+      "usagePercentSingle": 0.24974,
+      "usagePercentDouble": 0.41454
+    },
+    {
+      "id": 531,
+      "formId": "audino-mega",
+      "nameZh": "超級差不多娃娃",
+      "nameEn": "Audino-Mega",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/audino-mega.png",
+      "usageRankSingle": 215,
+      "usageRankDouble": 208,
+      "usagePercentSingle": 0.1427,
+      "usagePercentDouble": 0.17003
+    },
+    {
+      "id": 614,
+      "formId": "beartic",
+      "nameZh": "凍原熊",
+      "nameEn": "Beartic",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/beartic.png",
+      "usageRankSingle": 248,
+      "usageRankDouble": 223,
+      "usagePercentSingle": 0.07745,
+      "usagePercentDouble": 0.10452
+    },
+    {
+      "id": 604,
+      "formId": "eelektross",
+      "nameZh": "麻麻鰻魚王",
+      "nameEn": "Eelektross",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/eelektross.png",
+      "usageRankSingle": 217,
+      "usageRankDouble": 272,
+      "usagePercentSingle": 0.14101,
+      "usagePercentDouble": 0.03581
+    },
+    {
+      "id": 306,
+      "formId": "aggron",
+      "nameZh": "波士可多拉",
+      "nameEn": "Aggron",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/aggron.png",
+      "usageRankSingle": 218,
+      "usageRankDouble": 290,
+      "usagePercentSingle": 0.13644,
+      "usagePercentDouble": 0.01906
+    },
+    {
+      "id": 303,
+      "formId": "mawile",
+      "nameZh": "大嘴娃",
+      "nameEn": "Mawile",
+      "baseSpeed": 50,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/mawile.png",
+      "usageRankSingle": 309,
+      "usageRankDouble": 300,
+      "usagePercentSingle": 0.0012,
+      "usagePercentDouble": 0.01056
+    }
+  ],
+  "54": [
+    {
+      "id": 711,
+      "formId": "gourgeist-super",
+      "nameZh": "南瓜怪人 (特大體型)",
+      "nameEn": "Gourgeist-Super",
+      "baseSpeed": 54,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gourgeist-super.png",
+      "usageRankSingle": 236,
+      "usageRankDouble": 212,
+      "usagePercentSingle": 0.09883,
+      "usagePercentDouble": 0.14291
+    }
+  ],
+  "55": [
+    {
+      "id": 623,
+      "formId": "golurk-mega",
+      "nameZh": "超級泥偶巨人",
+      "nameEn": "Golurk-Mega",
+      "baseSpeed": 55,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/golurk-mega.png",
+      "usageRankSingle": 222,
+      "usageRankDouble": 125,
+      "usagePercentSingle": 0.12066,
+      "usagePercentDouble": 0.53997
+    },
+    {
+      "id": 68,
+      "formId": "machamp",
+      "nameZh": "怪力",
+      "nameEn": "Machamp",
+      "baseSpeed": 55,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/machamp.png",
+      "usageRankSingle": 171,
+      "usageRankDouble": 194,
+      "usagePercentSingle": 0.3171,
+      "usagePercentDouble": 0.23161
+    },
+    {
+      "id": 181,
+      "formId": "ampharos",
+      "nameZh": "電龍",
+      "nameEn": "Ampharos",
+      "baseSpeed": 55,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/ampharos.png",
+      "usageRankSingle": 299,
+      "usageRankDouble": 234,
+      "usagePercentSingle": 0.00969,
+      "usagePercentDouble": 0.09392
+    },
+    {
+      "id": 623,
+      "formId": "golurk",
+      "nameZh": "泥偶巨人",
+      "nameEn": "Golurk",
+      "baseSpeed": 55,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/golurk.png",
+      "usageRankSingle": 273,
+      "usageRankDouble": 240,
+      "usagePercentSingle": 0.03818,
+      "usagePercentDouble": 0.08304
+    }
+  ],
+  "56": [
+    {
+      "id": 389,
+      "formId": "torterra",
+      "nameZh": "土台龜",
+      "nameEn": "Torterra",
+      "baseSpeed": 56,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/torterra.png",
+      "usageRankSingle": 176,
+      "usageRankDouble": 186,
+      "usagePercentSingle": 0.30418,
+      "usagePercentDouble": 0.24851
+    },
+    {
+      "id": 709,
+      "formId": "trevenant",
+      "nameZh": "朽木妖",
+      "nameEn": "Trevenant",
+      "baseSpeed": 56,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/trevenant.png",
+      "usageRankSingle": 252,
+      "usageRankDouble": 231,
+      "usagePercentSingle": 0.07306,
+      "usagePercentDouble": 0.09652
+    }
+  ],
+  "58": [
+    {
+      "id": 560,
+      "formId": "scrafty",
+      "nameZh": "頭巾混混",
+      "nameEn": "Scrafty",
+      "baseSpeed": 58,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/scrafty.png",
+      "usageRankSingle": 295,
+      "usageRankDouble": 165,
+      "usagePercentSingle": 0.01261,
+      "usagePercentDouble": 0.32532
+    },
+    {
+      "id": 699,
+      "formId": "aurorus",
+      "nameZh": "冰雪巨龍",
+      "nameEn": "Aurorus",
+      "baseSpeed": 58,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/aurorus.png",
+      "usageRankSingle": 192,
+      "usageRankDouble": 189,
+      "usagePercentSingle": 0.20422,
+      "usagePercentDouble": 0.23829
+    },
+    {
+      "id": 409,
+      "formId": "rampardos",
+      "nameZh": "戰槌龍",
+      "nameEn": "Rampardos",
+      "baseSpeed": 58,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/rampardos.png",
+      "usageRankSingle": 281,
+      "usageRankDouble": 201,
+      "usagePercentSingle": 0.03081,
+      "usagePercentDouble": 0.19612
+    },
+    {
+      "id": 675,
+      "formId": "pangoro",
+      "nameZh": "流氓熊貓",
+      "nameEn": "Pangoro",
+      "baseSpeed": 58,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/pangoro.png",
+      "usageRankSingle": 161,
+      "usageRankDouble": 236,
+      "usagePercentSingle": 0.41389,
+      "usagePercentDouble": 0.09168
+    }
+  ],
+  "59": [
+    {
+      "id": 693,
+      "formId": "clawitzer",
+      "nameZh": "鋼炮臂蝦",
+      "nameEn": "Clawitzer",
+      "baseSpeed": 59,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/clawitzer.png",
+      "usageRankSingle": 259,
+      "usageRankDouble": 181,
+      "usagePercentSingle": 0.06184,
+      "usagePercentDouble": 0.26833
     }
   ],
   "60": [
@@ -38,23 +888,1299 @@
       "id": 727,
       "formId": "incineroar",
       "nameZh": "熾焰咆哮虎",
-      "nameEn": "incineroar",
+      "nameEn": "Incineroar",
       "baseSpeed": 60,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/727.png",
-      "usageRankSingle": 2,
-      "usageRankDouble": 2
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/incineroar.png",
+      "usageRankSingle": 85,
+      "usageRankDouble": 4,
+      "usagePercentSingle": 1.60031,
+      "usagePercentDouble": 24.76948
+    },
+    {
+      "id": 981,
+      "formId": "farigiraf",
+      "nameZh": "奇麒麟",
+      "nameEn": "Farigiraf",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/farigiraf.png",
+      "usageRankSingle": 101,
+      "usageRankDouble": 7,
+      "usagePercentSingle": 1.20483,
+      "usagePercentDouble": 22.88432
+    },
+    {
+      "id": 700,
+      "formId": "sylveon",
+      "nameZh": "仙子伊布",
+      "nameEn": "Sylveon",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sylveon.png",
+      "usageRankSingle": 39,
+      "usageRankDouble": 11,
+      "usagePercentSingle": 4.80744,
+      "usagePercentDouble": 14.70336
+    },
+    {
+      "id": 861,
+      "formId": "grimmsnarl",
+      "nameZh": "長毛巨魔",
+      "nameEn": "Grimmsnarl",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/grimmsnarl.png",
+      "usageRankSingle": 38,
+      "usageRankDouble": 19,
+      "usagePercentSingle": 4.83591,
+      "usagePercentDouble": 7.96642
+    },
+    {
+      "id": 730,
+      "formId": "primarina",
+      "nameZh": "西獅海壬",
+      "nameEn": "Primarina",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/primarina.png",
+      "usageRankSingle": 4,
+      "usageRankDouble": 47,
+      "usagePercentSingle": 19.20686,
+      "usagePercentDouble": 3.49365
+    },
+    {
+      "id": 36,
+      "formId": "clefable",
+      "nameZh": "皮可西",
+      "nameEn": "Clefable",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/clefable.png",
+      "usageRankSingle": 65,
+      "usageRankDouble": 73,
+      "usagePercentSingle": 2.63491,
+      "usagePercentDouble": 1.39348
+    },
+    {
+      "id": 681,
+      "formId": "aegislash",
+      "nameZh": "堅盾劍怪",
+      "nameEn": "Aegislash",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/aegislash.png",
+      "usageRankSingle": 24,
+      "usageRankDouble": 78,
+      "usagePercentSingle": 6.54707,
+      "usagePercentDouble": 1.22956
+    },
+    {
+      "id": 765,
+      "formId": "oranguru",
+      "nameZh": "智揮猩",
+      "nameEn": "Oranguru",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/oranguru.png",
+      "usageRankSingle": 289,
+      "usageRankDouble": 84,
+      "usagePercentSingle": 0.02393,
+      "usagePercentDouble": 1.14369
+    },
+    {
+      "id": 260,
+      "formId": "swampert",
+      "nameZh": "巨沼怪",
+      "nameEn": "Swampert",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/swampert.png",
+      "usageRankSingle": 100,
+      "usageRankDouble": 88,
+      "usagePercentSingle": 1.20544,
+      "usagePercentDouble": 1.01916
+    },
+    {
+      "id": 724,
+      "formId": "decidueye-hisui",
+      "nameZh": "狙射樹梟 (洗翠)",
+      "nameEn": "Decidueye-Hisui",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/decidueye-hisui.png",
+      "usageRankSingle": 140,
+      "usageRankDouble": 120,
+      "usagePercentSingle": 0.52626,
+      "usagePercentDouble": 0.59718
+    },
+    {
+      "id": 395,
+      "formId": "empoleon",
+      "nameZh": "帝王拿波",
+      "nameEn": "Empoleon",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/empoleon.png",
+      "usageRankSingle": 112,
+      "usageRankDouble": 130,
+      "usagePercentSingle": 0.84119,
+      "usagePercentDouble": 0.50323
+    },
+    {
+      "id": 706,
+      "formId": "goodra-hisui",
+      "nameZh": "黏美龍 (洗翠)",
+      "nameEn": "Goodra-Hisui",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/goodra-hisui.png",
+      "usageRankSingle": 116,
+      "usageRankDouble": 138,
+      "usagePercentSingle": 0.78652,
+      "usagePercentDouble": 0.46062
+    },
+    {
+      "id": 733,
+      "formId": "toucannon",
+      "nameZh": "銃嘴大鳥",
+      "nameEn": "Toucannon",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/toucannon.png",
+      "usageRankSingle": 175,
+      "usageRankDouble": 229,
+      "usagePercentSingle": 0.30746,
+      "usagePercentDouble": 0.09723
+    },
+    {
+      "id": 460,
+      "formId": "abomasnow",
+      "nameZh": "暴雪王",
+      "nameEn": "Abomasnow",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/abomasnow.png",
+      "usageRankSingle": 189,
+      "usageRankDouble": 253,
+      "usagePercentSingle": 0.20936,
+      "usagePercentDouble": 0.06589
+    },
+    {
+      "id": 681,
+      "formId": "aegislash-blade",
+      "nameZh": "堅盾劍怪 (刀劍形態)",
+      "nameEn": "Aegislash-Blade",
+      "baseSpeed": 60,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/aegislash-blade.png",
+      "usageRankSingle": 999,
+      "usageRankDouble": 999,
+      "usagePercentSingle": 0,
+      "usagePercentDouble": 0
+    }
+  ],
+  "61": [
+    {
+      "id": 248,
+      "formId": "tyranitar",
+      "nameZh": "班基拉斯",
+      "nameEn": "Tyranitar",
+      "baseSpeed": 61,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tyranitar.png",
+      "usageRankSingle": 69,
+      "usageRankDouble": 36,
+      "usagePercentSingle": 2.4413,
+      "usagePercentDouble": 4.34346
+    }
+  ],
+  "62": [
+    {
+      "id": 545,
+      "formId": "scolipede-mega",
+      "nameZh": "超級蜈蚣王",
+      "nameEn": "Scolipede-Mega",
+      "baseSpeed": 62,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/scolipede-mega.gif",
+      "usageRankSingle": 71,
+      "usageRankDouble": 164,
+      "usagePercentSingle": 2.3811,
+      "usagePercentDouble": 0.32547
+    }
+  ],
+  "64": [
+    {
+      "id": 869,
+      "formId": "alcremie",
+      "nameZh": "霜奶仙",
+      "nameEn": "Alcremie",
+      "baseSpeed": 64,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/alcremie.png",
+      "usageRankSingle": 229,
+      "usageRankDouble": 166,
+      "usagePercentSingle": 0.11309,
+      "usagePercentDouble": 0.31655
+    },
+    {
+      "id": 652,
+      "formId": "chesnaught",
+      "nameZh": "布里卡隆",
+      "nameEn": "Chesnaught",
+      "baseSpeed": 64,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/chesnaught.png",
+      "usageRankSingle": 245,
+      "usageRankDouble": 221,
+      "usagePercentSingle": 0.08339,
+      "usagePercentDouble": 0.11322
+    }
+  ],
+  "65": [
+    {
+      "id": 279,
+      "formId": "pelipper",
+      "nameZh": "大嘴鷗",
+      "nameEn": "Pelipper",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/pelipper.png",
+      "usageRankSingle": 32,
+      "usageRankDouble": 13,
+      "usagePercentSingle": 5.61376,
+      "usagePercentDouble": 10.80167
+    },
+    {
+      "id": 212,
+      "formId": "scizor",
+      "nameZh": "巨鉗螳螂",
+      "nameEn": "Scizor",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/scizor.png",
+      "usageRankSingle": 47,
+      "usageRankDouble": 59,
+      "usagePercentSingle": 4.01906,
+      "usagePercentDouble": 2.20528
+    },
+    {
+      "id": 471,
+      "formId": "glaceon",
+      "nameZh": "冰伊布",
+      "nameEn": "Glaceon",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/glaceon.png",
+      "usageRankSingle": 141,
+      "usageRankDouble": 124,
+      "usagePercentSingle": 0.51766,
+      "usagePercentDouble": 0.56578
+    },
+    {
+      "id": 197,
+      "formId": "umbreon",
+      "nameZh": "月亮伊布",
+      "nameEn": "Umbreon",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/umbreon.png",
+      "usageRankSingle": 20,
+      "usageRankDouble": 127,
+      "usagePercentSingle": 7.12322,
+      "usagePercentDouble": 0.53458
+    },
+    {
+      "id": 134,
+      "formId": "vaporeon",
+      "nameZh": "水伊布",
+      "nameEn": "Vaporeon",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/vaporeon.png",
+      "usageRankSingle": 88,
+      "usageRankDouble": 142,
+      "usagePercentSingle": 1.49395,
+      "usagePercentDouble": 0.42346
+    },
+    {
+      "id": 899,
+      "formId": "wyrdeer",
+      "nameZh": "詭角鹿",
+      "nameEn": "Wyrdeer",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/wyrdeer.png",
+      "usageRankSingle": 274,
+      "usageRankDouble": 154,
+      "usagePercentSingle": 0.03784,
+      "usagePercentDouble": 0.3884
+    },
+    {
+      "id": 968,
+      "formId": "orthworm",
+      "nameZh": "拖拖蚓",
+      "nameEn": "Orthworm",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/orthworm.png",
+      "usageRankSingle": 80,
+      "usageRankDouble": 170,
+      "usagePercentSingle": 1.76256,
+      "usagePercentDouble": 0.30639
+    },
+    {
+      "id": 358,
+      "formId": "chimecho-mega",
+      "nameZh": "超級風鈴鈴",
+      "nameEn": "Chimecho-Mega",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/chimecho-mega.png",
+      "usageRankSingle": 163,
+      "usageRankDouble": 195,
+      "usagePercentSingle": 0.4018,
+      "usagePercentDouble": 0.21609
+    },
+    {
+      "id": 136,
+      "formId": "flareon",
+      "nameZh": "火伊布",
+      "nameEn": "Flareon",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/flareon.png",
+      "usageRankSingle": 151,
+      "usageRankDouble": 275,
+      "usagePercentSingle": 0.47436,
+      "usagePercentDouble": 0.0352
+    },
+    {
+      "id": 500,
+      "formId": "emboar",
+      "nameZh": "炎武王",
+      "nameEn": "Emboar",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/emboar.png",
+      "usageRankSingle": 290,
+      "usageRankDouble": 281,
+      "usagePercentSingle": 0.0217,
+      "usagePercentDouble": 0.02698
+    },
+    {
+      "id": 358,
+      "formId": "chimecho",
+      "nameZh": "風鈴鈴",
+      "nameEn": "Chimecho",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/chimecho.png",
+      "usageRankSingle": 301,
+      "usageRankDouble": 291,
+      "usagePercentSingle": 0.00878,
+      "usagePercentDouble": 0.01816
+    },
+    {
+      "id": 354,
+      "formId": "banette",
+      "nameZh": "詛咒娃娃",
+      "nameEn": "Banette",
+      "baseSpeed": 65,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/banette.png",
+      "usageRankSingle": 291,
+      "usageRankDouble": 306,
+      "usagePercentSingle": 0.02053,
+      "usagePercentDouble": 0.00377
+    }
+  ],
+  "66": [
+    {
+      "id": 911,
+      "formId": "skeledirge",
+      "nameZh": "骨紋巨聲鱷",
+      "nameEn": "Skeledirge",
+      "baseSpeed": 66,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/skeledirge.png",
+      "usageRankSingle": 45,
+      "usageRankDouble": 179,
+      "usagePercentSingle": 4.06444,
+      "usagePercentDouble": 0.27256
+    }
+  ],
+  "67": [
+    {
+      "id": 823,
+      "formId": "corviknight",
+      "nameZh": "鋼鎧鴉",
+      "nameEn": "Corviknight",
+      "baseSpeed": 67,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/corviknight.png",
+      "usageRankSingle": 6,
+      "usageRankDouble": 43,
+      "usagePercentSingle": 15.53386,
+      "usagePercentDouble": 3.71138
+    }
+  ],
+  "68": [
+    {
+      "id": 560,
+      "formId": "scrafty-mega",
+      "nameZh": "超級頭巾混混",
+      "nameEn": "Scrafty-Mega",
+      "baseSpeed": 68,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/scrafty-mega.gif",
+      "usageRankSingle": 150,
+      "usageRankDouble": 71,
+      "usagePercentSingle": 0.47497,
+      "usagePercentDouble": 1.44152
+    },
+    {
+      "id": 972,
+      "formId": "houndstone",
+      "nameZh": "墓揚犬",
+      "nameEn": "Houndstone",
+      "baseSpeed": 68,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/houndstone.png",
+      "usageRankSingle": 166,
+      "usageRankDouble": 103,
+      "usagePercentSingle": 0.36664,
+      "usagePercentDouble": 0.79748
+    },
+    {
+      "id": 689,
+      "formId": "barbaracle",
+      "nameZh": "龜足巨鎧",
+      "nameEn": "Barbaracle",
+      "baseSpeed": 68,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/barbaracle.png",
+      "usageRankSingle": 272,
+      "usageRankDouble": 288,
+      "usagePercentSingle": 0.03828,
+      "usagePercentDouble": 0.01997
+    }
+  ],
+  "69": [
+    {
+      "id": 711,
+      "formId": "gourgeist-large",
+      "nameZh": "南瓜怪人 (大體型)",
+      "nameEn": "Gourgeist-Large",
+      "baseSpeed": 69,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gourgeist-large.png",
+      "usageRankSingle": 302,
+      "usageRankDouble": 304,
+      "usagePercentSingle": 0.00802,
+      "usagePercentDouble": 0.00769
+    }
+  ],
+  "70": [
+    {
+      "id": 1013,
+      "formId": "sinistcha",
+      "nameZh": "來悲粗茶",
+      "nameEn": "Sinistcha",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sinistcha.png",
+      "usageRankSingle": 110,
+      "usageRankDouble": 2,
+      "usagePercentSingle": 0.84932,
+      "usagePercentDouble": 25.32975
+    },
+    {
+      "id": 260,
+      "formId": "swampert-mega",
+      "nameZh": "超級巨沼怪",
+      "nameEn": "Swampert-Mega",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/swampert-mega.png",
+      "usageRankSingle": 41,
+      "usageRankDouble": 24,
+      "usagePercentSingle": 4.52157,
+      "usagePercentDouble": 6.53097
+    },
+    {
+      "id": 186,
+      "formId": "politoed",
+      "nameZh": "蚊香蛙皇",
+      "nameEn": "Politoed",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/politoed.png",
+      "usageRankSingle": 120,
+      "usageRankDouble": 41,
+      "usagePercentSingle": 0.74359,
+      "usagePercentDouble": 3.81467
+    },
+    {
+      "id": 376,
+      "formId": "metagross",
+      "nameZh": "巨金怪",
+      "nameEn": "Metagross",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/metagross.png",
+      "usageRankSingle": 186,
+      "usageRankDouble": 143,
+      "usagePercentSingle": 0.23006,
+      "usagePercentDouble": 0.4202
+    },
+    {
+      "id": 36,
+      "formId": "clefable-mega",
+      "nameZh": "超級皮可西",
+      "nameEn": "Clefable-Mega",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/clefable-mega.png",
+      "usageRankSingle": 48,
+      "usageRankDouble": 147,
+      "usagePercentSingle": 3.87259,
+      "usagePercentDouble": 0.41337
+    },
+    {
+      "id": 866,
+      "formId": "mr-rime",
+      "nameZh": "踏冰人偶",
+      "nameEn": "Mr. Rime",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/mrrime.png",
+      "usageRankSingle": 265,
+      "usageRankDouble": 173,
+      "usagePercentSingle": 0.05175,
+      "usagePercentDouble": 0.29785
+    },
+    {
+      "id": 71,
+      "formId": "victreebel-mega",
+      "nameZh": "超級大食花",
+      "nameEn": "Victreebel-Mega",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/victreebel-mega.png",
+      "usageRankSingle": 70,
+      "usageRankDouble": 203,
+      "usagePercentSingle": 2.39264,
+      "usagePercentDouble": 0.18054
+    },
+    {
+      "id": 841,
+      "formId": "flapple",
+      "nameZh": "蘋裹龍",
+      "nameEn": "Flapple",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/flapple.png",
+      "usageRankSingle": 288,
+      "usageRankDouble": 230,
+      "usagePercentSingle": 0.02421,
+      "usagePercentDouble": 0.09669
+    },
+    {
+      "id": 405,
+      "formId": "luxray",
+      "nameZh": "倫琴貓",
+      "nameEn": "Luxray",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/luxray.png",
+      "usageRankSingle": 300,
+      "usageRankDouble": 241,
+      "usagePercentSingle": 0.00919,
+      "usagePercentDouble": 0.08217
+    },
+    {
+      "id": 855,
+      "formId": "polteageist",
+      "nameZh": "怖思壺",
+      "nameEn": "Polteageist",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/polteageist.png",
+      "usageRankSingle": 113,
+      "usageRankDouble": 251,
+      "usagePercentSingle": 0.83488,
+      "usagePercentDouble": 0.06978
+    },
+    {
+      "id": 227,
+      "formId": "skarmory",
+      "nameZh": "盔甲鳥",
+      "nameEn": "Skarmory",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/skarmory.png",
+      "usageRankSingle": 104,
+      "usageRankDouble": 261,
+      "usagePercentSingle": 1.04224,
+      "usagePercentDouble": 0.04918
+    },
+    {
+      "id": 724,
+      "formId": "decidueye",
+      "nameZh": "狙射樹梟",
+      "nameEn": "Decidueye",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/decidueye.png",
+      "usageRankSingle": 260,
+      "usageRankDouble": 265,
+      "usagePercentSingle": 0.05888,
+      "usagePercentDouble": 0.04412
+    },
+    {
+      "id": 351,
+      "formId": "castform",
+      "nameZh": "飄浮泡泡",
+      "nameEn": "Castform",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/castform.png",
+      "usageRankSingle": 244,
+      "usageRankDouble": 271,
+      "usagePercentSingle": 0.08384,
+      "usagePercentDouble": 0.03687
+    },
+    {
+      "id": 71,
+      "formId": "victreebel",
+      "nameZh": "大食花",
+      "nameEn": "Victreebel",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/victreebel.png",
+      "usageRankSingle": 204,
+      "usageRankDouble": 292,
+      "usagePercentSingle": 0.17153,
+      "usagePercentDouble": 0.01716
+    },
+    {
+      "id": 503,
+      "formId": "samurott",
+      "nameZh": "大劍鬼",
+      "nameEn": "Samurott",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/samurott.png",
+      "usageRankSingle": 241,
+      "usageRankDouble": 298,
+      "usagePercentSingle": 0.08642,
+      "usagePercentDouble": 0.01284
+    },
+    {
+      "id": 351,
+      "formId": "castform-sunny",
+      "nameZh": "飄浮泡泡 (太陽)",
+      "nameEn": "Castform-Sunny",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/castform-sunny.png",
+      "usageRankSingle": 999,
+      "usageRankDouble": 999,
+      "usagePercentSingle": 0,
+      "usagePercentDouble": 0
+    },
+    {
+      "id": 351,
+      "formId": "castform-rainy",
+      "nameZh": "飄浮泡泡 (雨水)",
+      "nameEn": "Castform-Rainy",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/castform-rainy.png",
+      "usageRankSingle": 999,
+      "usageRankDouble": 999,
+      "usagePercentSingle": 0,
+      "usagePercentDouble": 0
+    },
+    {
+      "id": 351,
+      "formId": "castform-snowy",
+      "nameZh": "飄浮泡泡 (雪雲)",
+      "nameEn": "Castform-Snowy",
+      "baseSpeed": 70,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/castform-snowy.png",
+      "usageRankSingle": 999,
+      "usageRankDouble": 999,
+      "usagePercentSingle": 0,
+      "usagePercentDouble": 0
+    }
+  ],
+  "71": [
+    {
+      "id": 248,
+      "formId": "tyranitar-mega",
+      "nameZh": "超級班基拉斯",
+      "nameEn": "Tyranitar-Mega",
+      "baseSpeed": 71,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tyranitar-mega.png",
+      "usageRankSingle": 89,
+      "usageRankDouble": 23,
+      "usagePercentSingle": 1.45795,
+      "usagePercentDouble": 6.63884
+    },
+    {
+      "id": 697,
+      "formId": "tyrantrum",
+      "nameZh": "怪顎龍",
+      "nameEn": "Tyrantrum",
+      "baseSpeed": 71,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tyrantrum.png",
+      "usageRankSingle": 251,
+      "usageRankDouble": 175,
+      "usagePercentSingle": 0.07381,
+      "usagePercentDouble": 0.29464
+    },
+    {
+      "id": 844,
+      "formId": "sandaconda",
+      "nameZh": "沙螺蟒",
+      "nameEn": "Sandaconda",
+      "baseSpeed": 71,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sandaconda.png",
+      "usageRankSingle": 191,
+      "usageRankDouble": 249,
+      "usagePercentSingle": 0.20439,
+      "usagePercentDouble": 0.07256
+    }
+  ],
+  "72": [
+    {
+      "id": 763,
+      "formId": "tsareena",
+      "nameZh": "甜冷美后",
+      "nameEn": "Tsareena",
+      "baseSpeed": 72,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tsareena.png",
+      "usageRankSingle": 219,
+      "usageRankDouble": 46,
+      "usagePercentSingle": 0.13548,
+      "usagePercentDouble": 3.50282
+    },
+    {
+      "id": 685,
+      "formId": "slurpuff",
+      "nameZh": "胖甜妮",
+      "nameEn": "Slurpuff",
+      "baseSpeed": 72,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/slurpuff.png",
+      "usageRankSingle": 178,
+      "usageRankDouble": 283,
+      "usagePercentSingle": 0.28544,
+      "usagePercentDouble": 0.02641
+    }
+  ],
+  "73": [
+    {
+      "id": 687,
+      "formId": "malamar",
+      "nameZh": "烏賊王",
+      "nameEn": "Malamar",
+      "baseSpeed": 73,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/malamar.png",
+      "usageRankSingle": 122,
+      "usageRankDouble": 155,
+      "usagePercentSingle": 0.72853,
+      "usagePercentDouble": 0.38475
+    }
+  ],
+  "75": [
+    {
+      "id": 952,
+      "formId": "scovillain-mega",
+      "nameZh": "超級狠辣椒",
+      "nameEn": "Scovillain-Mega",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/scovillain-mega.png",
+      "usageRankSingle": 44,
+      "usageRankDouble": 38,
+      "usagePercentSingle": 4.08958,
+      "usagePercentDouble": 4.33517
+    },
+    {
+      "id": 212,
+      "formId": "scizor-mega",
+      "nameZh": "超級巨鉗螳螂",
+      "nameEn": "Scizor-Mega",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/scizor-mega.png",
+      "usageRankSingle": 35,
+      "usageRankDouble": 82,
+      "usagePercentSingle": 4.92434,
+      "usagePercentDouble": 1.16688
+    },
+    {
+      "id": 936,
+      "formId": "armarouge",
+      "nameZh": "紅蓮鎧騎",
+      "nameEn": "Armarouge",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/armarouge.png",
+      "usageRankSingle": 134,
+      "usageRankDouble": 102,
+      "usagePercentSingle": 0.58733,
+      "usagePercentDouble": 0.82107
+    },
+    {
+      "id": 354,
+      "formId": "banette-mega",
+      "nameZh": "超級詛咒娃娃",
+      "nameEn": "Banette-Mega",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/banette-mega.png",
+      "usageRankSingle": 52,
+      "usageRankDouble": 128,
+      "usagePercentSingle": 3.50785,
+      "usagePercentDouble": 0.53088
+    },
+    {
+      "id": 707,
+      "formId": "klefki",
+      "nameZh": "鑰圈兒",
+      "nameEn": "Klefki",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/klefki.png",
+      "usageRankSingle": 139,
+      "usageRankDouble": 132,
+      "usagePercentSingle": 0.5319,
+      "usagePercentDouble": 0.48939
+    },
+    {
+      "id": 214,
+      "formId": "heracross-mega",
+      "nameZh": "超級赫拉克羅斯",
+      "nameEn": "Heracross-Mega",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/heracross-mega.png",
+      "usageRankSingle": 127,
+      "usageRankDouble": 169,
+      "usagePercentSingle": 0.67483,
+      "usagePercentDouble": 0.30677
+    },
+    {
+      "id": 500,
+      "formId": "emboar-mega",
+      "nameZh": "超級炎武王",
+      "nameEn": "Emboar-Mega",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/emboar-mega.png",
+      "usageRankSingle": 197,
+      "usageRankDouble": 220,
+      "usagePercentSingle": 0.20119,
+      "usagePercentDouble": 0.11377
+    },
+    {
+      "id": 952,
+      "formId": "scovillain",
+      "nameZh": "狠辣椒",
+      "nameEn": "Scovillain",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/scovillain.png",
+      "usageRankSingle": 210,
+      "usageRankDouble": 244,
+      "usagePercentSingle": 0.15915,
+      "usagePercentDouble": 0.08054
+    },
+    {
+      "id": 671,
+      "formId": "florges",
+      "nameZh": "花潔夫人",
+      "nameEn": "Florges",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/florges.png",
+      "usageRankSingle": 232,
+      "usageRankDouble": 245,
+      "usagePercentSingle": 0.10419,
+      "usagePercentDouble": 0.07398
+    },
+    {
+      "id": 359,
+      "formId": "absol",
+      "nameZh": "阿勃梭魯",
+      "nameEn": "Absol",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/absol.png",
+      "usageRankSingle": 298,
+      "usageRankDouble": 262,
+      "usagePercentSingle": 0.01164,
+      "usagePercentDouble": 0.04597
+    },
+    {
+      "id": 569,
+      "formId": "garbodor",
+      "nameZh": "灰塵山",
+      "nameEn": "Garbodor",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/garbodor.png",
+      "usageRankSingle": 284,
+      "usageRankDouble": 302,
+      "usagePercentSingle": 0.02724,
+      "usagePercentDouble": 0.00973
+    },
+    {
+      "id": 870,
+      "formId": "falinks",
+      "nameZh": "列陣兵",
+      "nameEn": "Falinks",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/falinks.png",
+      "usageRankSingle": 296,
+      "usageRankDouble": 303,
+      "usagePercentSingle": 0.01233,
+      "usagePercentDouble": 0.00953
+    },
+    {
+      "id": 15,
+      "formId": "beedrill",
+      "nameZh": "大針蜂",
+      "nameEn": "Beedrill",
+      "baseSpeed": 75,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/beedrill.png",
+      "usageRankSingle": 310,
+      "usageRankDouble": 305,
+      "usagePercentSingle": 0.00075,
+      "usagePercentDouble": 0.00401
+    }
+  ],
+  "77": [
+    {
+      "id": 505,
+      "formId": "watchog",
+      "nameZh": "步哨鼠",
+      "nameEn": "Watchog",
+      "baseSpeed": 77,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/watchog.png",
+      "usageRankSingle": 247,
+      "usageRankDouble": 287,
+      "usagePercentSingle": 0.07999,
+      "usagePercentDouble": 0.02087
+    }
+  ],
+  "78": [
+    {
+      "id": 902,
+      "formId": "basculegion",
+      "nameZh": "幽尾玄魚",
+      "nameEn": "Basculegion",
+      "baseSpeed": 78,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/basculegion.png",
+      "usageRankSingle": 9,
+      "usageRankDouble": 5,
+      "usagePercentSingle": 12.73921,
+      "usagePercentDouble": 23.8447
+    },
+    {
+      "id": 9,
+      "formId": "blastoise-mega",
+      "nameZh": "超級水箭龜",
+      "nameEn": "Blastoise-Mega",
+      "baseSpeed": 78,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/blastoise-mega.png",
+      "usageRankSingle": 43,
+      "usageRankDouble": 25,
+      "usagePercentSingle": 4.13184,
+      "usagePercentDouble": 6.35721
+    },
+    {
+      "id": 902,
+      "formId": "basculegion-f",
+      "nameZh": "幽尾玄魚 (雌性)",
+      "nameEn": "Basculegion-F",
+      "baseSpeed": 78,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/basculegion-f.png",
+      "usageRankSingle": 167,
+      "usageRankDouble": 135,
+      "usagePercentSingle": 0.35289,
+      "usagePercentDouble": 0.47133
+    },
+    {
+      "id": 160,
+      "formId": "feraligatr-mega",
+      "nameZh": "超級大力鱷",
+      "nameEn": "Feraligatr-Mega",
+      "baseSpeed": 78,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/feraligatr-mega.png",
+      "usageRankSingle": 168,
+      "usageRankDouble": 137,
+      "usagePercentSingle": 0.34661,
+      "usagePercentDouble": 0.46148
+    },
+    {
+      "id": 9,
+      "formId": "blastoise",
+      "nameZh": "水箭龜",
+      "nameEn": "Blastoise",
+      "baseSpeed": 78,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/blastoise.png",
+      "usageRankSingle": 158,
+      "usageRankDouble": 180,
+      "usagePercentSingle": 0.4246,
+      "usagePercentDouble": 0.26919
+    },
+    {
+      "id": 160,
+      "formId": "feraligatr",
+      "nameZh": "大力鱷",
+      "nameEn": "Feraligatr",
+      "baseSpeed": 78,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/feraligatr.png",
+      "usageRankSingle": 179,
+      "usageRankDouble": 216,
+      "usagePercentSingle": 0.28501,
+      "usagePercentDouble": 0.13491
+    },
+    {
+      "id": 660,
+      "formId": "diggersby",
+      "nameZh": "掘地兔",
+      "nameEn": "Diggersby",
+      "baseSpeed": 78,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/diggersby.png",
+      "usageRankSingle": 126,
+      "usageRankDouble": 218,
+      "usagePercentSingle": 0.68236,
+      "usagePercentDouble": 0.12609
+    }
+  ],
+  "79": [
+    {
+      "id": 584,
+      "formId": "vanilluxe",
+      "nameZh": "雙倍多多冰",
+      "nameEn": "Vanilluxe",
+      "baseSpeed": 79,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/vanilluxe.png",
+      "usageRankSingle": 90,
+      "usageRankDouble": 80,
+      "usagePercentSingle": 1.43782,
+      "usagePercentDouble": 1.21513
     }
   ],
   "80": [
     {
+      "id": 3,
+      "formId": "venusaur",
+      "nameZh": "妙蛙花",
+      "nameEn": "Venusaur",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/venusaur.png",
+      "usageRankSingle": 108,
+      "usageRankDouble": 34,
+      "usagePercentSingle": 0.91392,
+      "usagePercentDouble": 4.57545
+    },
+    {
+      "id": 3,
+      "formId": "venusaur-mega",
+      "nameZh": "超級妙蛙花",
+      "nameEn": "Venusaur-Mega",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/venusaur-mega.png",
+      "usageRankSingle": 37,
+      "usageRankDouble": 48,
+      "usagePercentSingle": 4.85065,
+      "usagePercentDouble": 3.31801
+    },
+    {
       "id": 149,
       "formId": "dragonite",
       "nameZh": "快龍",
-      "nameEn": "dragonite",
+      "nameEn": "Dragonite",
       "baseSpeed": 80,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png",
-      "usageRankSingle": 12,
-      "usageRankDouble": 12
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/dragonite.png",
+      "usageRankSingle": 53,
+      "usageRankDouble": 51,
+      "usagePercentSingle": 3.39941,
+      "usagePercentDouble": 3.02041
+    },
+    {
+      "id": 473,
+      "formId": "mamoswine",
+      "nameZh": "象牙豬",
+      "nameEn": "Mamoswine",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/mamoswine.png",
+      "usageRankSingle": 67,
+      "usageRankDouble": 60,
+      "usagePercentSingle": 2.48703,
+      "usagePercentDouble": 2.18166
+    },
+    {
+      "id": 475,
+      "formId": "gallade",
+      "nameZh": "艾路雷朵",
+      "nameEn": "Gallade",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gallade.png",
+      "usageRankSingle": 82,
+      "usageRankDouble": 63,
+      "usagePercentSingle": 1.74182,
+      "usagePercentDouble": 1.81925
+    },
+    {
+      "id": 154,
+      "formId": "meganium-mega",
+      "nameZh": "超級大竺葵",
+      "nameEn": "Meganium-Mega",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/meganium-mega.png",
+      "usageRankSingle": 36,
+      "usageRankDouble": 64,
+      "usagePercentSingle": 4.86429,
+      "usagePercentDouble": 1.75254
+    },
+    {
+      "id": 609,
+      "formId": "chandelure",
+      "nameZh": "水晶燈火靈",
+      "nameEn": "Chandelure",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/chandelure.png",
+      "usageRankSingle": 177,
+      "usageRankDouble": 94,
+      "usagePercentSingle": 0.2997,
+      "usagePercentDouble": 0.90029
+    },
+    {
+      "id": 604,
+      "formId": "eelektross-mega",
+      "nameZh": "超級麻麻鰻魚王",
+      "nameEn": "Eelektross-Mega",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/eelektross-mega.gif",
+      "usageRankSingle": 128,
+      "usageRankDouble": 99,
+      "usagePercentSingle": 0.65635,
+      "usagePercentDouble": 0.85008
+    },
+    {
+      "id": 257,
+      "formId": "blaziken",
+      "nameZh": "火焰雞",
+      "nameEn": "Blaziken",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/blaziken.png",
+      "usageRankSingle": 72,
+      "usageRankDouble": 115,
+      "usagePercentSingle": 2.26038,
+      "usagePercentDouble": 0.65199
+    },
+    {
+      "id": 334,
+      "formId": "altaria-mega",
+      "nameZh": "超級七夕青鳥",
+      "nameEn": "Altaria-Mega",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/altaria-mega.png",
+      "usageRankSingle": 130,
+      "usageRankDouble": 126,
+      "usagePercentSingle": 0.64812,
+      "usagePercentDouble": 0.53933
+    },
+    {
+      "id": 334,
+      "formId": "altaria",
+      "nameZh": "七夕青鳥",
+      "nameEn": "Altaria",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/altaria.png",
+      "usageRankSingle": 221,
+      "usageRankDouble": 134,
+      "usagePercentSingle": 0.12965,
+      "usagePercentDouble": 0.47174
+    },
+    {
+      "id": 282,
+      "formId": "gardevoir",
+      "nameZh": "沙奈朵",
+      "nameEn": "Gardevoir",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gardevoir.png",
+      "usageRankSingle": 157,
+      "usageRankDouble": 151,
+      "usagePercentSingle": 0.42591,
+      "usagePercentDouble": 0.40063
+    },
+    {
+      "id": 308,
+      "formId": "medicham",
+      "nameZh": "恰雷姆",
+      "nameEn": "Medicham",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/medicham.png",
+      "usageRankSingle": 276,
+      "usageRankDouble": 178,
+      "usagePercentSingle": 0.03617,
+      "usagePercentDouble": 0.28095
+    },
+    {
+      "id": 706,
+      "formId": "goodra",
+      "nameZh": "黏美龍",
+      "nameEn": "Goodra",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/goodra.png",
+      "usageRankSingle": 224,
+      "usageRankDouble": 238,
+      "usagePercentSingle": 0.11743,
+      "usagePercentDouble": 0.08935
+    },
+    {
+      "id": 766,
+      "formId": "passimian",
+      "nameZh": "投擲猴",
+      "nameEn": "Passimian",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/passimian.png",
+      "usageRankSingle": 303,
+      "usageRankDouble": 256,
+      "usagePercentSingle": 0.00749,
+      "usagePercentDouble": 0.06338
+    },
+    {
+      "id": 24,
+      "formId": "arbok",
+      "nameZh": "阿柏怪",
+      "nameEn": "Arbok",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/arbok.png",
+      "usageRankSingle": 180,
+      "usageRankDouble": 280,
+      "usagePercentSingle": 0.28373,
+      "usagePercentDouble": 0.02749
+    },
+    {
+      "id": 362,
+      "formId": "glalie",
+      "nameZh": "冰鬼護",
+      "nameEn": "Glalie",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/glalie.png",
+      "usageRankSingle": 135,
+      "usageRankDouble": 301,
+      "usagePercentSingle": 0.57198,
+      "usagePercentDouble": 0.0102
+    },
+    {
+      "id": 154,
+      "formId": "meganium",
+      "nameZh": "大竺葵",
+      "nameEn": "Meganium",
+      "baseSpeed": 80,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/meganium.png",
+      "usageRankSingle": 293,
+      "usageRankDouble": 307,
+      "usagePercentSingle": 0.01772,
+      "usagePercentDouble": 0.00345
+    }
+  ],
+  "81": [
+    {
+      "id": 350,
+      "formId": "milotic",
+      "nameZh": "美納斯",
+      "nameEn": "Milotic",
+      "baseSpeed": 81,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/milotic.png",
+      "usageRankSingle": 76,
+      "usageRankDouble": 17,
+      "usagePercentSingle": 1.99523,
+      "usagePercentDouble": 8.98378
+    },
+    {
+      "id": 130,
+      "formId": "gyarados-mega",
+      "nameZh": "超級暴鯉龍",
+      "nameEn": "Gyarados-Mega",
+      "baseSpeed": 81,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gyarados-mega.png",
+      "usageRankSingle": 11,
+      "usageRankDouble": 86,
+      "usagePercentSingle": 11.9449,
+      "usagePercentDouble": 1.04328
+    },
+    {
+      "id": 130,
+      "formId": "gyarados",
+      "nameZh": "暴鯉龍",
+      "nameEn": "Gyarados",
+      "baseSpeed": 81,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gyarados.png",
+      "usageRankSingle": 64,
+      "usageRankDouble": 141,
+      "usagePercentSingle": 2.68319,
+      "usagePercentDouble": 0.42422
+    }
+  ],
+  "82": [
+    {
+      "id": 745,
+      "formId": "lycanroc-midnight",
+      "nameZh": "鬃岩狼人 (黑夜)",
+      "nameEn": "Lycanroc-Midnight",
+      "baseSpeed": 82,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/lycanroc-midnight.png",
+      "usageRankSingle": 306,
+      "usageRankDouble": 273,
+      "usagePercentSingle": 0.00402,
+      "usagePercentDouble": 0.03573
     }
   ],
   "84": [
@@ -62,59 +2188,859 @@
       "id": 1000,
       "formId": "gholdengo",
       "nameZh": "賽富豪",
-      "nameEn": "gholdengo",
+      "nameEn": "Gholdengo",
       "baseSpeed": 84,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1000.png",
-      "usageRankSingle": 8,
-      "usageRankDouble": 8
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gholdengo.png",
+      "usageRankSingle": 12,
+      "usageRankDouble": 16,
+      "usagePercentSingle": 9.77494,
+      "usagePercentDouble": 9.72353
+    },
+    {
+      "id": 711,
+      "formId": "gourgeist",
+      "nameZh": "南瓜怪人",
+      "nameEn": "Gourgeist",
+      "baseSpeed": 84,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gourgeist.png",
+      "usageRankSingle": 257,
+      "usageRankDouble": 296,
+      "usagePercentSingle": 0.06633,
+      "usagePercentDouble": 0.01461
     }
   ],
   "85": [
     {
-      "id": 812,
-      "formId": "rillaboom",
-      "nameZh": "轟擂金剛猩",
-      "nameEn": "rillaboom",
+      "id": 1018,
+      "formId": "archaludon",
+      "nameZh": "鋁鋼橋龍",
+      "nameEn": "Archaludon",
       "baseSpeed": 85,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/812.png",
-      "usageRankSingle": 6,
-      "usageRankDouble": 6
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/archaludon.png",
+      "usageRankSingle": 2,
+      "usageRankDouble": 14,
+      "usagePercentSingle": 24.15124,
+      "usagePercentDouble": 10.38765
+    },
+    {
+      "id": 784,
+      "formId": "kommo-o",
+      "nameZh": "杖尾鱗甲龍",
+      "nameEn": "Kommo-o",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/kommoo.png",
+      "usageRankSingle": 149,
+      "usageRankDouble": 42,
+      "usagePercentSingle": 0.476,
+      "usagePercentDouble": 3.72913
+    },
+    {
+      "id": 937,
+      "formId": "ceruledge",
+      "nameZh": "蒼炎刃鬼",
+      "nameEn": "Ceruledge",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/ceruledge.png",
+      "usageRankSingle": 46,
+      "usageRankDouble": 52,
+      "usagePercentSingle": 4.05672,
+      "usagePercentDouble": 3.00433
+    },
+    {
+      "id": 503,
+      "formId": "samurott-hisui",
+      "nameZh": "大劍鬼 (洗翠)",
+      "nameEn": "Samurott-Hisui",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/samurott-hisui.png",
+      "usageRankSingle": 18,
+      "usageRankDouble": 76,
+      "usagePercentSingle": 8.21665,
+      "usagePercentDouble": 1.23393
+    },
+    {
+      "id": 900,
+      "formId": "kleavor",
+      "nameZh": "劈斧螳螂",
+      "nameEn": "Kleavor",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/kleavor.png",
+      "usageRankSingle": 74,
+      "usageRankDouble": 95,
+      "usagePercentSingle": 2.0523,
+      "usagePercentDouble": 0.89377
+    },
+    {
+      "id": 904,
+      "formId": "overqwil",
+      "nameZh": "萬針魚",
+      "nameEn": "Overqwil",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/overqwil.png",
+      "usageRankSingle": 96,
+      "usageRankDouble": 101,
+      "usagePercentSingle": 1.27964,
+      "usagePercentDouble": 0.8375
+    },
+    {
+      "id": 454,
+      "formId": "toxicroak",
+      "nameZh": "毒骷蛙",
+      "nameEn": "Toxicroak",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/toxicroak.png",
+      "usageRankSingle": 280,
+      "usageRankDouble": 153,
+      "usagePercentSingle": 0.0315,
+      "usagePercentDouble": 0.39186
+    },
+    {
+      "id": 914,
+      "formId": "quaquaval",
+      "nameZh": "狂歡浪舞鴨",
+      "nameEn": "Quaquaval",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/quaquaval.png",
+      "usageRankSingle": 115,
+      "usageRankDouble": 206,
+      "usagePercentSingle": 0.81561,
+      "usagePercentDouble": 0.17461
+    },
+    {
+      "id": 211,
+      "formId": "qwilfish",
+      "nameZh": "千針魚",
+      "nameEn": "Qwilfish",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/qwilfish.png",
+      "usageRankSingle": 277,
+      "usageRankDouble": 266,
+      "usagePercentSingle": 0.0342,
+      "usagePercentDouble": 0.04388
+    },
+    {
+      "id": 214,
+      "formId": "heracross",
+      "nameZh": "赫拉克羅斯",
+      "nameEn": "Heracross",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/heracross.png",
+      "usageRankSingle": 261,
+      "usageRankDouble": 278,
+      "usagePercentSingle": 0.05533,
+      "usagePercentDouble": 0.03063
+    },
+    {
+      "id": 127,
+      "formId": "pinsir",
+      "nameZh": "凱羅斯",
+      "nameEn": "Pinsir",
+      "baseSpeed": 85,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/pinsir.png",
+      "usageRankSingle": 297,
+      "usageRankDouble": 310,
+      "usagePercentSingle": 0.01177,
+      "usagePercentDouble": 0.00177
+    }
+  ],
+  "86": [
+    {
+      "id": 970,
+      "formId": "glimmora",
+      "nameZh": "晶光花",
+      "nameEn": "Glimmora",
+      "baseSpeed": 86,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/glimmora.png",
+      "usageRankSingle": 28,
+      "usageRankDouble": 37,
+      "usagePercentSingle": 5.85176,
+      "usagePercentDouble": 4.33535
+    },
+    {
+      "id": 479,
+      "formId": "rotom-wash",
+      "nameZh": "洛托姆 (清洗)",
+      "nameEn": "Rotom-Wash",
+      "baseSpeed": 86,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/rotom-wash.png",
+      "usageRankSingle": 25,
+      "usageRankDouble": 39,
+      "usagePercentSingle": 6.47061,
+      "usagePercentDouble": 4.25289
+    },
+    {
+      "id": 479,
+      "formId": "rotom-heat",
+      "nameZh": "洛托姆 (加熱)",
+      "nameEn": "Rotom-Heat",
+      "baseSpeed": 86,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/rotom-heat.png",
+      "usageRankSingle": 87,
+      "usageRankDouble": 81,
+      "usagePercentSingle": 1.51823,
+      "usagePercentDouble": 1.18506
+    },
+    {
+      "id": 479,
+      "formId": "rotom-mow",
+      "nameZh": "洛托姆 (切割)",
+      "nameEn": "Rotom-Mow",
+      "baseSpeed": 86,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/rotom-mow.png",
+      "usageRankSingle": 142,
+      "usageRankDouble": 192,
+      "usagePercentSingle": 0.5079,
+      "usagePercentDouble": 0.23304
+    },
+    {
+      "id": 479,
+      "formId": "rotom-frost",
+      "nameZh": "洛托姆 (結冰)",
+      "nameEn": "Rotom-Frost",
+      "baseSpeed": 86,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/rotom-frost.png",
+      "usageRankSingle": 231,
+      "usageRankDouble": 202,
+      "usagePercentSingle": 0.10494,
+      "usagePercentDouble": 0.18754
+    },
+    {
+      "id": 479,
+      "formId": "rotom-fan",
+      "nameZh": "洛托姆 (旋轉)",
+      "nameEn": "Rotom-Fan",
+      "baseSpeed": 86,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/rotom-fan.png",
+      "usageRankSingle": 268,
+      "usageRankDouble": 284,
+      "usagePercentSingle": 0.04741,
+      "usagePercentDouble": 0.02425
+    }
+  ],
+  "88": [
+    {
+      "id": 530,
+      "formId": "excadrill",
+      "nameZh": "龍頭地鼠",
+      "nameEn": "Excadrill",
+      "baseSpeed": 88,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/excadrill.png",
+      "usageRankSingle": 56,
+      "usageRankDouble": 28,
+      "usagePercentSingle": 3.33866,
+      "usagePercentDouble": 5.17967
+    },
+    {
+      "id": 687,
+      "formId": "malamar-mega",
+      "nameZh": "超級烏賊王",
+      "nameEn": "Malamar-Mega",
+      "baseSpeed": 88,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/malamar-mega.gif",
+      "usageRankSingle": 194,
+      "usageRankDouble": 109,
+      "usagePercentSingle": 0.20287,
+      "usagePercentDouble": 0.674
+    },
+    {
+      "id": 689,
+      "formId": "barbaracle-mega",
+      "nameZh": "超級龜足巨鎧",
+      "nameEn": "Barbaracle-Mega",
+      "baseSpeed": 88,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/barbaracle-mega.gif",
+      "usageRankSingle": 133,
+      "usageRankDouble": 199,
+      "usagePercentSingle": 0.60495,
+      "usagePercentDouble": 0.20066
+    }
+  ],
+  "89": [
+    {
+      "id": 666,
+      "formId": "vivillon",
+      "nameZh": "彩粉蝶",
+      "nameEn": "Vivillon",
+      "baseSpeed": 89,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/vivillon.png",
+      "usageRankSingle": 61,
+      "usageRankDouble": 55,
+      "usagePercentSingle": 3.01105,
+      "usagePercentDouble": 2.78641
+    }
+  ],
+  "90": [
+    {
+      "id": 59,
+      "formId": "arcanine-hisui",
+      "nameZh": "風速狗 (洗翠)",
+      "nameEn": "Arcanine-Hisui",
+      "baseSpeed": 90,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/arcanine-hisui.png",
+      "usageRankSingle": 124,
+      "usageRankDouble": 29,
+      "usagePercentSingle": 0.71605,
+      "usagePercentDouble": 5.14696
+    },
+    {
+      "id": 979,
+      "formId": "annihilape",
+      "nameZh": "棄世猴",
+      "nameEn": "Annihilape",
+      "baseSpeed": 90,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/annihilape.png",
+      "usageRankSingle": 58,
+      "usageRankDouble": 45,
+      "usagePercentSingle": 3.22891,
+      "usagePercentDouble": 3.53201
+    },
+    {
+      "id": 115,
+      "formId": "kangaskhan",
+      "nameZh": "袋獸",
+      "nameEn": "Kangaskhan",
+      "baseSpeed": 90,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/kangaskhan.png",
+      "usageRankSingle": 170,
+      "usageRankDouble": 67,
+      "usagePercentSingle": 0.33219,
+      "usagePercentDouble": 1.56998
+    },
+    {
+      "id": 609,
+      "formId": "chandelure-mega",
+      "nameZh": "超級水晶燈火靈",
+      "nameEn": "Chandelure-Mega",
+      "baseSpeed": 90,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/chandelure-mega.png",
+      "usageRankSingle": 164,
+      "usageRankDouble": 119,
+      "usagePercentSingle": 0.37426,
+      "usagePercentDouble": 0.61511
+    },
+    {
+      "id": 448,
+      "formId": "lucario",
+      "nameZh": "路卡利歐",
+      "nameEn": "Lucario",
+      "baseSpeed": 90,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/lucario.png",
+      "usageRankSingle": 228,
+      "usageRankDouble": 197,
+      "usagePercentSingle": 0.11375,
+      "usagePercentDouble": 0.20984
+    },
+    {
+      "id": 25,
+      "formId": "pikachu",
+      "nameZh": "皮卡丘",
+      "nameEn": "Pikachu",
+      "baseSpeed": 90,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/pikachu.png",
+      "usageRankSingle": 254,
+      "usageRankDouble": 198,
+      "usagePercentSingle": 0.07187,
+      "usagePercentDouble": 0.20221
+    },
+    {
+      "id": 407,
+      "formId": "roserade",
+      "nameZh": "羅絲雷朵",
+      "nameEn": "Roserade",
+      "baseSpeed": 90,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/roserade.png",
+      "usageRankSingle": 200,
+      "usageRankDouble": 226,
+      "usagePercentSingle": 0.19489,
+      "usagePercentDouble": 0.10122
     }
   ],
   "91": [
     {
-      "id": 10021,
-      "formId": "landorus-therian",
-      "nameZh": "土地雲 (靈獸)",
-      "nameEn": "landorus-therian",
+      "id": 479,
+      "formId": "rotom",
+      "nameZh": "洛托姆",
+      "nameEn": "Rotom",
       "baseSpeed": 91,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10021.png",
-      "usageRankSingle": 13,
-      "usageRankDouble": 13
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/rotom.png",
+      "usageRankSingle": 279,
+      "usageRankDouble": 246,
+      "usagePercentSingle": 0.03244,
+      "usagePercentDouble": 0.07363
+    }
+  ],
+  "92": [
+    {
+      "id": 445,
+      "formId": "garchomp-mega",
+      "nameZh": "超級烈咬陸鯊",
+      "nameEn": "Garchomp-Mega",
+      "baseSpeed": 92,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/garchomp-mega.png",
+      "usageRankSingle": 103,
+      "usageRankDouble": 53,
+      "usagePercentSingle": 1.0444,
+      "usagePercentDouble": 2.99768
+    },
+    {
+      "id": 553,
+      "formId": "krookodile",
+      "nameZh": "流氓鱷",
+      "nameEn": "Krookodile",
+      "baseSpeed": 92,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/krookodile.png",
+      "usageRankSingle": 131,
+      "usageRankDouble": 161,
+      "usagePercentSingle": 0.63678,
+      "usagePercentDouble": 0.3532
+    },
+    {
+      "id": 670,
+      "formId": "floette-eternal",
+      "nameZh": "花葉蒂 (永恆之花)",
+      "nameEn": "Floette-Eternal",
+      "baseSpeed": 92,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/floette-eternal.png",
+      "usageRankSingle": 193,
+      "usageRankDouble": 247,
+      "usagePercentSingle": 0.20409,
+      "usagePercentDouble": 0.07305
+    }
+  ],
+  "94": [
+    {
+      "id": 959,
+      "formId": "tinkaton",
+      "nameZh": "巨鍛匠",
+      "nameEn": "Tinkaton",
+      "baseSpeed": 94,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tinkaton.png",
+      "usageRankSingle": 121,
+      "usageRankDouble": 74,
+      "usagePercentSingle": 0.72906,
+      "usagePercentDouble": 1.27377
+    }
+  ],
+  "95": [
+    {
+      "id": 157,
+      "formId": "typhlosion-hisui",
+      "nameZh": "火爆獸 (洗翠)",
+      "nameEn": "Typhlosion-Hisui",
+      "baseSpeed": 95,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/typhlosion-hisui.png",
+      "usageRankSingle": 153,
+      "usageRankDouble": 87,
+      "usagePercentSingle": 0.43947,
+      "usagePercentDouble": 1.0258
+    },
+    {
+      "id": 59,
+      "formId": "arcanine",
+      "nameZh": "風速狗",
+      "nameEn": "Arcanine",
+      "baseSpeed": 95,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/arcanine.png",
+      "usageRankSingle": 136,
+      "usageRankDouble": 148,
+      "usagePercentSingle": 0.54152,
+      "usagePercentDouble": 0.40978
+    },
+    {
+      "id": 472,
+      "formId": "gliscor",
+      "nameZh": "天蠍王",
+      "nameEn": "Gliscor",
+      "baseSpeed": 95,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gliscor.png",
+      "usageRankSingle": 114,
+      "usageRankDouble": 152,
+      "usagePercentSingle": 0.81567,
+      "usagePercentDouble": 0.39654
+    },
+    {
+      "id": 470,
+      "formId": "leafeon",
+      "nameZh": "葉伊布",
+      "nameEn": "Leafeon",
+      "baseSpeed": 95,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/leafeon.png",
+      "usageRankSingle": 233,
+      "usageRankDouble": 239,
+      "usagePercentSingle": 0.10136,
+      "usagePercentDouble": 0.08815
+    },
+    {
+      "id": 229,
+      "formId": "houndoom",
+      "nameZh": "黑魯加",
+      "nameEn": "Houndoom",
+      "baseSpeed": 95,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/houndoom.png",
+      "usageRankSingle": 225,
+      "usageRankDouble": 257,
+      "usagePercentSingle": 0.11491,
+      "usagePercentDouble": 0.05777
+    },
+    {
+      "id": 319,
+      "formId": "sharpedo",
+      "nameZh": "巨牙鯊",
+      "nameEn": "Sharpedo",
+      "baseSpeed": 95,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sharpedo.png",
+      "usageRankSingle": 144,
+      "usageRankDouble": 267,
+      "usagePercentSingle": 0.48543,
+      "usagePercentDouble": 0.03946
+    }
+  ],
+  "96": [
+    {
+      "id": 778,
+      "formId": "mimikyu",
+      "nameZh": "謎擬Ｑ",
+      "nameEn": "Mimikyu",
+      "baseSpeed": 96,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/mimikyu.png",
+      "usageRankSingle": 3,
+      "usageRankDouble": 77,
+      "usagePercentSingle": 19.74666,
+      "usagePercentDouble": 1.23352
     }
   ],
   "97": [
     {
-      "id": 10191,
-      "formId": "urshifu-rapid-strike",
-      "nameZh": "武道熊師 (連擊)",
-      "nameEn": "urshifu-rapid-strike",
+      "id": 877,
+      "formId": "morpeko",
+      "nameZh": "莫魯貝可",
+      "nameEn": "Morpeko",
       "baseSpeed": 97,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10191.png",
-      "usageRankSingle": 3,
-      "usageRankDouble": 3
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/morpeko.png",
+      "usageRankSingle": 190,
+      "usageRankDouble": 209,
+      "usagePercentSingle": 0.20868,
+      "usagePercentDouble": 0.16923
+    }
+  ],
+  "98": [
+    {
+      "id": 635,
+      "formId": "hydreigon",
+      "nameZh": "三首惡龍",
+      "nameEn": "Hydreigon",
+      "baseSpeed": 98,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/hydreigon.png",
+      "usageRankSingle": 17,
+      "usageRankDouble": 49,
+      "usagePercentSingle": 8.49473,
+      "usagePercentDouble": 3.26973
+    }
+  ],
+  "99": [
+    {
+      "id": 711,
+      "formId": "gourgeist-small",
+      "nameZh": "南瓜怪人 (小體型)",
+      "nameEn": "Gourgeist-Small",
+      "baseSpeed": 99,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gourgeist-small.png",
+      "usageRankSingle": 214,
+      "usageRankDouble": 282,
+      "usagePercentSingle": 0.14491,
+      "usagePercentDouble": 0.02645
     }
   ],
   "100": [
     {
-      "id": 1004,
-      "formId": "chi-yu",
-      "nameZh": "古劍豹",
-      "nameEn": "chi-yu",
+      "id": 6,
+      "formId": "charizard-mega-y",
+      "nameZh": "超級噴火龍 Y",
+      "nameEn": "Charizard-Mega-Y",
       "baseSpeed": 100,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1004.png",
-      "usageRankSingle": 10,
-      "usageRankDouble": 10
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/charizard-megay.png",
+      "usageRankSingle": 31,
+      "usageRankDouble": 10,
+      "usagePercentSingle": 5.65466,
+      "usagePercentDouble": 15.41865
+    },
+    {
+      "id": 149,
+      "formId": "dragonite-mega",
+      "nameZh": "超級快龍",
+      "nameEn": "Dragonite-Mega",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/dragonite-mega.png",
+      "usageRankSingle": 16,
+      "usageRankDouble": 40,
+      "usagePercentSingle": 8.49765,
+      "usagePercentDouble": 3.85835
+    },
+    {
+      "id": 257,
+      "formId": "blaziken-mega",
+      "nameZh": "超級火焰雞",
+      "nameEn": "Blaziken-Mega",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/blaziken-mega.png",
+      "usageRankSingle": 14,
+      "usageRankDouble": 56,
+      "usagePercentSingle": 9.19916,
+      "usagePercentDouble": 2.70303
+    },
+    {
+      "id": 282,
+      "formId": "gardevoir-mega",
+      "nameZh": "超級沙奈朵",
+      "nameEn": "Gardevoir-Mega",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gardevoir-mega.png",
+      "usageRankSingle": 111,
+      "usageRankDouble": 58,
+      "usagePercentSingle": 0.84631,
+      "usagePercentDouble": 2.41013
+    },
+    {
+      "id": 637,
+      "formId": "volcarona",
+      "nameZh": "火神蛾",
+      "nameEn": "Volcarona",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/volcarona.png",
+      "usageRankSingle": 23,
+      "usageRankDouble": 65,
+      "usagePercentSingle": 6.86232,
+      "usagePercentDouble": 1.75114
+    },
+    {
+      "id": 115,
+      "formId": "kangaskhan-mega",
+      "nameZh": "超級袋獸",
+      "nameEn": "Kangaskhan-Mega",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/kangaskhan-mega.png",
+      "usageRankSingle": 86,
+      "usageRankDouble": 68,
+      "usagePercentSingle": 1.55504,
+      "usagePercentDouble": 1.56359
+    },
+    {
+      "id": 398,
+      "formId": "staraptor",
+      "nameZh": "姆克鷹",
+      "nameEn": "Staraptor",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/staraptor.png",
+      "usageRankSingle": 84,
+      "usageRankDouble": 70,
+      "usagePercentSingle": 1.64948,
+      "usagePercentDouble": 1.48051
+    },
+    {
+      "id": 964,
+      "formId": "palafin",
+      "nameZh": "海豚俠",
+      "nameEn": "Palafin",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/palafin.png",
+      "usageRankSingle": 83,
+      "usageRankDouble": 79,
+      "usagePercentSingle": 1.68324,
+      "usagePercentDouble": 1.22398
+    },
+    {
+      "id": 6,
+      "formId": "charizard-mega-x",
+      "nameZh": "超級噴火龍 X",
+      "nameEn": "Charizard-Mega-X",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/charizard-megax.png",
+      "usageRankSingle": 49,
+      "usageRankDouble": 92,
+      "usagePercentSingle": 3.80493,
+      "usagePercentDouble": 0.91693
+    },
+    {
+      "id": 38,
+      "formId": "ninetales",
+      "nameZh": "九尾",
+      "nameEn": "Ninetales",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/ninetales.png",
+      "usageRankSingle": 212,
+      "usageRankDouble": 129,
+      "usagePercentSingle": 0.14608,
+      "usagePercentDouble": 0.5297
+    },
+    {
+      "id": 128,
+      "formId": "tauros-paldea-aqua",
+      "nameZh": "肯泰羅 (帕底亞水瀾種)",
+      "nameEn": "Tauros-Paldea-Aqua",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tauros-paldeaaqua.png",
+      "usageRankSingle": 227,
+      "usageRankDouble": 162,
+      "usagePercentSingle": 0.11396,
+      "usagePercentDouble": 0.34167
+    },
+    {
+      "id": 870,
+      "formId": "falinks-mega",
+      "nameZh": "超級列陣兵",
+      "nameEn": "Falinks-Mega",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/falinks-mega.gif",
+      "usageRankSingle": 246,
+      "usageRankDouble": 183,
+      "usagePercentSingle": 0.08053,
+      "usagePercentDouble": 0.262
+    },
+    {
+      "id": 308,
+      "formId": "medicham-mega",
+      "nameZh": "超級恰雷姆",
+      "nameEn": "Medicham-Mega",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/medicham-mega.png",
+      "usageRankSingle": 143,
+      "usageRankDouble": 190,
+      "usagePercentSingle": 0.49638,
+      "usagePercentDouble": 0.23709
+    },
+    {
+      "id": 362,
+      "formId": "glalie-mega",
+      "nameZh": "超級冰鬼護",
+      "nameEn": "Glalie-Mega",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/glalie-mega.png",
+      "usageRankSingle": 201,
+      "usageRankDouble": 215,
+      "usagePercentSingle": 0.19459,
+      "usagePercentDouble": 0.1352
+    },
+    {
+      "id": 128,
+      "formId": "tauros-paldea-blaze",
+      "nameZh": "肯泰羅 (帕底亞火熾種)",
+      "nameEn": "Tauros-Paldea-Blaze",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tauros-paldeablaze.png",
+      "usageRankSingle": 173,
+      "usageRankDouble": 219,
+      "usagePercentSingle": 0.31229,
+      "usagePercentDouble": 0.11426
+    },
+    {
+      "id": 157,
+      "formId": "typhlosion",
+      "nameZh": "火爆獸",
+      "nameEn": "Typhlosion",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/typhlosion.png",
+      "usageRankSingle": 256,
+      "usageRankDouble": 227,
+      "usagePercentSingle": 0.06649,
+      "usagePercentDouble": 0.10045
+    },
+    {
+      "id": 6,
+      "formId": "charizard",
+      "nameZh": "噴火龍",
+      "nameEn": "Charizard",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/charizard.png",
+      "usageRankSingle": 235,
+      "usageRankDouble": 235,
+      "usagePercentSingle": 0.09944,
+      "usagePercentDouble": 0.09309
+    },
+    {
+      "id": 128,
+      "formId": "tauros-paldea-combat",
+      "nameZh": "肯泰羅 (帕底亞鬥戰種)",
+      "nameEn": "Tauros-Paldea-Combat",
+      "baseSpeed": 100,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tauros-paldeacombat.png",
+      "usageRankSingle": 308,
+      "usageRankDouble": 299,
+      "usagePercentSingle": 0.00184,
+      "usagePercentDouble": 0.01082
+    }
+  ],
+  "101": [
+    {
+      "id": 970,
+      "formId": "glimmora-mega",
+      "nameZh": "超級晶光花",
+      "nameEn": "Glimmora-Mega",
+      "baseSpeed": 101,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/glimmora-mega.png",
+      "usageRankSingle": 75,
+      "usageRankDouble": 57,
+      "usagePercentSingle": 2.00397,
+      "usagePercentDouble": 2.45032
+    },
+    {
+      "id": 516,
+      "formId": "simipour",
+      "nameZh": "冷水猿",
+      "nameEn": "Simipour",
+      "baseSpeed": 101,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/simipour.png",
+      "usageRankSingle": 278,
+      "usageRankDouble": 259,
+      "usagePercentSingle": 0.03267,
+      "usagePercentDouble": 0.05073
+    },
+    {
+      "id": 702,
+      "formId": "dedenne",
+      "nameZh": "咚咚鼠",
+      "nameEn": "Dedenne",
+      "baseSpeed": 101,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/dedenne.png",
+      "usageRankSingle": 249,
+      "usageRankDouble": 269,
+      "usagePercentSingle": 0.07679,
+      "usagePercentDouble": 0.03902
+    },
+    {
+      "id": 512,
+      "formId": "simisage",
+      "nameZh": "花椰猿",
+      "nameEn": "Simisage",
+      "baseSpeed": 101,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/simisage.png",
+      "usageRankSingle": 238,
+      "usageRankDouble": 279,
+      "usagePercentSingle": 0.09672,
+      "usagePercentDouble": 0.03039
+    },
+    {
+      "id": 514,
+      "formId": "simisear",
+      "nameZh": "爆香猿",
+      "nameEn": "Simisear",
+      "baseSpeed": 101,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/simisear.png",
+      "usageRankSingle": 255,
+      "usageRankDouble": 293,
+      "usagePercentSingle": 0.06965,
+      "usagePercentDouble": 0.01625
+    },
+    {
+      "id": 18,
+      "formId": "pidgeot",
+      "nameZh": "大比鳥",
+      "nameEn": "Pidgeot",
+      "baseSpeed": 101,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/pidgeot.png",
+      "usageRankSingle": 305,
+      "usageRankDouble": 309,
+      "usagePercentSingle": 0.00411,
+      "usagePercentDouble": 0.0022
     }
   ],
   "102": [
@@ -122,47 +3048,895 @@
       "id": 445,
       "formId": "garchomp",
       "nameZh": "烈咬陸鯊",
-      "nameEn": "garchomp",
+      "nameEn": "Garchomp",
       "baseSpeed": 102,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/445.png",
-      "usageRankSingle": 5,
-      "usageRankDouble": 5
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/garchomp.png",
+      "usageRankSingle": 1,
+      "usageRankDouble": 3,
+      "usagePercentSingle": 36.63648,
+      "usagePercentDouble": 25.14263
+    },
+    {
+      "id": 670,
+      "formId": "floette-mega",
+      "nameZh": "超級花葉蒂",
+      "nameEn": "Floette-Mega",
+      "baseSpeed": 102,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/floette-mega.png",
+      "usageRankSingle": 33,
+      "usageRankDouble": 15,
+      "usagePercentSingle": 5.61127,
+      "usagePercentDouble": 9.96645
+    },
+    {
+      "id": 676,
+      "formId": "furfrou",
+      "nameZh": "多麗米亞",
+      "nameEn": "Furfrou",
+      "baseSpeed": 102,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/furfrou.png",
+      "usageRankSingle": 216,
+      "usageRankDouble": 297,
+      "usagePercentSingle": 0.14107,
+      "usagePercentDouble": 0.01347
+    }
+  ],
+  "103": [
+    {
+      "id": 530,
+      "formId": "excadrill-mega",
+      "nameZh": "超級龍頭地鼠",
+      "nameEn": "Excadrill-Mega",
+      "baseSpeed": 103,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/excadrill-mega.png",
+      "usageRankSingle": 202,
+      "usageRankDouble": 156,
+      "usagePercentSingle": 0.1855,
+      "usagePercentDouble": 0.37138
+    },
+    {
+      "id": 587,
+      "formId": "emolga",
+      "nameZh": "電飛鼠",
+      "nameEn": "Emolga",
+      "baseSpeed": 103,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/emolga.png",
+      "usageRankSingle": 266,
+      "usageRankDouble": 258,
+      "usagePercentSingle": 0.05038,
+      "usagePercentDouble": 0.05703
+    }
+  ],
+  "104": [
+    {
+      "id": 678,
+      "formId": "meowstic",
+      "nameZh": "超能妙喵",
+      "nameEn": "Meowstic",
+      "baseSpeed": 104,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/meowstic.png",
+      "usageRankSingle": 183,
+      "usageRankDouble": 98,
+      "usagePercentSingle": 0.2597,
+      "usagePercentDouble": 0.86974
+    },
+    {
+      "id": 655,
+      "formId": "delphox",
+      "nameZh": "妖火紅狐",
+      "nameEn": "Delphox",
+      "baseSpeed": 104,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/delphox.png",
+      "usageRankSingle": 269,
+      "usageRankDouble": 295,
+      "usagePercentSingle": 0.04266,
+      "usagePercentDouble": 0.01473
+    }
+  ],
+  "105": [
+    {
+      "id": 956,
+      "formId": "espathra",
+      "nameZh": "超能艷鴕",
+      "nameEn": "Espathra",
+      "baseSpeed": 105,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/espathra.png",
+      "usageRankSingle": 34,
+      "usageRankDouble": 93,
+      "usagePercentSingle": 5.26238,
+      "usagePercentDouble": 0.91686
+    },
+    {
+      "id": 127,
+      "formId": "pinsir-mega",
+      "nameZh": "超級凱羅斯",
+      "nameEn": "Pinsir-Mega",
+      "baseSpeed": 105,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/pinsir-mega.png",
+      "usageRankSingle": 107,
+      "usageRankDouble": 184,
+      "usagePercentSingle": 0.95447,
+      "usagePercentDouble": 0.25984
+    },
+    {
+      "id": 319,
+      "formId": "sharpedo-mega",
+      "nameZh": "超級巨牙鯊",
+      "nameEn": "Sharpedo-Mega",
+      "baseSpeed": 105,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sharpedo-mega.png",
+      "usageRankSingle": 119,
+      "usageRankDouble": 211,
+      "usagePercentSingle": 0.75177,
+      "usagePercentDouble": 0.14767
+    },
+    {
+      "id": 571,
+      "formId": "zoroark",
+      "nameZh": "索羅亞克",
+      "nameEn": "Zoroark",
+      "baseSpeed": 105,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/zoroark.png",
+      "usageRankSingle": 264,
+      "usageRankDouble": 252,
+      "usagePercentSingle": 0.05318,
+      "usagePercentDouble": 0.0673
+    },
+    {
+      "id": 310,
+      "formId": "manectric",
+      "nameZh": "雷電獸",
+      "nameEn": "Manectric",
+      "baseSpeed": 105,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/manectric.png",
+      "usageRankSingle": 287,
+      "usageRankDouble": 254,
+      "usagePercentSingle": 0.02479,
+      "usagePercentDouble": 0.06519
+    },
+    {
+      "id": 428,
+      "formId": "lopunny",
+      "nameZh": "長耳兔",
+      "nameEn": "Lopunny",
+      "baseSpeed": 105,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/lopunny.png",
+      "usageRankSingle": 156,
+      "usageRankDouble": 289,
+      "usagePercentSingle": 0.42774,
+      "usagePercentDouble": 0.01987
+    }
+  ],
+  "106": [
+    {
+      "id": 510,
+      "formId": "liepard",
+      "nameZh": "酷豹",
+      "nameEn": "Liepard",
+      "baseSpeed": 106,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/liepard.png",
+      "usageRankSingle": 207,
+      "usageRankDouble": 160,
+      "usagePercentSingle": 0.16585,
+      "usagePercentDouble": 0.35632
+    },
+    {
+      "id": 668,
+      "formId": "pyroar",
+      "nameZh": "火炎獅",
+      "nameEn": "Pyroar",
+      "baseSpeed": 106,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/pyroar.png",
+      "usageRankSingle": 307,
+      "usageRankDouble": 308,
+      "usagePercentSingle": 0.00286,
+      "usagePercentDouble": 0.00316
+    }
+  ],
+  "108": [
+    {
+      "id": 392,
+      "formId": "infernape",
+      "nameZh": "烈焰猴",
+      "nameEn": "Infernape",
+      "baseSpeed": 108,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/infernape.png",
+      "usageRankSingle": 162,
+      "usageRankDouble": 207,
+      "usagePercentSingle": 0.41248,
+      "usagePercentDouble": 0.17223
+    }
+  ],
+  "109": [
+    {
+      "id": 38,
+      "formId": "ninetales-alola",
+      "nameZh": "九尾 (阿羅拉)",
+      "nameEn": "Ninetales-Alola",
+      "baseSpeed": 109,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/ninetales-alola.png",
+      "usageRankSingle": 30,
+      "usageRankDouble": 22,
+      "usagePercentSingle": 5.74251,
+      "usagePercentDouble": 6.64761
+    },
+    {
+      "id": 695,
+      "formId": "heliolisk",
+      "nameZh": "光電傘蜥",
+      "nameEn": "Heliolisk",
+      "baseSpeed": 109,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/heliolisk.png",
+      "usageRankSingle": 148,
+      "usageRankDouble": 96,
+      "usagePercentSingle": 0.47696,
+      "usagePercentDouble": 0.89024
+    }
+  ],
+  "110": [
+    {
+      "id": 398,
+      "formId": "staraptor-mega",
+      "nameZh": "超級姆克鷹",
+      "nameEn": "Staraptor-Mega",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/staraptor-mega.gif",
+      "usageRankSingle": 50,
+      "usageRankDouble": 9,
+      "usagePercentSingle": 3.8024,
+      "usagePercentDouble": 17.2482
+    },
+    {
+      "id": 376,
+      "formId": "metagross-mega",
+      "nameZh": "超級巨金怪",
+      "nameEn": "Metagross-Mega",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/metagross-mega.png",
+      "usageRankSingle": 8,
+      "usageRankDouble": 32,
+      "usagePercentSingle": 13.82399,
+      "usagePercentDouble": 4.72235
+    },
+    {
+      "id": 745,
+      "formId": "lycanroc-dusk",
+      "nameZh": "鬃岩狼人 (黃昏)",
+      "nameEn": "Lycanroc-Dusk",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/lycanroc-dusk.png",
+      "usageRankSingle": 160,
+      "usageRankDouble": 61,
+      "usagePercentSingle": 0.41537,
+      "usagePercentDouble": 1.97271
+    },
+    {
+      "id": 571,
+      "formId": "zoroark-hisui",
+      "nameZh": "索羅亞克 (洗翠)",
+      "nameEn": "Zoroark-Hisui",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/zoroark-hisui.png",
+      "usageRankSingle": 55,
+      "usageRankDouble": 69,
+      "usagePercentSingle": 3.3528,
+      "usagePercentDouble": 1.55312
+    },
+    {
+      "id": 26,
+      "formId": "raichu-mega-x",
+      "nameZh": "超級雷丘 X",
+      "nameEn": "Raichu-Mega-X",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/raichu-megax.gif",
+      "usageRankSingle": 226,
+      "usageRankDouble": 89,
+      "usagePercentSingle": 0.11473,
+      "usagePercentDouble": 0.98178
+    },
+    {
+      "id": 26,
+      "formId": "raichu",
+      "nameZh": "雷丘",
+      "nameEn": "Raichu",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/raichu.png",
+      "usageRankSingle": 271,
+      "usageRankDouble": 106,
+      "usagePercentSingle": 0.03851,
+      "usagePercentDouble": 0.72446
+    },
+    {
+      "id": 475,
+      "formId": "gallade-mega",
+      "nameZh": "超級艾路雷朵",
+      "nameEn": "Gallade-Mega",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gallade-mega.png",
+      "usageRankSingle": 209,
+      "usageRankDouble": 131,
+      "usagePercentSingle": 0.15916,
+      "usagePercentDouble": 0.4935
+    },
+    {
+      "id": 94,
+      "formId": "gengar",
+      "nameZh": "耿鬼",
+      "nameEn": "Gengar",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gengar.png",
+      "usageRankSingle": 73,
+      "usageRankDouble": 140,
+      "usagePercentSingle": 2.11184,
+      "usagePercentDouble": 0.44104
+    },
+    {
+      "id": 227,
+      "formId": "skarmory-mega",
+      "nameZh": "超級盔甲鳥",
+      "nameEn": "Skarmory-Mega",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/skarmory-mega.png",
+      "usageRankSingle": 77,
+      "usageRankDouble": 145,
+      "usagePercentSingle": 1.96246,
+      "usagePercentDouble": 0.41617
+    },
+    {
+      "id": 196,
+      "formId": "espeon",
+      "nameZh": "太陽伊布",
+      "nameEn": "Espeon",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/espeon.png",
+      "usageRankSingle": 91,
+      "usageRankDouble": 214,
+      "usagePercentSingle": 1.39706,
+      "usagePercentDouble": 0.13652
+    },
+    {
+      "id": 26,
+      "formId": "raichu-alola",
+      "nameZh": "雷丘 (阿羅拉)",
+      "nameEn": "Raichu-Alola",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/raichu-alola.png",
+      "usageRankSingle": 286,
+      "usageRankDouble": 260,
+      "usagePercentSingle": 0.02488,
+      "usagePercentDouble": 0.05051
+    },
+    {
+      "id": 478,
+      "formId": "froslass",
+      "nameZh": "雪妖女",
+      "nameEn": "Froslass",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/froslass.png",
+      "usageRankSingle": 282,
+      "usageRankDouble": 264,
+      "usagePercentSingle": 0.02809,
+      "usagePercentDouble": 0.04555
+    },
+    {
+      "id": 128,
+      "formId": "tauros",
+      "nameZh": "肯泰羅",
+      "nameEn": "Tauros",
+      "baseSpeed": 110,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/tauros.png",
+      "usageRankSingle": 275,
+      "usageRankDouble": 276,
+      "usagePercentSingle": 0.03699,
+      "usagePercentDouble": 0.03352
+    }
+  ],
+  "111": [
+    {
+      "id": 925,
+      "formId": "maushold",
+      "nameZh": "一家鼠",
+      "nameEn": "Maushold",
+      "baseSpeed": 111,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/maushold.png",
+      "usageRankSingle": 97,
+      "usageRankDouble": 20,
+      "usagePercentSingle": 1.23308,
+      "usagePercentDouble": 6.90909
+    }
+  ],
+  "112": [
+    {
+      "id": 448,
+      "formId": "lucario-mega",
+      "nameZh": "超級路卡利歐",
+      "nameEn": "Lucario-Mega",
+      "baseSpeed": 112,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/lucario-mega.png",
+      "usageRankSingle": 42,
+      "usageRankDouble": 97,
+      "usagePercentSingle": 4.20895,
+      "usagePercentDouble": 0.87606
+    },
+    {
+      "id": 745,
+      "formId": "lycanroc",
+      "nameZh": "鬃岩狼人",
+      "nameEn": "Lycanroc",
+      "baseSpeed": 112,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/lycanroc.png",
+      "usageRankSingle": 253,
+      "usageRankDouble": 205,
+      "usagePercentSingle": 0.0719,
+      "usagePercentDouble": 0.17686
+    },
+    {
+      "id": 545,
+      "formId": "scolipede",
+      "nameZh": "蜈蚣王",
+      "nameEn": "Scolipede",
+      "baseSpeed": 112,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/scolipede.png",
+      "usageRankSingle": 54,
+      "usageRankDouble": 263,
+      "usagePercentSingle": 3.35565,
+      "usagePercentDouble": 0.04584
+    }
+  ],
+  "113": [
+    {
+      "id": 497,
+      "formId": "serperior",
+      "nameZh": "君主蛇",
+      "nameEn": "Serperior",
+      "baseSpeed": 113,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/serperior.png",
+      "usageRankSingle": 93,
+      "usageRankDouble": 176,
+      "usagePercentSingle": 1.33656,
+      "usagePercentDouble": 0.29237
+    }
+  ],
+  "115": [
+    {
+      "id": 229,
+      "formId": "houndoom-mega",
+      "nameZh": "超級黑魯加",
+      "nameEn": "Houndoom-Mega",
+      "baseSpeed": 115,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/houndoom-mega.png",
+      "usageRankSingle": 132,
+      "usageRankDouble": 150,
+      "usagePercentSingle": 0.62429,
+      "usagePercentDouble": 0.40234
+    },
+    {
+      "id": 121,
+      "formId": "starmie",
+      "nameZh": "寶石海星",
+      "nameEn": "Starmie",
+      "baseSpeed": 115,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/starmie.png",
+      "usageRankSingle": 154,
+      "usageRankDouble": 225,
+      "usagePercentSingle": 0.43595,
+      "usagePercentDouble": 0.10168
+    },
+    {
+      "id": 359,
+      "formId": "absol-mega",
+      "nameZh": "超級阿勃梭魯",
+      "nameEn": "Absol-Mega",
+      "baseSpeed": 115,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/absol-mega.png",
+      "usageRankSingle": 263,
+      "usageRankDouble": 250,
+      "usagePercentSingle": 0.05338,
+      "usagePercentDouble": 0.07059
+    }
+  ],
+  "116": [
+    {
+      "id": 547,
+      "formId": "whimsicott",
+      "nameZh": "風妖精",
+      "nameEn": "Whimsicott",
+      "baseSpeed": 116,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/whimsicott.png",
+      "usageRankSingle": 59,
+      "usageRankDouble": 8,
+      "usagePercentSingle": 3.19693,
+      "usagePercentDouble": 22.77551
+    }
+  ],
+  "117": [
+    {
+      "id": 758,
+      "formId": "salazzle",
+      "nameZh": "焰后蜥",
+      "nameEn": "Salazzle",
+      "baseSpeed": 117,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/salazzle.png",
+      "usageRankSingle": 106,
+      "usageRankDouble": 182,
+      "usagePercentSingle": 0.98739,
+      "usagePercentDouble": 0.26609
+    }
+  ],
+  "118": [
+    {
+      "id": 701,
+      "formId": "hawlucha-mega",
+      "nameZh": "超級摔角鷹人",
+      "nameEn": "Hawlucha-Mega",
+      "baseSpeed": 118,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/hawlucha-mega.png",
+      "usageRankSingle": 237,
+      "usageRankDouble": 149,
+      "usagePercentSingle": 0.09823,
+      "usagePercentDouble": 0.40845
+    },
+    {
+      "id": 701,
+      "formId": "hawlucha",
+      "nameZh": "摔角鷹人",
+      "nameEn": "Hawlucha",
+      "baseSpeed": 118,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/hawlucha.png",
+      "usageRankSingle": 181,
+      "usageRankDouble": 242,
+      "usagePercentSingle": 0.27765,
+      "usagePercentDouble": 0.08149
+    }
+  ],
+  "120": [
+    {
+      "id": 903,
+      "formId": "sneasler",
+      "nameZh": "大狃拉",
+      "nameEn": "Sneasler",
+      "baseSpeed": 120,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sneasler.png",
+      "usageRankSingle": 51,
+      "usageRankDouble": 6,
+      "usagePercentSingle": 3.64064,
+      "usagePercentDouble": 23.40289
+    },
+    {
+      "id": 478,
+      "formId": "froslass-mega",
+      "nameZh": "超級雪妖女",
+      "nameEn": "Froslass-Mega",
+      "baseSpeed": 120,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/froslass-mega.png",
+      "usageRankSingle": 98,
+      "usageRankDouble": 21,
+      "usagePercentSingle": 1.23078,
+      "usagePercentDouble": 6.77911
+    },
+    {
+      "id": 121,
+      "formId": "starmie-mega",
+      "nameZh": "超級寶石海星",
+      "nameEn": "Starmie-Mega",
+      "baseSpeed": 120,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/starmie-mega.png",
+      "usageRankSingle": 26,
+      "usageRankDouble": 113,
+      "usagePercentSingle": 6.25716,
+      "usagePercentDouble": 0.65587
+    },
+    {
+      "id": 65,
+      "formId": "alakazam",
+      "nameZh": "胡地",
+      "nameEn": "Alakazam",
+      "baseSpeed": 120,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/alakazam.png",
+      "usageRankSingle": 155,
+      "usageRankDouble": 187,
+      "usagePercentSingle": 0.43566,
+      "usagePercentDouble": 0.24786
+    },
+    {
+      "id": 254,
+      "formId": "sceptile",
+      "nameZh": "蜥蜴王",
+      "nameEn": "Sceptile",
+      "baseSpeed": 120,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sceptile.png",
+      "usageRankSingle": 187,
+      "usageRankDouble": 237,
+      "usagePercentSingle": 0.22816,
+      "usagePercentDouble": 0.09167
     }
   ],
   "121": [
     {
-      "id": 10019,
-      "formId": "tornadus-therian",
-      "nameZh": "龍捲雲 (靈獸)",
-      "nameEn": "tornadus-therian",
+      "id": 18,
+      "formId": "pidgeot-mega",
+      "nameZh": "超級大比鳥",
+      "nameEn": "Pidgeot-Mega",
       "baseSpeed": 121,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10019.png",
-      "usageRankSingle": 4,
-      "usageRankDouble": 4
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/pidgeot-mega.png",
+      "usageRankSingle": 198,
+      "usageRankDouble": 193,
+      "usagePercentSingle": 0.19953,
+      "usagePercentDouble": 0.23225
+    }
+  ],
+  "122": [
+    {
+      "id": 658,
+      "formId": "greninja",
+      "nameZh": "甲賀忍蛙",
+      "nameEn": "Greninja",
+      "baseSpeed": 122,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/greninja.png",
+      "usageRankSingle": 62,
+      "usageRankDouble": 167,
+      "usagePercentSingle": 2.98065,
+      "usagePercentDouble": 0.30873
+    }
+  ],
+  "123": [
+    {
+      "id": 908,
+      "formId": "meowscarada",
+      "nameZh": "魔幻假面喵",
+      "nameEn": "Meowscarada",
+      "baseSpeed": 123,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/meowscarada.png",
+      "usageRankSingle": 5,
+      "usageRankDouble": 62,
+      "usagePercentSingle": 18.67023,
+      "usagePercentDouble": 1.86022
+    },
+    {
+      "id": 715,
+      "formId": "noivern",
+      "nameZh": "音波龍",
+      "nameEn": "Noivern",
+      "baseSpeed": 123,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/noivern.png",
+      "usageRankSingle": 159,
+      "usageRankDouble": 171,
+      "usagePercentSingle": 0.41684,
+      "usagePercentDouble": 0.30202
+    }
+  ],
+  "124": [
+    {
+      "id": 678,
+      "formId": "meowstic-f-mega",
+      "nameZh": "超級超能妙喵 (雌性)",
+      "nameEn": "Meowstic-F-Mega",
+      "baseSpeed": 124,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/meowstic-fmega.png",
+      "usageRankSingle": 292,
+      "usageRankDouble": 224,
+      "usagePercentSingle": 0.01842,
+      "usagePercentDouble": 0.10291
+    },
+    {
+      "id": 678,
+      "formId": "meowstic-m-mega",
+      "nameZh": "超級超能妙喵 (雄性)",
+      "nameEn": "Meowstic-M-Mega",
+      "baseSpeed": 124,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/meowstic-mmega.png",
+      "usageRankSingle": 285,
+      "usageRankDouble": 243,
+      "usagePercentSingle": 0.02561,
+      "usagePercentDouble": 0.08091
+    }
+  ],
+  "125": [
+    {
+      "id": 461,
+      "formId": "weavile",
+      "nameZh": "瑪狃拉",
+      "nameEn": "Weavile",
+      "baseSpeed": 125,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/weavile.png",
+      "usageRankSingle": 129,
+      "usageRankDouble": 72,
+      "usagePercentSingle": 0.65282,
+      "usagePercentDouble": 1.41398
+    }
+  ],
+  "126": [
+    {
+      "id": 663,
+      "formId": "talonflame",
+      "nameZh": "烈箭鷹",
+      "nameEn": "Talonflame",
+      "baseSpeed": 126,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/talonflame.png",
+      "usageRankSingle": 165,
+      "usageRankDouble": 31,
+      "usagePercentSingle": 0.37253,
+      "usagePercentDouble": 5.01785
+    },
+    {
+      "id": 668,
+      "formId": "pyroar-mega",
+      "nameZh": "超級火炎獅",
+      "nameEn": "Pyroar-Mega",
+      "baseSpeed": 126,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/pyroar-mega.gif",
+      "usageRankSingle": 94,
+      "usageRankDouble": 90,
+      "usagePercentSingle": 1.33411,
+      "usagePercentDouble": 0.96142
+    }
+  ],
+  "130": [
+    {
+      "id": 26,
+      "formId": "raichu-mega-y",
+      "nameZh": "超級雷丘 Y",
+      "nameEn": "Raichu-Mega-Y",
+      "baseSpeed": 130,
+      "sprite": "https://play.pokemonshowdown.com/sprites/ani/raichu-megay.gif",
+      "usageRankSingle": 21,
+      "usageRankDouble": 12,
+      "usagePercentSingle": 7.0454,
+      "usagePercentDouble": 12.11899
+    },
+    {
+      "id": 94,
+      "formId": "gengar-mega",
+      "nameZh": "超級耿鬼",
+      "nameEn": "Gengar-Mega",
+      "baseSpeed": 130,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/gengar-mega.png",
+      "usageRankSingle": 19,
+      "usageRankDouble": 27,
+      "usagePercentSingle": 7.91596,
+      "usagePercentDouble": 5.40885
+    },
+    {
+      "id": 142,
+      "formId": "aerodactyl",
+      "nameZh": "化石翼龍",
+      "nameEn": "Aerodactyl",
+      "baseSpeed": 130,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/aerodactyl.png",
+      "usageRankSingle": 185,
+      "usageRankDouble": 44,
+      "usagePercentSingle": 0.23654,
+      "usagePercentDouble": 3.64245
+    },
+    {
+      "id": 135,
+      "formId": "jolteon",
+      "nameZh": "雷伊布",
+      "nameEn": "Jolteon",
+      "baseSpeed": 130,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/jolteon.png",
+      "usageRankSingle": 169,
+      "usageRankDouble": 157,
+      "usagePercentSingle": 0.33838,
+      "usagePercentDouble": 0.36856
+    }
+  ],
+  "134": [
+    {
+      "id": 655,
+      "formId": "delphox-mega",
+      "nameZh": "超級妖火紅狐",
+      "nameEn": "Delphox-Mega",
+      "baseSpeed": 134,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/delphox-mega.png",
+      "usageRankSingle": 10,
+      "usageRankDouble": 18,
+      "usagePercentSingle": 12.45065,
+      "usagePercentDouble": 8.95671
     }
   ],
   "135": [
     {
-      "id": 987,
-      "formId": "flutter-mane",
-      "nameZh": "振翼髮",
-      "nameEn": "flutter-mane",
+      "id": 428,
+      "formId": "lopunny-mega",
+      "nameZh": "超級長耳兔",
+      "nameEn": "Lopunny-Mega",
       "baseSpeed": 135,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/987.png",
-      "usageRankSingle": 1,
-      "usageRankDouble": 1
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/lopunny-mega.png",
+      "usageRankSingle": 15,
+      "usageRankDouble": 91,
+      "usagePercentSingle": 8.57798,
+      "usagePercentDouble": 0.92787
+    },
+    {
+      "id": 310,
+      "formId": "manectric-mega",
+      "nameZh": "超級雷電獸",
+      "nameEn": "Manectric-Mega",
+      "baseSpeed": 135,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/manectric-mega.png",
+      "usageRankSingle": 243,
+      "usageRankDouble": 196,
+      "usagePercentSingle": 0.08427,
+      "usagePercentDouble": 0.21406
+    }
+  ],
+  "142": [
+    {
+      "id": 887,
+      "formId": "dragapult",
+      "nameZh": "多龍巴魯托",
+      "nameEn": "Dragapult",
+      "baseSpeed": 142,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/dragapult.png",
+      "usageRankSingle": 27,
+      "usageRankDouble": 66,
+      "usagePercentSingle": 5.86484,
+      "usagePercentDouble": 1.60536
+    },
+    {
+      "id": 658,
+      "formId": "greninja-mega",
+      "nameZh": "超級甲賀忍蛙",
+      "nameEn": "Greninja-Mega",
+      "baseSpeed": 142,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/greninja-mega.png",
+      "usageRankSingle": 29,
+      "usageRankDouble": 107,
+      "usagePercentSingle": 5.77369,
+      "usagePercentDouble": 0.72185
+    }
+  ],
+  "145": [
+    {
+      "id": 254,
+      "formId": "sceptile-mega",
+      "nameZh": "超級蜥蜴王",
+      "nameEn": "Sceptile-Mega",
+      "baseSpeed": 145,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/sceptile-mega.png",
+      "usageRankSingle": 92,
+      "usageRankDouble": 85,
+      "usagePercentSingle": 1.36031,
+      "usagePercentDouble": 1.12974
+    },
+    {
+      "id": 15,
+      "formId": "beedrill-mega",
+      "nameZh": "超級大針蜂",
+      "nameEn": "Beedrill-Mega",
+      "baseSpeed": 145,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/beedrill-mega.png",
+      "usageRankSingle": 125,
+      "usageRankDouble": 191,
+      "usagePercentSingle": 0.71106,
+      "usagePercentDouble": 0.23627
     }
   ],
   "150": [
     {
-      "id": 10194,
-      "formId": "calyrex-shadow",
-      "nameZh": "蕾冠王 (黑馬)",
-      "nameEn": "calyrex-shadow",
+      "id": 142,
+      "formId": "aerodactyl-mega",
+      "nameZh": "超級化石翼龍",
+      "nameEn": "Aerodactyl-Mega",
       "baseSpeed": 150,
-      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10194.png",
-      "usageRankSingle": 14,
-      "usageRankDouble": 14
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/aerodactyl-mega.png",
+      "usageRankSingle": 146,
+      "usageRankDouble": 30,
+      "usagePercentSingle": 0.47776,
+      "usagePercentDouble": 5.08677
+    },
+    {
+      "id": 65,
+      "formId": "alakazam-mega",
+      "nameZh": "超級胡地",
+      "nameEn": "Alakazam-Mega",
+      "baseSpeed": 150,
+      "sprite": "https://play.pokemonshowdown.com/sprites/gen5/alakazam-mega.png",
+      "usageRankSingle": 137,
+      "usageRankDouble": 177,
+      "usagePercentSingle": 0.53925,
+      "usagePercentDouble": 0.28775
     }
   ]
 }
