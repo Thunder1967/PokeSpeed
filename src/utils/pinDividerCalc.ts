@@ -88,10 +88,10 @@ export function formatNature(nature: number, locale: SupportedLocale = getLocale
 export function formatSlotBuffs(slot: SlotState, locale: SupportedLocale = getLocale()): string {
   const isEn = locale === 'en';
   const buffs: string[] = [];
-  if (slot.isTailwind) buffs.push(isEn ? 'Tailwind 🌪️' : '順風 🌪️');
-  if (slot.isScarf) buffs.push(isEn ? 'Scarf 🧣' : '圍巾 🧣');
-  if (slot.isAbilityBoost) buffs.push(isEn ? 'Ability(2x) ⚡' : '特性(2x) ⚡');
-  if (slot.isParalyzed) buffs.push(isEn ? 'Paralysis 🟡' : '麻痺 🟡');
+  if (slot.isTailwind) buffs.push(isEn ? 'Tailwind' : '順風');
+  if (slot.isScarf) buffs.push(isEn ? 'Scarf' : '圍巾');
+  if (slot.isAbilityBoost) buffs.push(isEn ? 'Ability(2x)' : '特性(2x)');
+  if (slot.isParalyzed) buffs.push(isEn ? 'Paralysis' : '麻痺');
   return buffs.length > 0 ? buffs.join(' ') : (isEn ? 'Standard' : '常規狀態');
 }
 

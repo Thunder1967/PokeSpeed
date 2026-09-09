@@ -186,7 +186,7 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
         </label>
         <label class="flex items-center gap-2 bg-white/5 border border-white/5 p-2 rounded-lg cursor-pointer hover:bg-white/10 select-none transition-colors">
           <input type="checkbox" id="${key}-para" class="${theme.accent} rounded">
-          <span id="${key}-para-text">⚡ ${dict.drawer.paralysis}</span>
+          <span id="${key}-para-text" class="flex items-center gap-1">${Icons.paralysis} ${dict.drawer.paralysis}</span>
         </label>
       </div>
     </div>
@@ -586,7 +586,7 @@ export function renderDrawer(container: HTMLElement) {
       if (abText) abText.innerHTML = `${Icons.abilityBoost} ${dict.drawer.speedAbility}`;
 
       const paText = document.getElementById(`${key}-para-text`);
-      if (paText) paText.innerHTML = `⚡ ${dict.drawer.paralysis}`;
+      if (paText) paText.innerHTML = `${Icons.paralysis} ${dict.drawer.paralysis}`;
     });
 
     updateDrawerState();
