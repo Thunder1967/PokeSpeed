@@ -9,6 +9,10 @@ import { SlotState } from '../types/pokemon';
 import { setLocale } from '../i18n';
 
 describe('pinDividerCalc module', () => {
+  beforeEach(() => {
+    setLocale('zh-TW');
+  });
+
   const mockRows: RowSpeedInfo[] = [
     { baseSpeed: 130, dynamicSpeed: 200 },
     { baseSpeed: 100, dynamicSpeed: 167 },
@@ -74,10 +78,6 @@ describe('pinDividerCalc module', () => {
   });
 
   describe('formatSlotTooltip', () => {
-    beforeEach(() => {
-      setLocale('zh-TW');
-    });
-
     it('formats basic slot with standard text', () => {
       const slot: SlotState = {
         baseSpeed: 100,
@@ -97,6 +97,28 @@ describe('pinDividerCalc module', () => {
       expect(result).toContain('努力值: 252 (32)');
       expect(result).toContain('加速 (+10%)');
       expect(result).toContain('常規狀態');
+    });
+
+    it('formats slot in English when locale is en', () => {
+      setLocale('en');
+      const slot: SlotState = {
+        baseSpeed: 100,
+        evs: 32,
+        nature: 1.1,
+        stages: 0,
+        isTailwind: false,
+        isScarf: false,
+        isAbilityBoost: false,
+        abilityMultiplier: 1.0,
+        isParalyzed: false
+      };
+
+      const result = formatSlotTooltip(slot, 'Player A', 167);
+      expect(result).toContain('Player A (Base 100)');
+      expect(result).toContain('Speed: 167');
+      expect(result).toContain('EVs: 252 (32)');
+      expect(result).toContain('+10% (Speed+)');
+      expect(result).toContain('Standard');
     });
 
     it('formats slot with custom pokemon and items, stages, status effects', () => {

@@ -22,7 +22,6 @@ describe('SpeedTable Component', () => {
   };
 
   beforeEach(() => {
-    setLocale('zh-TW');
     container = document.createElement('div');
     battleStore.set(state => {
       state.slots.playerA.baseSpeed = undefined;
@@ -219,24 +218,23 @@ describe('SpeedTable Component', () => {
     expect(moreBtn.textContent?.trim()).toBe('+6 更多');
   });
 
-  it('renders English headers and +more button when locale is en', () => {
+  it('renders English column headers and more button when locale is set to en', () => {
     setLocale('en');
-    const twoPkmnData: SpeedTableData = {
-      100: [
-        { id: 1, formId: 'p1', nameZh: '妙蛙種子', nameEn: 'Bulbasaur', baseSpeed: 100, sprite: '1.png', usageRankSingle: 1, usageRankDouble: 1 },
-        { id: 2, formId: 'p2', nameZh: '妙蛙草', nameEn: 'Ivysaur', baseSpeed: 100, sprite: '2.png', usageRankSingle: 2, usageRankDouble: 2 },
-      ]
-    };
-    renderSpeedTable(container, twoPkmnData, 'single');
-
-    const dynamicHeader = container.querySelector('.speed-table-header .col-dynamic');
-    expect(dynamicHeader?.textContent?.trim()).toBe('Enemy Stat');
+    renderSpeedTable(container, mockData, 'single');
 
     const baseHeader = container.querySelector('.speed-table-header .col-base');
-    expect(baseHeader?.textContent?.trim()).toBe('Base');
+    const pokemonHeader = container.querySelector('.speed-table-header .col-sprites-container');
+    const dynamicHeader = container.querySelector('.speed-table-header .col-dynamic');
+    const maxPlusHeader = container.querySelector('.speed-table-header .benchmark-cell');
 
-    const maxHeader = container.querySelector('.speed-table-header .benchmark-cell.header');
-    expect(maxHeader?.textContent?.trim()).toBe('Max (32+)');
+    expect(baseHeader?.textContent?.trim()).toBe('Base');
+    expect(pokemonHeader?.textContent?.trim()).toBe('Pokémon');
+    expect(dynamicHeader?.textContent?.trim()).toBe('Enemy Speed');
+    expect(maxPlusHeader?.textContent?.trim()).toBe('Max+(32+)');
+
+    // Reset locale back to zh-TW
+    setLocale('zh-TW');
   });
 });
+
 

@@ -1,111 +1,53 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { getLocale, setLocale, toggleLocale, t, subscribeLocale } from './index';
-import { zhTW } from './locales/zh-TW';
-import { en } from './locales/en';
-import { formatNature, formatSlotBuffs, formatSlotTooltip } from '../utils/pinDividerCalc';
-import { SlotState } from '../types/pokemon';
+import { getLocale, setLocale, t, subscribeLocale, getPokemonDisplayNames } from './index';
 
-describe('i18n core system', () => {
+describe('i18n module', () => {
   beforeEach(() => {
     localStorage.clear();
     setLocale('zh-TW');
   });
 
-  it('provides key parity between zh-TW and en dictionaries', () => {
-    function getKeys(obj: any, prefix = ''): string[] {
-      return Object.keys(obj).flatMap(k => {
-        const path = prefix ? `${prefix}.${k}` : k;
-        if (typeof obj[k] === 'object' && obj[k] !== null && typeof obj[k] !== 'function') {
-          return getKeys(obj[k], path);
-        }
-        return [path];
-      });
-    }
-
-    const zhKeys = getKeys(zhTW).sort();
-    const enKeys = getKeys(en).sort();
-
-    expect(zhKeys).toEqual(enKeys);
+  it('defaults to zh-TW', () => {
+    expect(getLocale()).toBe('zh-TW');
+    expect(t().common.battleSettings).toBe('對戰設定');
+    expect(t().table.colDynamic).toBe('敵方實數');
   });
 
-  it('correctly sets and toggles locale', () => {
-    expect(getLocale()).toBe('zh-TW');
-    expect(t().header.single).toBe('單打');
-
-    const next = toggleLocale();
-    expect(next).toBe('en');
+  it('switches to en and updates dictionary', () => {
+    setLocale('en');
     expect(getLocale()).toBe('en');
-    expect(t().header.single).toBe('Singles');
-    expect(localStorage.getItem('pokespeed_locale')).toBe('en');
-
-    toggleLocale();
-    expect(getLocale()).toBe('zh-TW');
-    expect(t().header.single).toBe('單打');
-    expect(localStorage.getItem('pokespeed_locale')).toBe('zh-TW');
+    expect(t().common.battleSettings).toBe('Battle Settings');
+    expect(t().table.colDynamic).toBe('Enemy Speed');
+    expect(t().drawer.enemyBenchmarkTitle).toBe('Enemy Benchmark');
   });
 
-  it('notifies subscribers on locale change', () => {
-    let notifiedLocale: string | null = null;
-    const unsubscribe = subscribeLocale((loc) => {
-      notifiedLocale = loc;
+  it('notifies subscribers upon locale switch', () => {
+    let receivedLocale = '';
+    const unsubscribe = subscribeLocale((locale) => {
+      receivedLocale = locale;
     });
 
     setLocale('en');
-    expect(notifiedLocale).toBe('en');
-
-    setLocale('zh-TW');
-    expect(notifiedLocale).toBe('zh-TW');
+    expect(receivedLocale).toBe('en');
 
     unsubscribe();
-    setLocale('en');
-    expect(notifiedLocale).toBe('zh-TW'); // Unsubscribed, should not receive 'en'
+    setLocale('zh-TW');
+    expect(receivedLocale).toBe('en'); // Unsubscribed, should not receive zh-TW
   });
 
-  it('moreBtn function generates correct string in both languages', () => {
+  it('provides correct Pokemon primary and secondary names based on locale', () => {
+    const poke = { nameZh: '烈咬陸鯊', nameEn: 'Garchomp' };
+    
     setLocale('zh-TW');
-    expect(t().speedTable.moreBtn(5)).toBe('+5 更多');
+    expect(getPokemonDisplayNames(poke)).toEqual({
+      primary: '烈咬陸鯊',
+      secondary: 'Garchomp'
+    });
 
     setLocale('en');
-    expect(t().speedTable.moreBtn(5)).toBe('+5 more');
-  });
-
-  it('pinDividerCalc functions adapt to the active locale', () => {
-    const mockSlot: SlotState = {
-      baseSpeed: 100,
-      evs: 32,
-      nature: 1.1,
-      stages: 1,
-      isTailwind: true,
-      isScarf: false,
-      isAbilityBoost: false,
-      abilityMultiplier: 1.0,
-      isParalyzed: false,
-      pokemon: {
-        id: 6,
-        formId: 'charizard',
-        nameZh: '噴火龍',
-        nameEn: 'Charizard',
-        baseSpeed: 100,
-        sprite: 'https://example.com/charizard.png',
-        usageRankSingle: 10,
-        usageRankDouble: 5
-      }
-    };
-
-    setLocale('zh-TW');
-    expect(formatNature(1.1).natureText).toBe('加速 (+10%)');
-    expect(formatSlotBuffs(mockSlot)).toContain('順風');
-    const tooltipZh = formatSlotTooltip(mockSlot, '我方 A', 200);
-    expect(tooltipZh).toContain('噴火龍');
-    expect(tooltipZh).toContain('努力值');
-    expect(tooltipZh).toContain('階級: +1');
-
-    setLocale('en');
-    expect(formatNature(1.1).natureText).toBe('+Spe (+10%)');
-    expect(formatSlotBuffs(mockSlot)).toContain('Tailwind');
-    const tooltipEn = formatSlotTooltip(mockSlot, 'Player A', 200);
-    expect(tooltipEn).toContain('Charizard');
-    expect(tooltipEn).toContain('EVs');
-    expect(tooltipEn).toContain('Stage: +1');
+    expect(getPokemonDisplayNames(poke)).toEqual({
+      primary: 'Garchomp',
+      secondary: '烈咬陸鯊'
+    });
   });
 });

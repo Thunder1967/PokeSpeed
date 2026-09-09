@@ -1,71 +1,108 @@
-import { Locale, TranslationSchema } from './types';
+import { SupportedLocale, TranslationSchema } from './types';
 import { zhTW } from './locales/zh-TW';
 import { en } from './locales/en';
 
 export * from './types';
 
-const STORAGE_KEY = 'pokespeed_locale';
+const STORAGE_KEY = 'pokespeed_lang';
 
-const dictionaries: Record<Locale, TranslationSchema> = {
+export interface LocaleOption {
+  code: SupportedLocale;
+  label: string;
+}
+
+export const SUPPORTED_LOCALES: LocaleOption[] = [
+  { code: 'zh-TW', label: '繁體中文' },
+  { code: 'en', label: 'English' }
+];
+
+const dictionaries: Record<SupportedLocale, TranslationSchema> = {
   'zh-TW': zhTW,
   'en': en
 };
 
-function detectBrowserLocale(): Locale {
-  if (typeof navigator === 'undefined') return 'zh-TW';
-  const langs = navigator.languages || [navigator.language || ''];
-  for (const lang of langs) {
-    if (lang.toLowerCase().startsWith('zh')) {
-      return 'zh-TW';
-    }
-  }
-  return 'en';
-}
+type LocaleListener = (locale: SupportedLocale, t: TranslationSchema) => void;
 
-function getInitialLocale(): Locale {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    const saved = localStorage.getItem(STORAGE_KEY) as Locale | null;
-    if (saved && (saved === 'zh-TW' || saved === 'en')) {
+function getInitialLocale(): SupportedLocale {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'zh-TW' || saved === 'en') {
       return saved;
     }
+  } catch {
+    // ignore storage access error
   }
-  return detectBrowserLocale();
+  return 'zh-TW';
 }
 
-let currentLocale: Locale = getInitialLocale();
-const listeners = new Set<(locale: Locale) => void>();
+let currentLocale: SupportedLocale = getInitialLocale();
+const listeners: Set<LocaleListener> = new Set();
 
-export function getLocale(): Locale {
+/**
+ * Returns the currently active locale.
+ */
+export function getLocale(): SupportedLocale {
   return currentLocale;
 }
 
-export function setLocale(locale: Locale): void {
-  if (currentLocale === locale) return;
+/**
+ * Returns the translation dictionary for the active or given locale.
+ */
+export function t(locale: SupportedLocale = currentLocale): TranslationSchema {
+  return dictionaries[locale] || dictionaries['zh-TW'];
+}
+
+/**
+ * Switches the current locale, stores the preference, and notifies listeners.
+ */
+export function setLocale(locale: SupportedLocale): void {
+  if (locale === currentLocale && dictionaries[locale]) return;
+  if (!dictionaries[locale]) return;
+
   currentLocale = locale;
-  if (typeof window !== 'undefined' && window.localStorage) {
+  try {
     localStorage.setItem(STORAGE_KEY, locale);
+  } catch {
+    // ignore storage access error
   }
-  if (typeof document !== 'undefined' && document.documentElement) {
-    document.documentElement.lang = locale;
-  }
-  for (const listener of listeners) {
-    listener(currentLocale);
-  }
+
+  const dict = t(currentLocale);
+  listeners.forEach(fn => {
+    try {
+      fn(currentLocale, dict);
+    } catch (err) {
+      console.error('[i18n] listener error:', err);
+    }
+  });
 }
 
-export function toggleLocale(): Locale {
-  const next = currentLocale === 'zh-TW' ? 'en' : 'zh-TW';
-  setLocale(next);
-  return next;
-}
-
-export function t(): TranslationSchema {
-  return dictionaries[currentLocale] || dictionaries['zh-TW'];
-}
-
-export function subscribeLocale(listener: (locale: Locale) => void): () => void {
+/**
+ * Subscribes to locale change events.
+ */
+export function subscribeLocale(listener: LocaleListener): () => void {
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
+  };
+}
+
+/**
+ * Helper to get primary and secondary names of a Pokemon based on locale.
+ * In 'zh-TW': primary = nameZh, secondary = nameEn
+ * In 'en':    primary = nameEn, secondary = nameZh
+ */
+export function getPokemonDisplayNames(
+  pokemon: { nameZh: string; nameEn: string },
+  locale: SupportedLocale = currentLocale
+): { primary: string; secondary: string } {
+  if (locale === 'en') {
+    return {
+      primary: pokemon.nameEn,
+      secondary: pokemon.nameZh
+    };
+  }
+  return {
+    primary: pokemon.nameZh,
+    secondary: pokemon.nameEn
   };
 }

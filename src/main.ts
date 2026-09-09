@@ -1,12 +1,13 @@
 import './styles/main.css';
 import { renderHeader } from './components/Header';
 import { renderSpeedTable } from './components/SpeedTable';
+import { renderAboutPage } from './components/AboutPage';
 import { renderDrawer, updateDrawerBounds } from './components/Drawer';
 import { battleStore } from './store/battleState';
 import { SpeedTableData } from './types/pokemon';
 import championMB from './data/formats/champion-m-b.json';
 import { initImageFallback } from './utils/imageFallback';
-import { t, getLocale, subscribeLocale } from './i18n';
+import { subscribeLocale } from './i18n';
 
 initImageFallback();
 
@@ -14,41 +15,61 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div class="min-h-screen p-4 flex flex-col items-center gap-4">
     <div id="header-mount" class="w-full"></div>
     <div id="speed-table-mount" class="w-full"></div>
+    <div id="about-mount" class="w-full hidden"></div>
   </div>
   <div id="drawer-mount"></div>
 `;
 
-let cleanupTable: () => void;
-let currentMode = battleStore.get().isDoubleBattle;
+let cleanupTable: (() => void) | undefined;
+let cleanupAbout: (() => void) | null = null;
+let currentMode = false; // false = single, true = double
+
+const tableMount = document.getElementById('speed-table-mount')!;
+const aboutMount = document.getElementById('about-mount')!;
 
 function updateTable(isDouble: boolean) {
   if (cleanupTable) cleanupTable();
   cleanupTable = renderSpeedTable(
-    document.getElementById('speed-table-mount')!,
+    tableMount,
     championMB as unknown as SpeedTableData,
     isDouble ? 'double' : 'single'
   );
   updateDrawerBounds();
 }
 
-function applyLocale() {
-  const meta = t().meta;
-  document.title = meta.title;
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) {
-    metaDesc.setAttribute('content', meta.description);
+function handleRoute() {
+  const isAbout = window.location.hash === '#/about';
+  if (isAbout) {
+    tableMount.style.display = 'none';
+    aboutMount.style.display = 'block';
+    if (!cleanupAbout) {
+      cleanupAbout = renderAboutPage(aboutMount);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    aboutMount.style.display = 'none';
+    tableMount.style.display = 'block';
+    if (cleanupAbout) {
+      cleanupAbout();
+      cleanupAbout = null;
+      aboutMount.innerHTML = '';
+    }
+    updateDrawerBounds();
   }
-  document.documentElement.lang = getLocale();
-
-  renderHeader(document.getElementById('header-mount')!);
-  updateTable(battleStore.get().isDoubleBattle);
-  renderDrawer(document.getElementById('drawer-mount')!);
 }
 
-// Initial full render with detected locale
-applyLocale();
+// Initial table render
+updateTable(battleStore.get().isDoubleBattle);
 
-// Listen for mode changes (single / double)
+// Render header & battle settings drawer
+renderHeader(document.getElementById('header-mount')!);
+renderDrawer(document.getElementById('drawer-mount')!);
+
+// Hash routing
+window.addEventListener('hashchange', handleRoute);
+handleRoute();
+
+// Listen for mode changes
 battleStore.subscribe(state => {
   if (state.isDoubleBattle !== currentMode) {
     currentMode = state.isDoubleBattle;
@@ -56,7 +77,7 @@ battleStore.subscribe(state => {
   }
 });
 
-// Listen for locale changes (zh-TW <-> en)
+// Listen for locale changes to re-render table with new language
 subscribeLocale(() => {
-  applyLocale();
+  updateTable(battleStore.get().isDoubleBattle);
 });

@@ -7,7 +7,6 @@ import championMB from '../data/formats/champion-m-b.json';
 import { DEFAULT_SUBSTITUTE_SPRITE } from '../utils/pinDividerCalc';
 import { searchPokemon, getAllPokemon } from '../utils/pokemonSearch';
 import { escapeHtml, clamp, sanitizeUrl } from '../utils/security';
-import { t, getLocale } from '../i18n';
 
 // Flatten all Pokemon from the format data
 const allPokemon = getAllPokemon(championMB as unknown as SpeedTableData);
@@ -21,9 +20,11 @@ function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): T {
   }) as unknown as T;
 }
 
+
+import { t, getLocale, subscribeLocale, TranslationSchema, SupportedLocale } from '../i18n';
+
 interface SlotUIConfig {
   key: 'enemy' | 'playerA' | 'playerB';
-  title: string;
   theme: {
     title: string;
     border: string;
@@ -34,82 +35,84 @@ interface SlotUIConfig {
   isPlayerSlot: boolean;
 }
 
-function getSlotConfigs(): SlotUIConfig[] {
-  const d = t().drawer;
-  return [
-    {
-      key: 'enemy',
-      title: d.enemyTitle,
-      theme: {
-        title: 'text-red-400',
-        border: 'border-red-500/30',
-        accent: 'accent-red-500',
-        activeNature: 'data-[active=true]:border-red-500 data-[active=true]:bg-red-500/20 data-[active=true]:text-red-300',
-        badge: 'bg-red-500/20 text-red-300'
-      },
-      isPlayerSlot: false
+const slotConfigs: SlotUIConfig[] = [
+  {
+    key: 'enemy',
+    theme: {
+      title: 'text-red-400',
+      border: 'border-red-500/30',
+      accent: 'accent-red-500',
+      activeNature: 'data-[active=true]:border-red-500 data-[active=true]:bg-red-500/20 data-[active=true]:text-red-300',
+      badge: 'bg-red-500/20 text-red-300'
     },
-    {
-      key: 'playerA',
-      title: d.playerATitle,
-      theme: {
-        title: 'text-emerald-400',
-        border: 'border-emerald-500/30',
-        accent: 'accent-emerald-500',
-        activeNature: 'data-[active=true]:border-emerald-500 data-[active=true]:bg-emerald-500/20 data-[active=true]:text-emerald-300',
-        badge: 'bg-emerald-500/20 text-emerald-300'
-      },
-      isPlayerSlot: true
+    isPlayerSlot: false
+  },
+  {
+    key: 'playerA',
+    theme: {
+      title: 'text-emerald-400',
+      border: 'border-emerald-500/30',
+      accent: 'accent-emerald-500',
+      activeNature: 'data-[active=true]:border-emerald-500 data-[active=true]:bg-emerald-500/20 data-[active=true]:text-emerald-300',
+      badge: 'bg-emerald-500/20 text-emerald-300'
     },
-    {
-      key: 'playerB',
-      title: d.playerBTitle,
-      theme: {
-        title: 'text-purple-400',
-        border: 'border-purple-500/30',
-        accent: 'accent-purple-500',
-        activeNature: 'data-[active=true]:border-purple-500 data-[active=true]:bg-purple-500/20 data-[active=true]:text-purple-300',
-        badge: 'bg-purple-500/20 text-purple-300'
-      },
-      isPlayerSlot: true
-    }
-  ];
+    isPlayerSlot: true
+  },
+  {
+    key: 'playerB',
+    theme: {
+      title: 'text-purple-400',
+      border: 'border-purple-500/30',
+      accent: 'accent-purple-500',
+      activeNature: 'data-[active=true]:border-purple-500 data-[active=true]:bg-purple-500/20 data-[active=true]:text-purple-300',
+      badge: 'bg-purple-500/20 text-purple-300'
+    },
+    isPlayerSlot: true
+  }
+];
+
+function getSlotTitle(key: 'enemy' | 'playerA' | 'playerB', dict: TranslationSchema): string {
+  if (key === 'enemy') return dict.drawer.enemyBenchmarkTitle;
+  if (key === 'playerA') return dict.drawer.playerATitle;
+  return dict.drawer.playerBTitle;
 }
 
 function renderSlotHTML(cfg: SlotUIConfig): string {
-  const { key, title, theme, isPlayerSlot } = cfg;
-  const d = t().drawer;
+  const { key, theme, isPlayerSlot } = cfg;
+  const dict = t();
+  const title = getSlotTitle(key, dict);
+
   return `
     <div id="${key}-section" class="bg-white/[0.03] border ${theme.border} rounded-xl p-3.5 sm:p-4 flex flex-col gap-3.5 shadow-lg backdrop-blur-sm transition-all ${key === 'playerB' ? 'hidden' : ''}">
       <div class="flex justify-between items-center border-b ${theme.border} pb-2.5">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full ${key === 'enemy' ? 'bg-red-400' : key === 'playerA' ? 'bg-emerald-400' : 'bg-purple-400'} shadow-sm"></span>
-          <h3 class="text-sm sm:text-base font-bold ${theme.title} tracking-wide">${title}</h3>
+          <h3 id="${key}-slot-title" class="text-sm sm:text-base font-bold ${theme.title} tracking-wide">${title}</h3>
         </div>
-        ${isPlayerSlot ? `<span id="${key}-speed-badge" class="text-xs px-2.5 py-0.5 rounded-md font-mono font-bold ${theme.badge} border border-white/10 shadow-sm">${d.speedActualBadge}--</span>` : `<span class="text-xs px-2 py-0.5 rounded font-medium bg-red-500/20 text-red-300 border border-red-500/30">${d.enemyBenchmarkBadge}</span>`}
+        ${isPlayerSlot ? `<span id="${key}-speed-badge" class="text-xs px-2.5 py-0.5 rounded-md font-mono font-bold ${theme.badge} border border-white/10 shadow-sm">${dict.drawer.realSpeedBadge('--')}</span>` : `<span id="${key}-benchmark-badge" class="text-xs px-2 py-0.5 rounded font-medium bg-red-500/20 text-red-300 border border-red-500/30">${dict.drawer.speedBenchmarkBadge}</span>`}
       </div>
       
       ${isPlayerSlot ? `
       <div>
         <div class="flex justify-between text-xs text-gray-400 mb-1.5 font-medium">
-          <span>${d.myPokemon}</span>
-          <span class="text-gray-500">${d.searchPrompt}</span>
+          <span id="${key}-pokemon-label">${dict.drawer.selectedPokemon}</span>
+          <span id="${key}-search-hint" class="text-gray-500">${dict.drawer.searchHint}</span>
         </div>
         
         <!-- Unselected state container -->
         <div id="${key}-pokemon-unselected" class="flex flex-col gap-2 p-2.5 bg-black/40 border border-dashed border-white/15 rounded-lg">
           <div class="flex items-center gap-2.5">
             <img src="${DEFAULT_SUBSTITUTE_SPRITE}" 
-                 alt="${escapeHtml(d.notSelected)}" class="w-8 h-8 object-contain opacity-70 p-0.5 bg-white/5 rounded-md flex-shrink-0" />
+                 alt="${dict.drawer.notSelected}" class="w-8 h-8 object-contain opacity-70 p-0.5 bg-white/5 rounded-md flex-shrink-0" />
             <div class="flex flex-col flex-1 min-w-0">
-              <span class="text-xs font-semibold text-gray-300">${d.notSelected}</span>
-              <span class="text-[11px] text-gray-500">${d.selectViaSearchPrompt}</span>
+              <span id="${key}-unselected-title" class="text-xs font-semibold text-gray-300">${dict.drawer.notSelected}</span>
+              <span id="${key}-unselected-desc" class="text-[11px] text-gray-500">${dict.drawer.clickToSearchHint}</span>
             </div>
           </div>
           <div class="relative w-full">
             <input type="text" id="${key}-search-input" 
                    maxlength="50"
-                   placeholder="${escapeHtml(d.searchPlaceholder)}" 
+                   placeholder="${dict.drawer.searchPokemonPlaceholder}" 
                    autocomplete="off"
                    class="w-full bg-black/60 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-blue-400 transition-colors" />
             <div id="${key}-search-dropdown" 
@@ -122,13 +125,13 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
         <div id="${key}-pokemon-selected" class="hidden items-center justify-between p-2.5 bg-black/50 border ${theme.border} rounded-lg shadow-sm">
           <div class="flex items-center gap-2.5 min-w-0">
             <img id="${key}-selected-img" src="${DEFAULT_SUBSTITUTE_SPRITE}" 
-                 alt="Pokemon" 
+                 alt="Selected" 
                  class="w-10 h-10 object-contain p-0.5 bg-black/40 rounded-lg border border-white/10 flex-shrink-0" />
             <div class="flex flex-col min-w-0">
               <div class="flex items-center gap-1.5">
                 <span id="${key}-selected-name-zh" class="text-xs sm:text-sm font-bold text-white truncate">--</span>
                 <span id="${key}-selected-base" class="text-[11px] px-1.5 py-0.2 rounded font-mono font-bold bg-white/10 text-gray-200 whitespace-nowrap">
-                  ${t().header.speed} --
+                  ${dict.common.searchSpeedLabel} --
                 </span>
               </div>
               <span id="${key}-selected-name-en" class="text-[11px] text-gray-400 truncate">--</span>
@@ -136,8 +139,8 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
           </div>
           <button type="button" id="${key}-clear-pokemon" 
                   class="text-xs px-2.5 py-1 rounded-md bg-white/5 hover:bg-red-500/20 text-gray-300 hover:text-red-300 border border-white/10 transition-colors flex-shrink-0 cursor-pointer ml-2"
-                  title="${escapeHtml(d.changeBtn)}">
-            ${escapeHtml(d.changeBtn)}
+                  title="Clear Pokémon">
+            <span id="${key}-clear-pokemon-text">${dict.drawer.clearSelection}</span>
           </button>
         </div>
       </div>
@@ -145,24 +148,24 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
 
       <div>
         <div class="flex justify-between text-xs text-gray-400 mb-1">
-          <span>${d.evLabel} (0-32)</span>
+          <span id="${key}-evs-label">${dict.drawer.evs}</span>
           <span class="font-mono text-xs font-bold text-gray-200" id="${key}-evs-val">32 (252 EV)</span>
         </div>
         <input type="range" id="${key}-evs" min="0" max="32" value="32" class="w-full ${theme.accent} cursor-pointer">
       </div>
 
       <div>
-        <label class="block text-xs text-gray-400 mb-1">${d.natureLabel}</label>
+        <label id="${key}-nature-label" class="block text-xs text-gray-400 mb-1">${dict.drawer.nature}</label>
         <div class="grid grid-cols-3 gap-1.5">
-          <button type="button" class="${key}-nature py-1.5 px-1 text-[11px] sm:text-xs font-medium rounded-lg border border-white/10 ${theme.activeNature} bg-white/5 hover:bg-white/10 transition-colors text-center cursor-pointer" data-val="1.1">${escapeHtml(d.natureBoost)}</button>
-          <button type="button" class="${key}-nature py-1.5 px-1 text-[11px] sm:text-xs font-medium rounded-lg border border-white/10 ${theme.activeNature} bg-white/5 hover:bg-white/10 transition-colors text-center cursor-pointer" data-val="1.0">${escapeHtml(d.natureNeutral)}</button>
-          <button type="button" class="${key}-nature py-1.5 px-1 text-[11px] sm:text-xs font-medium rounded-lg border border-white/10 ${theme.activeNature} bg-white/5 hover:bg-white/10 transition-colors text-center cursor-pointer" data-val="0.9">${escapeHtml(d.natureHinder)}</button>
+          <button type="button" id="${key}-nature-btn-11" class="${key}-nature py-1.5 px-1 text-[11px] sm:text-xs font-medium rounded-lg border border-white/10 ${theme.activeNature} bg-white/5 hover:bg-white/10 transition-colors text-center" data-val="1.1">${dict.drawer.naturePositive}</button>
+          <button type="button" id="${key}-nature-btn-10" class="${key}-nature py-1.5 px-1 text-[11px] sm:text-xs font-medium rounded-lg border border-white/10 ${theme.activeNature} bg-white/5 hover:bg-white/10 transition-colors text-center" data-val="1.0">${dict.drawer.natureNeutral}</button>
+          <button type="button" id="${key}-nature-btn-09" class="${key}-nature py-1.5 px-1 text-[11px] sm:text-xs font-medium rounded-lg border border-white/10 ${theme.activeNature} bg-white/5 hover:bg-white/10 transition-colors text-center" data-val="0.9">${dict.drawer.natureNegative}</button>
         </div>
       </div>
 
       <div>
         <div class="flex justify-between text-xs text-gray-400 mb-1">
-          <span>${d.stagesLabel} (-6 ~ +6)</span>
+          <span id="${key}-stages-label">${dict.drawer.stages}</span>
           <span class="font-mono text-xs font-bold text-gray-200" id="${key}-stages-val">0</span>
         </div>
         <input type="range" id="${key}-stages" min="-6" max="6" value="0" class="w-full ${theme.accent} cursor-pointer">
@@ -171,47 +174,41 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
       <div class="grid grid-cols-2 gap-2 text-xs">
         <label class="flex items-center gap-2 bg-white/5 border border-white/5 p-2 rounded-lg cursor-pointer hover:bg-white/10 select-none transition-colors">
           <input type="checkbox" id="${key}-tailwind" class="${theme.accent} rounded">
-          <span class="flex items-center gap-1">${Icons.tailwind} ${escapeHtml(d.tailwind)}</span>
+          <span id="${key}-tailwind-text" class="flex items-center gap-1">${Icons.tailwind} ${dict.drawer.tailwind}</span>
         </label>
         <label class="flex items-center gap-2 bg-white/5 border border-white/5 p-2 rounded-lg cursor-pointer hover:bg-white/10 select-none transition-colors">
           <input type="checkbox" id="${key}-scarf" class="${theme.accent} rounded">
-          <span class="flex items-center gap-1">${Icons.scarf} ${escapeHtml(d.scarf)}</span>
+          <span id="${key}-scarf-text" class="flex items-center gap-1">${Icons.scarf} ${dict.drawer.choiceScarf}</span>
         </label>
         <label class="flex items-center gap-2 bg-white/5 border border-white/5 p-2 rounded-lg cursor-pointer hover:bg-white/10 select-none transition-colors">
           <input type="checkbox" id="${key}-ability" class="${theme.accent} rounded">
-          <span class="flex items-center gap-1">${Icons.abilityBoost} ${escapeHtml(d.ability)}</span>
+          <span id="${key}-ability-text" class="flex items-center gap-1">${Icons.abilityBoost} ${dict.drawer.speedAbility}</span>
         </label>
         <label class="flex items-center gap-2 bg-white/5 border border-white/5 p-2 rounded-lg cursor-pointer hover:bg-white/10 select-none transition-colors">
           <input type="checkbox" id="${key}-para" class="${theme.accent} rounded">
-          <span>⚡ ${escapeHtml(d.paralysis)}</span>
+          <span id="${key}-para-text">⚡ ${dict.drawer.paralysis}</span>
         </label>
       </div>
     </div>
   `;
 }
 
-let isDrawerOpen = false;
-
 export function renderDrawer(container: HTMLElement) {
-  const d = t().drawer;
-  const isEn = getLocale() === 'en';
-  const slotConfigs = getSlotConfigs();
-
   const html = `
-    <div id="settings-drawer" class="fixed top-0 right-0 h-full bg-[#0f1219] border-l border-white/10 shadow-2xl transform ${isDrawerOpen ? '' : 'translate-x-full'} transition-transform duration-300 ease-out z-50 flex flex-col drawer-double">
+    <div id="settings-drawer" class="fixed top-0 right-0 h-full bg-[#0f1219] border-l border-white/10 shadow-2xl transform translate-x-full transition-transform duration-300 ease-out z-50 flex flex-col drawer-double">
       <div class="p-4 border-b border-white/10 flex justify-between items-center bg-black/60 flex-shrink-0">
         <div class="flex items-center gap-3">
           <h2 class="text-base sm:text-lg font-bold tracking-wide text-white flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            ${escapeHtml(d.title)}
+            <span id="drawer-title-text">${t().drawer.title}</span>
           </h2>
           <span id="drawer-mode-badge" class="text-xs px-2.5 py-0.5 rounded-full font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
-            ${isEn ? 'Doubles 3 Benchmarks' : '雙打 3 基準'}
+            ${getLocale() === 'en' ? 'Doubles (3 Slots)' : '雙打 3 基準'}
           </span>
         </div>
 
         <button id="close-drawer" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300 bg-white/5 hover:bg-white/15 hover:text-white border border-white/10 transition-colors cursor-pointer active:scale-95">
-          <span>${isEn ? 'Close' : '收起設定'}</span>
+          <span id="close-drawer-text">${t().drawer.close}</span>
           <span class="text-sm">✕</span>
         </button>
       </div>
@@ -223,7 +220,7 @@ export function renderDrawer(container: HTMLElement) {
       </div>
     </div>
     
-    <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 ${isDrawerOpen ? '' : 'hidden opacity-0'} transition-opacity duration-300 md:hidden"></div>
+    <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 md:hidden"></div>
   `;
 
   container.innerHTML = html;
@@ -231,6 +228,8 @@ export function renderDrawer(container: HTMLElement) {
   const drawer = document.getElementById('settings-drawer')!;
   const backdrop = document.getElementById('drawer-backdrop')!;
   const closeBtn = document.getElementById('close-drawer')!;
+
+  let isDrawerOpen = false;
 
   function closeDrawer() {
     isDrawerOpen = false;
@@ -265,6 +264,7 @@ export function renderDrawer(container: HTMLElement) {
   (window as any).closeSettingsDrawer = closeDrawer;
   (window as any).toggleSettingsDrawer = toggleDrawer;
 
+  // rAF-throttled version of updateDrawerBounds to avoid layout thrashing on scroll
   let boundsRafPending = false;
   const scheduleUpdateDrawerBounds = () => {
     if (boundsRafPending) return;
@@ -278,26 +278,26 @@ export function renderDrawer(container: HTMLElement) {
   window.addEventListener('resize', scheduleUpdateDrawerBounds, { passive: true });
   window.addEventListener('scroll', scheduleUpdateDrawerBounds, { passive: true });
 
+  // Handle Esc key to close drawer
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isDrawerOpen) {
       closeDrawer();
     }
   });
 
-  const currentState = battleStore.get();
-
   // Setup bindings for each slot
   slotConfigs.forEach(cfg => {
     const { key, isPlayerSlot } = cfg;
-    const currentSlot = currentState.slots[key];
 
     // Pokemon search & selector for playerA and playerB
     if (isPlayerSlot) {
       const searchInput = document.getElementById(`${key}-search-input`) as HTMLInputElement;
       const searchDropdown = document.getElementById(`${key}-search-dropdown`);
       const clearBtn = document.getElementById(`${key}-clear-pokemon`);
+
       let currentMatches: PokemonSpeedData[] = [];
 
+      // Search input handler (debounced to reduce work during fast typing)
       const handleSearchInput = debounce((query: string) => {
         if (!query.trim()) {
           currentMatches = [];
@@ -309,28 +309,30 @@ export function renderDrawer(container: HTMLElement) {
         currentMatches = searchPokemon(allPokemon, query, isDouble, 6);
 
         if (currentMatches.length > 0 && searchDropdown) {
+          const locale = getLocale();
+          const isEn = locale === 'en';
           searchDropdown.innerHTML = currentMatches.map(p => {
-            const primaryName = isEn ? escapeHtml(p.nameEn) : escapeHtml(p.nameZh);
-            const secondaryName = isEn ? escapeHtml(p.nameZh) : escapeHtml(p.nameEn);
+            const primaryName = isEn ? p.nameEn : p.nameZh;
+            const secondaryName = isEn ? p.nameZh : p.nameEn;
             return `
               <div class="slot-search-item p-2 hover:bg-white/10 cursor-pointer flex items-center justify-between gap-2 transition-colors" 
                    data-form-id="${escapeHtml(p.formId)}">
                 <div class="flex items-center gap-2 min-w-0">
-                  <img src="${sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" class="w-7 h-7 object-contain flex-shrink-0" alt="${primaryName}" />
+                  <img src="${sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" class="w-7 h-7 object-contain flex-shrink-0" alt="${escapeHtml(primaryName)}" />
                   <div class="flex flex-col min-w-0">
-                    <span class="text-xs font-bold text-gray-200 truncate">${primaryName}</span>
-                    <span class="text-[10px] text-gray-400 truncate">${secondaryName}</span>
+                    <span class="text-xs font-bold text-gray-200 truncate">${escapeHtml(primaryName)}</span>
+                    <span class="text-[10px] text-gray-400 truncate">${escapeHtml(secondaryName)}</span>
                   </div>
                 </div>
                 <span class="text-xs font-mono font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded flex-shrink-0">
-                  ${escapeHtml(t().header.speed)} ${p.baseSpeed}
+                  ${t().common.searchSpeedLabel} ${p.baseSpeed}
                 </span>
               </div>
             `;
           }).join('');
           searchDropdown.classList.remove('hidden');
         } else if (searchDropdown) {
-          searchDropdown.innerHTML = `<div class="p-2.5 text-xs text-gray-500 text-center">${escapeHtml(d.noResults)}</div>`;
+          searchDropdown.innerHTML = `<div class="p-2.5 text-xs text-gray-500 text-center">${escapeHtml(t().common.searchNoResults)}</div>`;
           searchDropdown.classList.remove('hidden');
         }
       }, 150);
@@ -339,6 +341,7 @@ export function renderDrawer(container: HTMLElement) {
         handleSearchInput((e.target as HTMLInputElement).value);
       });
 
+      // Handle Enter key on drawer search input
       searchInput?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           if (currentMatches.length > 0) {
@@ -353,6 +356,7 @@ export function renderDrawer(container: HTMLElement) {
         }
       });
 
+      // Item selection from dropdown
       searchDropdown?.addEventListener('click', (e) => {
         const item = (e.target as HTMLElement).closest('.slot-search-item') as HTMLElement;
         if (item) {
@@ -369,6 +373,7 @@ export function renderDrawer(container: HTMLElement) {
         }
       });
 
+      // Clear button
       clearBtn?.addEventListener('click', () => {
         battleStore.set(state => {
           state.slots[key].pokemon = null;
@@ -377,6 +382,7 @@ export function renderDrawer(container: HTMLElement) {
         setTimeout(() => searchInput?.focus(), 50);
       });
 
+      // Close dropdown when clicking outside
       document.addEventListener('click', (e) => {
         if (!searchInput?.contains(e.target as Node) && !searchDropdown?.contains(e.target as Node)) {
           searchDropdown?.classList.add('hidden');
@@ -387,11 +393,6 @@ export function renderDrawer(container: HTMLElement) {
     // EVs slider
     const evsInput = document.getElementById(`${key}-evs`) as HTMLInputElement;
     const evsVal = document.getElementById(`${key}-evs-val`)!;
-    if (currentSlot) {
-      evsInput.value = String(currentSlot.evs);
-      const actualEv = currentSlot.evs === 32 ? 252 : (currentSlot.evs === 0 ? 0 : currentSlot.evs * 8 - 4);
-      evsVal.textContent = `${currentSlot.evs} (${actualEv} EV)`;
-    }
     evsInput.addEventListener('input', (e) => {
       const rawVal = parseInt((e.target as HTMLInputElement).value, 10);
       const val = clamp(rawVal, 0, 32, 32);
@@ -413,93 +414,78 @@ export function renderDrawer(container: HTMLElement) {
         battleStore.set(state => state.slots[key].nature = safeNature);
       });
     });
-    // Set active nature button based on state
-    const currentNature = currentSlot?.nature ?? 1.1;
-    natureBtns.forEach(b => {
-      if (parseFloat((b as HTMLElement).dataset.val || '') === currentNature) {
-        b.setAttribute('data-active', 'true');
-      } else {
-        b.removeAttribute('data-active');
-      }
-    });
+    // Default nature: 1.1 (first button)
+    (natureBtns[0] as HTMLButtonElement)?.setAttribute('data-active', 'true');
 
     // Stages slider
     const stagesInput = document.getElementById(`${key}-stages`) as HTMLInputElement;
     const stagesVal = document.getElementById(`${key}-stages-val`)!;
-    if (currentSlot) {
-      stagesInput.value = String(currentSlot.stages);
-      stagesVal.textContent = (currentSlot.stages > 0 ? '+' : '') + currentSlot.stages.toString();
-    }
     stagesInput.addEventListener('input', (e) => {
       const rawVal = parseInt((e.target as HTMLInputElement).value, 10);
       const val = clamp(rawVal, -6, 6, 0);
-      stagesVal.textContent = (val > 0 ? '+' : '') + val.toString();
+      stagesVal.textContent = val > 0 ? `+${val}` : `${val}`;
       battleStore.set(state => state.slots[key].stages = val);
     });
 
     // Tailwind
     const tailwindInput = document.getElementById(`${key}-tailwind`) as HTMLInputElement;
-    if (currentSlot) tailwindInput.checked = !!currentSlot.isTailwind;
     tailwindInput.addEventListener('change', (e) => {
       battleStore.set(state => state.slots[key].isTailwind = (e.target as HTMLInputElement).checked);
     });
 
     // Scarf
     const scarfInput = document.getElementById(`${key}-scarf`) as HTMLInputElement;
-    if (currentSlot) scarfInput.checked = !!currentSlot.isScarf;
     scarfInput.addEventListener('change', (e) => {
       battleStore.set(state => state.slots[key].isScarf = (e.target as HTMLInputElement).checked);
     });
 
     // Ability Boost
     const abilityInput = document.getElementById(`${key}-ability`) as HTMLInputElement;
-    if (currentSlot) abilityInput.checked = !!currentSlot.isAbilityBoost;
     abilityInput.addEventListener('change', (e) => {
-      battleStore.set(state => {
-        state.slots[key].isAbilityBoost = (e.target as HTMLInputElement).checked;
-        state.slots[key].abilityMultiplier = 2.0;
-      });
+      battleStore.set(state => state.slots[key].isAbilityBoost = (e.target as HTMLInputElement).checked);
     });
 
     // Paralysis
     const paraInput = document.getElementById(`${key}-para`) as HTMLInputElement;
-    if (currentSlot) paraInput.checked = !!currentSlot.isParalyzed;
     paraInput.addEventListener('change', (e) => {
       battleStore.set(state => state.slots[key].isParalyzed = (e.target as HTMLInputElement).checked);
     });
   });
 
-  // Update speed badges & toggle Player B visibility & adapt drawer layout
+  // Sync state to UI (mode changes, initial values)
   const updateDrawerState = () => {
     const state = battleStore.get();
-    const curIsEn = getLocale() === 'en';
-    const curD = t().drawer;
+    const isDouble = state.isDoubleBattle;
+    const locale = getLocale();
+    const currentDict = t(locale);
 
-    // Toggle player B
-    const pBSection = document.getElementById('playerB-section');
+    // Toggle player B visibility based on mode
+    const playerBSection = document.getElementById('playerB-section');
+    if (playerBSection) {
+      if (isDouble) {
+        playerBSection.classList.remove('hidden');
+      } else {
+        playerBSection.classList.add('hidden');
+      }
+    }
+
+    // Update drawer layout class & mode badge
     const modeBadge = document.getElementById('drawer-mode-badge');
-    const slotsContainer = document.getElementById('slots-container');
-
-    if (state.isDoubleBattle) {
-      pBSection?.classList.remove('hidden');
-      drawer.classList.remove('drawer-single');
-      drawer.classList.add('drawer-double');
-      if (slotsContainer) {
-        slotsContainer.className = "grid gap-4 auto-fit-slots";
+    if (drawer) {
+      if (isDouble) {
+        drawer.classList.remove('drawer-single');
+        drawer.classList.add('drawer-double');
+      } else {
+        drawer.classList.remove('drawer-double');
+        drawer.classList.add('drawer-single');
       }
-      if (modeBadge) {
-        modeBadge.textContent = curIsEn ? "Doubles 3 Benchmarks" : "雙打 3 基準";
+    }
+    if (modeBadge) {
+      if (isDouble) {
+        modeBadge.textContent = locale === 'en' ? 'Doubles (3 Slots)' : '雙打 3 基準';
         modeBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30";
-      }
-    } else {
-      pBSection?.classList.add('hidden');
-      drawer.classList.remove('drawer-double');
-      drawer.classList.add('drawer-single');
-      if (slotsContainer) {
-        slotsContainer.className = "grid gap-4 auto-fit-slots";
-      }
-      if (modeBadge) {
-        modeBadge.textContent = curIsEn ? "Singles 2 Benchmarks" : "單打 2 基準";
+      } else {
+        modeBadge.textContent = locale === 'en' ? 'Singles (2 Slots)' : '單打 2 基準';
         modeBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30";
       }
     }
@@ -516,20 +502,22 @@ export function renderDrawer(container: HTMLElement) {
       selectedA?.classList.remove('hidden');
       selectedA?.classList.add('flex');
       
+      const isEn = locale === 'en';
+      const primaryNameA = isEn ? slotA.pokemon.nameEn : slotA.pokemon.nameZh;
+      const secondaryNameA = isEn ? slotA.pokemon.nameZh : slotA.pokemon.nameEn;
+
       const imgA = document.getElementById('playerA-selected-img') as HTMLImageElement;
       if (imgA) imgA.src = slotA.pokemon.sprite || DEFAULT_SUBSTITUTE_SPRITE;
-      const primaryName = curIsEn ? slotA.pokemon.nameEn : slotA.pokemon.nameZh;
-      const secondaryName = curIsEn ? slotA.pokemon.nameZh : slotA.pokemon.nameEn;
       const nameZhA = document.getElementById('playerA-selected-name-zh');
-      if (nameZhA) nameZhA.textContent = primaryName;
+      if (nameZhA) nameZhA.textContent = primaryNameA;
       const nameEnA = document.getElementById('playerA-selected-name-en');
-      if (nameEnA) nameEnA.textContent = secondaryName;
+      if (nameEnA) nameEnA.textContent = secondaryNameA;
       const baseA = document.getElementById('playerA-selected-base');
-      if (baseA) baseA.textContent = `${t().header.speed} ${slotA.pokemon.baseSpeed}`;
+      if (baseA) baseA.textContent = `${currentDict.common.searchSpeedLabel} ${slotA.pokemon.baseSpeed}`;
 
       if (badgeA) {
         const speedA = calcFinalSpeed(slotA.pokemon.baseSpeed, slotA);
-        badgeA.textContent = `${curD.speedActualBadge}${speedA}`;
+        badgeA.textContent = currentDict.drawer.realSpeedBadge(speedA);
       }
     } else {
       unselectedA?.classList.remove('hidden');
@@ -537,7 +525,7 @@ export function renderDrawer(container: HTMLElement) {
       selectedA?.classList.remove('flex');
       const imgA = document.getElementById('playerA-selected-img') as HTMLImageElement;
       if (imgA) imgA.src = DEFAULT_SUBSTITUTE_SPRITE;
-      if (badgeA) badgeA.textContent = `${curD.speedActualBadge}--`;
+      if (badgeA) badgeA.textContent = currentDict.drawer.realSpeedBadge('--');
     }
 
     // Update player B pokemon card & real speed badge
@@ -551,20 +539,22 @@ export function renderDrawer(container: HTMLElement) {
       selectedB?.classList.remove('hidden');
       selectedB?.classList.add('flex');
 
+      const isEn = locale === 'en';
+      const primaryNameB = isEn ? slotB.pokemon.nameEn : slotB.pokemon.nameZh;
+      const secondaryNameB = isEn ? slotB.pokemon.nameZh : slotB.pokemon.nameEn;
+
       const imgB = document.getElementById('playerB-selected-img') as HTMLImageElement;
       if (imgB) imgB.src = slotB.pokemon.sprite || DEFAULT_SUBSTITUTE_SPRITE;
-      const primaryName = curIsEn ? slotB.pokemon.nameEn : slotB.pokemon.nameZh;
-      const secondaryName = curIsEn ? slotB.pokemon.nameZh : slotB.pokemon.nameEn;
       const nameZhB = document.getElementById('playerB-selected-name-zh');
-      if (nameZhB) nameZhB.textContent = primaryName;
+      if (nameZhB) nameZhB.textContent = primaryNameB;
       const nameEnB = document.getElementById('playerB-selected-name-en');
-      if (nameEnB) nameEnB.textContent = secondaryName;
+      if (nameEnB) nameEnB.textContent = secondaryNameB;
       const baseB = document.getElementById('playerB-selected-base');
-      if (baseB) baseB.textContent = `${t().header.speed} ${slotB.pokemon.baseSpeed}`;
+      if (baseB) baseB.textContent = `${currentDict.common.searchSpeedLabel} ${slotB.pokemon.baseSpeed}`;
 
       if (badgeB) {
         const speedB = calcFinalSpeed(slotB.pokemon.baseSpeed, slotB);
-        badgeB.textContent = `${curD.speedActualBadge}${speedB}`;
+        badgeB.textContent = currentDict.drawer.realSpeedBadge(speedB);
       }
     } else {
       unselectedB?.classList.remove('hidden');
@@ -572,29 +562,99 @@ export function renderDrawer(container: HTMLElement) {
       selectedB?.classList.remove('flex');
       const imgB = document.getElementById('playerB-selected-img') as HTMLImageElement;
       if (imgB) imgB.src = DEFAULT_SUBSTITUTE_SPRITE;
-      if (badgeB) badgeB.textContent = `${curD.speedActualBadge}--`;
+      if (badgeB) badgeB.textContent = currentDict.drawer.realSpeedBadge('--');
     }
   };
+
+  // Function to update all text elements in drawer when locale changes
+  const updateDrawerTranslations = (_locale: SupportedLocale, dict: TranslationSchema) => {
+    const titleText = document.getElementById('drawer-title-text');
+    if (titleText) titleText.textContent = dict.drawer.title;
+
+    const closeText = document.getElementById('close-drawer-text');
+    if (closeText) closeText.textContent = dict.drawer.close;
+
+    slotConfigs.forEach(cfg => {
+      const { key, isPlayerSlot } = cfg;
+      const slotTitle = document.getElementById(`${key}-slot-title`);
+      if (slotTitle) slotTitle.textContent = getSlotTitle(key, dict);
+
+      if (!isPlayerSlot) {
+        const benchmarkBadge = document.getElementById(`${key}-benchmark-badge`);
+        if (benchmarkBadge) benchmarkBadge.textContent = dict.drawer.speedBenchmarkBadge;
+      } else {
+        const pLabel = document.getElementById(`${key}-pokemon-label`);
+        if (pLabel) pLabel.textContent = dict.drawer.selectedPokemon;
+
+        const sHint = document.getElementById(`${key}-search-hint`);
+        if (sHint) sHint.textContent = dict.drawer.searchHint;
+
+        const uTitle = document.getElementById(`${key}-unselected-title`);
+        if (uTitle) uTitle.textContent = dict.drawer.notSelected;
+
+        const uDesc = document.getElementById(`${key}-unselected-desc`);
+        if (uDesc) uDesc.textContent = dict.drawer.clickToSearchHint;
+
+        const sInput = document.getElementById(`${key}-search-input`) as HTMLInputElement;
+        if (sInput) sInput.placeholder = dict.drawer.searchPokemonPlaceholder;
+
+        const clearText = document.getElementById(`${key}-clear-pokemon-text`);
+        if (clearText) clearText.textContent = dict.drawer.clearSelection;
+      }
+
+      const evsLabel = document.getElementById(`${key}-evs-label`);
+      if (evsLabel) evsLabel.textContent = dict.drawer.evs;
+
+      const natureLabel = document.getElementById(`${key}-nature-label`);
+      if (natureLabel) natureLabel.textContent = dict.drawer.nature;
+
+      const btn11 = document.getElementById(`${key}-nature-btn-11`);
+      if (btn11) btn11.textContent = dict.drawer.naturePositive;
+      const btn10 = document.getElementById(`${key}-nature-btn-10`);
+      if (btn10) btn10.textContent = dict.drawer.natureNeutral;
+      const btn09 = document.getElementById(`${key}-nature-btn-09`);
+      if (btn09) btn09.textContent = dict.drawer.natureNegative;
+
+      const stagesLabel = document.getElementById(`${key}-stages-label`);
+      if (stagesLabel) stagesLabel.textContent = dict.drawer.stages;
+
+      const twText = document.getElementById(`${key}-tailwind-text`);
+      if (twText) twText.innerHTML = `${Icons.tailwind} ${dict.drawer.tailwind}`;
+
+      const scText = document.getElementById(`${key}-scarf-text`);
+      if (scText) scText.innerHTML = `${Icons.scarf} ${dict.drawer.choiceScarf}`;
+
+      const abText = document.getElementById(`${key}-ability-text`);
+      if (abText) abText.innerHTML = `${Icons.abilityBoost} ${dict.drawer.speedAbility}`;
+
+      const paText = document.getElementById(`${key}-para-text`);
+      if (paText) paText.innerHTML = `⚡ ${dict.drawer.paralysis}`;
+    });
+
+    updateDrawerState();
+  };
+
+  subscribeLocale((locale, dict) => {
+    updateDrawerTranslations(locale, dict);
+  });
 
   battleStore.subscribe(updateDrawerState);
   updateDrawerState(); // initial sync
   updateDrawerBounds();
 }
 
-/**
- * Dynamically bounds the settings drawer horizontally to align with the main container.
- */
 export function updateDrawerBounds() {
   const drawer = document.getElementById('settings-drawer');
-  const mainContainer = document.querySelector('.max-w-7xl') || document.querySelector('.speed-table-container');
-  
-  if (!drawer || !mainContainer) return;
+  if (!drawer) return;
 
-  if (window.innerWidth >= 768) {
-    const mainRect = mainContainer.getBoundingClientRect();
-    const rightMargin = Math.max(0, window.innerWidth - mainRect.right);
-    drawer.style.right = `${rightMargin}px`;
+  const dynamicCol = document.querySelector('.speed-table-header .col-dynamic') as HTMLElement | null;
+  if (dynamicCol && window.innerWidth >= 640) {
+    const dynamicRect = dynamicCol.getBoundingClientRect();
+    const availableWidth = Math.floor(window.innerWidth - dynamicRect.right);
+    drawer.style.width = `${Math.max(280, availableWidth)}px`;
+    drawer.style.maxWidth = `${Math.max(280, availableWidth)}px`;
   } else {
-    drawer.style.right = '0px';
+    drawer.style.width = '';
+    drawer.style.maxWidth = '';
   }
 }

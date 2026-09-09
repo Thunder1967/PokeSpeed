@@ -5,7 +5,7 @@ import { calcPinDividers, RowSpeedInfo } from '../utils/pinDividerCalc';
 import { createPinDividerHTML } from './PinDivider';
 import { AppConfig, getAdaptiveSpriteLimit } from '../config/appConfig';
 import { escapeHtml, sanitizeUrl } from '../utils/security';
-import { t, getLocale } from '../i18n';
+import { t, getLocale, getPokemonDisplayNames } from '../i18n';
 import '../styles/table.css';
 
 let lastBenchmarkScrollLeft = 0;
@@ -14,18 +14,18 @@ let activeHiddenPokemonsMap = new Map<number, PokemonSpeedData[]>();
 /** Tracks the serialized key of the last rendered pin dividers for diffing. */
 let lastPinDividerKey = '';
 
-function renderSpriteImg(p: PokemonSpeedData, isEn: boolean): string {
+function renderSpriteImg(p: PokemonSpeedData): string {
   const safeSprite = sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE);
-  const safeNameZh = escapeHtml(p.nameZh);
-  const safeNameEn = escapeHtml(p.nameEn);
-  const primaryName = isEn ? safeNameEn : safeNameZh;
-  const secondaryName = isEn ? safeNameZh : safeNameEn;
+  const locale = getLocale();
+  const dict = t(locale);
+  const { primary, secondary } = getPokemonDisplayNames(p, locale);
+  const safePrimary = escapeHtml(primary);
+  const safeSecondary = escapeHtml(secondary);
   const safeFormId = escapeHtml(p.formId);
-  const st = t().speedTable;
 
   return `
-    <img src="${safeSprite}" alt="${primaryName}" 
-         title="${primaryName} (${secondaryName})\n${escapeHtml(st.rankSingle)}: #${p.usageRankSingle}\n${escapeHtml(st.rankDouble)}: #${p.usageRankDouble}" 
+    <img src="${safeSprite}" alt="${safePrimary}" 
+         title="${safePrimary} (${safeSecondary})\n${dict.table.rankTooltipSingles}: #${p.usageRankSingle}\n${dict.table.rankTooltipDoubles}: #${p.usageRankDouble}" 
          class="sprite-img" data-form-id="${safeFormId}"
          loading="${AppConfig.table.sprites.loadingStrategy}" />
   `.trim();
@@ -39,34 +39,35 @@ export function renderSpeedTable(
 ) {
   const limit = getAdaptiveSpriteLimit();
   activeHiddenPokemonsMap.clear();
-  const st = t().speedTable;
-  const isEn = getLocale() === 'en';
 
   // Sort base speeds descending
   const baseSpeeds = Object.keys(data)
     .map(Number)
     .sort((a, b) => b - a);
 
+  const dict = t();
+
   let html = `
     <div class="speed-table-container">
       <div class="speed-table-header">
-        <div class="col-base">${escapeHtml(st.baseCol)}</div>
-        <div class="col-sprites-container">${escapeHtml(st.pokemonCol)}</div>
-        <div class="col-dynamic">${escapeHtml(st.enemyActualCol)}</div>
+        <div class="col-base">${dict.table.colBase}</div>
+        <div class="col-sprites-container">${dict.table.colPokemon}</div>
+        <div class="col-dynamic">${dict.table.colDynamic}</div>
         <div class="col-benchmarks-container">
           <div class="col-benchmarks">
-            <div class="benchmark-cell header">${escapeHtml(st.maxSpeed)}</div>
-            <div class="benchmark-cell header">${escapeHtml(st.neutralSpeed)}</div>
-            <div class="benchmark-cell header">${escapeHtml(st.zeroEvSpeed)}</div>
-            <div class="benchmark-cell header">${escapeHtml(st.minSpeed)}</div>
-            <div class="benchmark-cell header">${escapeHtml(st.maxScarf)}</div>
-            <div class="benchmark-cell header">${escapeHtml(st.neutralScarf)}</div>
-            <div class="benchmark-cell header">${escapeHtml(st.maxMinus1)}</div>
-            <div class="benchmark-cell header">${escapeHtml(st.neutralMinus1)}</div>
+            <div class="benchmark-cell header">${dict.table.colMaxPlus}</div>
+            <div class="benchmark-cell header">${dict.table.colMax}</div>
+            <div class="benchmark-cell header">${dict.table.colZero}</div>
+            <div class="benchmark-cell header">${dict.table.colMin}</div>
+            <div class="benchmark-cell header">${dict.table.colMaxScarf}</div>
+            <div class="benchmark-cell header">${dict.table.colNeuScarf}</div>
+            <div class="benchmark-cell header">${dict.table.colMaxMinus1}</div>
+            <div class="benchmark-cell header">${dict.table.colNeuMinus1}</div>
           </div>
         </div>
       </div>
   `;
+
 
   for (const base of baseSpeeds) {
     let pokemons = data[base];
@@ -97,14 +98,14 @@ export function renderSpeedTable(
         <div class="col-base">${base}</div>
         <div class="col-sprites-container">
           <div class="col-sprites" data-base="${base}">
-            ${visiblePokemons.map(p => renderSpriteImg(p, isEn)).join('')}
+            ${visiblePokemons.map(renderSpriteImg).join('')}
             ${hiddenPokemons.length > 0 ? `
               <div class="hidden-sprites is-hidden" id="hidden-sprites-${base}"></div>
             ` : ''}
           </div>
           ${hiddenPokemons.length > 0 ? `
             <button type="button" class="more-btn" data-base="${base}" data-count="${hiddenPokemons.length}">
-              ${escapeHtml(st.moreBtn(hiddenPokemons.length))}
+              ${dict.common.morePokemon(hiddenPokemons.length)}
             </button>
           ` : ''}
         </div>
@@ -228,8 +229,8 @@ export function renderSpeedTable(
       // Sort descending by speed so faster divider appears above slower
       const sortedPins = [...pinItems].sort((a, b) => b.speed - a.speed);
 
-      // Build a serialized key to diff against last render
-      const pinKey = sortedPins.map(p =>
+      // Build a serialized key to diff against last render (include locale)
+      const pinKey = `${getLocale()};` + sortedPins.map(p =>
         `${p.speed}|${p.position.type}|${p.position.afterBase ?? ''}|${p.isMerged}`
       ).join(';');
 
@@ -295,7 +296,7 @@ export function renderSpeedTable(
     const hiddenContainer = container.querySelector(`#hidden-sprites-${base}`);
     if (hiddenContainer && hiddenContainer.children.length === 0) {
       const list = activeHiddenPokemonsMap.get(Number(base)) || [];
-      hiddenContainer.innerHTML = list.map(p => renderSpriteImg(p, isEn)).join('');
+      hiddenContainer.innerHTML = list.map(renderSpriteImg).join('');
     }
   };
 
@@ -315,12 +316,12 @@ export function renderSpeedTable(
           hiddenContainer.classList.remove('is-hidden');
           row.classList.add('is-expanded');
           btn.classList.add('expanded');
-          btn.textContent = st.collapseBtn;
+          btn.textContent = getLocale() === 'en' ? 'Collapse' : '收合';
         } else {
           hiddenContainer.classList.add('is-hidden');
           row.classList.remove('is-expanded');
           btn.classList.remove('expanded');
-          btn.textContent = st.moreBtn(Number(count));
+          btn.textContent = t().common.morePokemon(Number(count));
         }
       }
     }
@@ -372,8 +373,7 @@ export function focusAndHighlightPokemon(formId: string, baseSpeed: number | str
   // On-demand populate hidden sprites if not already populated
   if (hiddenContainer && hiddenContainer.children.length === 0) {
     const list = activeHiddenPokemonsMap.get(Number(baseSpeed)) || [];
-    const isEn = getLocale() === 'en';
-    hiddenContainer.innerHTML = list.map(p => renderSpriteImg(p, isEn)).join('');
+    hiddenContainer.innerHTML = list.map(renderSpriteImg).join('');
   }
 
   const targetImg = row.querySelector(`img[data-form-id="${formId}"]`) as HTMLElement;
@@ -383,7 +383,7 @@ export function focusAndHighlightPokemon(formId: string, baseSpeed: number | str
     row.classList.add('is-expanded');
     if (moreBtn) {
       moreBtn.classList.add('expanded');
-      moreBtn.textContent = t().speedTable.collapseBtn;
+      moreBtn.textContent = '收合';
     }
   }
 
