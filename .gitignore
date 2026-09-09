@@ -31,3 +31,6 @@ scripts/.cache
 .env.*
 !.env.example
 
+# Vibe coding plans and tasks
+chat/
+tasks/
