@@ -60,6 +60,12 @@ describe('calcFinalSpeed (Sequential Flooring)', () => {
     expect(calcFinalSpeed(100, state)).toBe(334);
   });
 
+  it('defaults to 2x speed boost when isAbilityBoost is true without explicit multiplier', () => {
+    const state = { ...getDefaultState(), isAbilityBoost: true };
+    // Base 100 Max = 167. 167 * 2.0 = 334
+    expect(calcFinalSpeed(100, state)).toBe(334);
+  });
+
   it('handles Tailwind correctly', () => {
     const state = { ...getDefaultState(), isTailwind: true };
     // Base 100 Max = 167. 167 * 2.0 = 334

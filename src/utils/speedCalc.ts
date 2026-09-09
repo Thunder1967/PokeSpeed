@@ -35,8 +35,9 @@ export function calcFinalSpeed(base: number, state: SlotState): number {
 
   // Step 3: Ability (Weather x2.0 or Protosynthesis/Quark Drive x1.5)
   let s3 = s2;
-  if (state.isAbilityBoost && state.abilityMultiplier !== 1.0) {
-    s3 = Math.floor(s2 * state.abilityMultiplier);
+  if (state.isAbilityBoost) {
+    const mult = (state.abilityMultiplier && state.abilityMultiplier > 1.0) ? state.abilityMultiplier : 2.0;
+    s3 = Math.floor(s2 * mult);
   }
 
   // Step 4: Tailwind

@@ -437,8 +437,12 @@ export function renderDrawer(container: HTMLElement) {
     modifierCheckboxes.forEach(({ id, prop }) => {
       const input = document.getElementById(`${key}-${id}`) as HTMLInputElement | null;
       input?.addEventListener('change', (e) => {
+        const checked = (e.target as HTMLInputElement).checked;
         battleStore.set(state => {
-          state.slots[key][prop] = (e.target as HTMLInputElement).checked;
+          state.slots[key][prop] = checked;
+          if (prop === 'isAbilityBoost') {
+            state.slots[key].abilityMultiplier = checked ? 2.0 : 1.0;
+          }
         });
       });
     });

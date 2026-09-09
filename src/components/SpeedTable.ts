@@ -11,9 +11,6 @@ import '../styles/table.css';
 let lastBenchmarkScrollLeft = 0;
 let activeHiddenPokemonsMap = new Map<number, PokemonSpeedData[]>();
 
-/** Tracks the serialized key of the last rendered pin dividers for diffing. */
-let lastPinDividerKey = '';
-
 function renderSpriteImg(p: PokemonSpeedData): string {
   const safeSprite = sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE);
   const locale = getLocale();
@@ -37,6 +34,8 @@ export function renderSpeedTable(
   data: SpeedTableData,
   mode: 'single' | 'double'
 ) {
+  /** Tracks the serialized key of the last rendered pin dividers for diffing within this table instance. */
+  let lastPinDividerKey = '';
   const limit = getAdaptiveSpriteLimit();
   activeHiddenPokemonsMap.clear();
 

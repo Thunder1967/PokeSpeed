@@ -88,6 +88,34 @@ describe('SpeedTable Component', () => {
     expect(divider?.querySelector('.pin-tooltip')).toBeTruthy();
   });
 
+  it('preserves pin divider when switching between single and double battle modes', () => {
+    battleStore.set(state => {
+      state.slots.playerA.baseSpeed = 100;
+      state.slots.playerA.pokemon = {
+        id: 1,
+        formId: 'p1',
+        nameZh: '寶可夢1',
+        nameEn: 'Pokemon 1',
+        baseSpeed: 100,
+        sprite: 'p1.png',
+        usageRankSingle: 1,
+        usageRankDouble: 1
+      };
+    });
+
+    // 1. Render single mode
+    renderSpeedTable(container, mockData, 'single');
+    expect(container.querySelector('.speed-pin-divider')).toBeTruthy();
+
+    // 2. Switch to double mode
+    renderSpeedTable(container, mockData, 'double');
+    expect(container.querySelector('.speed-pin-divider')).toBeTruthy();
+
+    // 3. Switch back to single mode
+    renderSpeedTable(container, mockData, 'single');
+    expect(container.querySelector('.speed-pin-divider')).toBeTruthy();
+  });
+
   it('synchronizes horizontal scrolling across all benchmark containers', async () => {
     const multiRowData: SpeedTableData = {
       100: [
