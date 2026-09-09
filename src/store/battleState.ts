@@ -1,51 +1,41 @@
-import { BattleState } from '../types/pokemon';
+import { BattleState, SlotState } from '../types/pokemon';
+
+/**
+ * Creates a default SlotState with optional overrides.
+ */
+export function createDefaultSlot(overrides?: Partial<SlotState>): SlotState {
+  return {
+    evs: 32,
+    nature: 1.1,
+    stages: 0,
+    isTailwind: false,
+    isScarf: false,
+    isAbilityBoost: false,
+    abilityMultiplier: 1.0,
+    isParalyzed: false,
+    baseSpeed: undefined,
+    pokemon: null,
+    ...overrides
+  };
+}
 
 export const initialState: BattleState = {
   isDoubleBattle: false,
   activeFormat: 'champion-m-b',
   slots: {
-    enemy: {
-      evs: 32,
-      nature: 1.1,
-      stages: 0,
-      isTailwind: false,
-      isScarf: false,
-      isAbilityBoost: false,
-      abilityMultiplier: 1.0,
-      isParalyzed: false,
-    },
-    playerA: {
-      evs: 32,
-      nature: 1.1,
-      stages: 0,
-      isTailwind: false,
-      isScarf: false,
-      isAbilityBoost: false,
-      abilityMultiplier: 1.0,
-      isParalyzed: false,
-      baseSpeed: undefined,
-      pokemon: null,
-    },
-    playerB: {
-      evs: 32,
-      nature: 1.1,
-      stages: 0,
-      isTailwind: false,
-      isScarf: false,
-      isAbilityBoost: false,
-      abilityMultiplier: 1.0,
-      isParalyzed: false,
-      baseSpeed: undefined,
-      pokemon: null,
-    }
+    enemy: createDefaultSlot(),
+    playerA: createDefaultSlot(),
+    playerB: createDefaultSlot()
   }
 };
+
 
 type Listener = (state: BattleState) => void;
 
 class Store {
   private state: BattleState;
   private listeners: Listener[] = [];
+  private rafPending = false;
 
   constructor(initial: BattleState) {
     this.state = JSON.parse(JSON.stringify(initial));
@@ -57,7 +47,7 @@ class Store {
 
   set(updater: (state: BattleState) => void) {
     updater(this.state);
-    this.notify();
+    this.scheduleNotify();
   }
 
   subscribe(listener: Listener) {
@@ -67,10 +57,19 @@ class Store {
     };
   }
 
-  private notify() {
-    for (const l of this.listeners) {
-      l(this.state);
-    }
+  /**
+   * Batches notifications via requestAnimationFrame so multiple rapid set()
+   * calls (e.g. slider drag) only trigger subscribers once per frame.
+   */
+  private scheduleNotify() {
+    if (this.rafPending) return;
+    this.rafPending = true;
+    requestAnimationFrame(() => {
+      this.rafPending = false;
+      for (const l of this.listeners) {
+        l(this.state);
+      }
+    });
   }
 }
 

@@ -2,7 +2,8 @@ import { battleStore } from '../store/battleState';
 import championMB from '../data/formats/champion-m-b.json';
 import { SpeedTableData, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
 import { focusAndHighlightPokemon } from './SpeedTable';
-import { searchPokemon } from '../utils/pokemonSearch';
+import { searchPokemon, getAllPokemon } from '../utils/pokemonSearch';
+import { escapeHtml, sanitizeUrl } from '../utils/security';
 
 export function renderHeader(container: HTMLElement) {
   const html = `
@@ -18,7 +19,7 @@ export function renderHeader(container: HTMLElement) {
       </div>
       
       <div class="relative w-full md:w-72">
-        <input type="text" id="search-input" placeholder="搜尋 中文 / 英文 / 速度種族..." class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors">
+        <input type="text" id="search-input" maxlength="50" placeholder="搜尋 中文 / 英文 / 速度種族..." class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors">
         <div id="search-results" class="absolute top-full left-0 w-full mt-1 bg-surface border border-white/10 rounded-lg shadow-xl max-h-60 overflow-y-auto hidden z-50"></div>
       </div>
 
@@ -66,34 +67,25 @@ export function renderHeader(container: HTMLElement) {
   });
 
   // Update UI on state change
-  battleStore.subscribe(state => {
-    if (state.isDoubleBattle) {
-      btnSingle.className = "px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors";
-      btnDouble.className = "px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors";
-      if (btnSingleM) btnSingleM.className = "px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors";
-      if (btnDoubleM) btnDoubleM.className = "px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors";
-    } else {
-      btnSingle.className = "px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors";
-      btnDouble.className = "px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors";
-      if (btnSingleM) btnSingleM.className = "px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors";
-      if (btnDoubleM) btnDoubleM.className = "px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors";
-    }
-  });
+  const updateModeButtons = (isDouble: boolean) => {
+    const activeClass = "px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors";
+    const inactiveClass = "px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors";
+    btnSingle.className = isDouble ? inactiveClass : activeClass;
+    btnDouble.className = isDouble ? activeClass : inactiveClass;
+    if (btnSingleM) btnSingleM.className = isDouble ? inactiveClass : activeClass;
+    if (btnDoubleM) btnDoubleM.className = isDouble ? activeClass : inactiveClass;
+  };
+  battleStore.subscribe(state => updateModeButtons(state.isDoubleBattle));
 
   // Search Logic
   const searchInput = document.getElementById('search-input') as HTMLInputElement;
   const searchResults = document.getElementById('search-results')!;
   
   // Flatten data for search
-  const allPokemon: PokemonSpeedData[] = [];
-  const data = championMB as any as SpeedTableData;
-  Object.keys(data).forEach(base => {
-    data[Number(base)].forEach(p => {
-      allPokemon.push(p);
-    });
-  });
+  const allPokemon = getAllPokemon(championMB as unknown as SpeedTableData);
 
   let currentMatches: PokemonSpeedData[] = [];
+
 
   searchInput.addEventListener('input', (e) => {
     const term = (e.target as HTMLInputElement).value;
@@ -109,12 +101,11 @@ export function renderHeader(container: HTMLElement) {
     if (currentMatches.length > 0) {
       searchResults.innerHTML = currentMatches.map(p => `
         <div class="search-item p-2 hover:bg-white/10 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0" 
-             data-base="${p.baseSpeed}" data-form-id="${p.formId}">
-          <img src="${p.sprite || DEFAULT_SUBSTITUTE_SPRITE}" class="w-8 h-8 object-contain" 
-               onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }">
+             data-base="${p.baseSpeed}" data-form-id="${escapeHtml(p.formId)}">
+          <img src="${sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" class="w-8 h-8 object-contain" alt="${escapeHtml(p.nameZh)}">
           <div class="flex flex-col min-w-0">
-            <span class="text-sm font-bold text-gray-200">${p.nameZh}</span>
-            <span class="text-xs text-gray-500">${p.nameEn} (速度: ${p.baseSpeed} | 雙打: #${p.usageRankDouble} | 單打: #${p.usageRankSingle})</span>
+            <span class="text-sm font-bold text-gray-200">${escapeHtml(p.nameZh)}</span>
+            <span class="text-xs text-gray-500">${escapeHtml(p.nameEn)} (速度: ${p.baseSpeed} | 雙打: #${p.usageRankDouble} | 單打: #${p.usageRankSingle})</span>
           </div>
         </div>
       `).join('');

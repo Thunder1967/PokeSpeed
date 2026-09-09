@@ -1,13 +1,32 @@
 import { SpeedTableData, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
-import { calcBaseSpeedLv50 } from '../utils/speedCalc';
+import { calcBaseSpeedLv50, calcFinalSpeed } from '../utils/speedCalc';
 import { battleStore } from '../store/battleState';
 import { calcPinDividers, RowSpeedInfo } from '../utils/pinDividerCalc';
 import { createPinDividerHTML } from './PinDivider';
 import { AppConfig, getAdaptiveSpriteLimit } from '../config/appConfig';
+import { escapeHtml, sanitizeUrl } from '../utils/security';
 import '../styles/table.css';
 
 let lastBenchmarkScrollLeft = 0;
 let activeHiddenPokemonsMap = new Map<number, PokemonSpeedData[]>();
+
+/** Tracks the serialized key of the last rendered pin dividers for diffing. */
+let lastPinDividerKey = '';
+
+function renderSpriteImg(p: PokemonSpeedData): string {
+  const safeSprite = sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE);
+  const safeNameZh = escapeHtml(p.nameZh);
+  const safeNameEn = escapeHtml(p.nameEn);
+  const safeFormId = escapeHtml(p.formId);
+
+  return `
+    <img src="${safeSprite}" alt="${safeNameZh}" 
+         title="${safeNameZh} (${safeNameEn})\n單打排名: #${p.usageRankSingle}\n雙打排名: #${p.usageRankDouble}" 
+         class="sprite-img" data-form-id="${safeFormId}"
+         loading="${AppConfig.table.sprites.loadingStrategy}" />
+  `.trim();
+}
+
 
 export function renderSpeedTable(
   container: HTMLElement,
@@ -72,13 +91,7 @@ export function renderSpeedTable(
         <div class="col-base">${base}</div>
         <div class="col-sprites-container">
           <div class="col-sprites" data-base="${base}">
-            ${visiblePokemons.map(p => `
-              <img src="${p.sprite || DEFAULT_SUBSTITUTE_SPRITE}" alt="${p.nameZh}" 
-                   title="${p.nameZh} (${p.nameEn})\n單打排名: #${p.usageRankSingle}\n雙打排名: #${p.usageRankDouble}" 
-                   class="sprite-img" data-form-id="${p.formId}"
-                   loading="${AppConfig.table.sprites.loadingStrategy}"
-                   onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
-            `).join('')}
+            ${visiblePokemons.map(renderSpriteImg).join('')}
             ${hiddenPokemons.length > 0 ? `
               <div class="hidden-sprites is-hidden" id="hidden-sprites-${base}"></div>
             ` : ''}
@@ -140,13 +153,13 @@ export function renderSpeedTable(
       sourceEl.classList.remove('is-scrolling');
     }, 400);
 
-    benchmarkContainers.forEach(targetEl => {
-      if (targetEl !== sourceEl && targetEl.scrollLeft !== newScrollLeft) {
-        targetEl.scrollLeft = newScrollLeft;
-      }
-    });
-
+    // Batch scrollLeft writes inside rAF to avoid layout thrashing
     requestAnimationFrame(() => {
+      benchmarkContainers.forEach(targetEl => {
+        if (targetEl !== sourceEl && targetEl.scrollLeft !== newScrollLeft) {
+          targetEl.scrollLeft = newScrollLeft;
+        }
+      });
       isSyncingScroll = false;
     });
   };
@@ -162,22 +175,11 @@ export function renderSpeedTable(
     const playerA = state.slots.playerA;
     const playerB = state.slots.playerB;
 
-    const calcSpeed = (base: number, slot: typeof enemy) => {
-      let speed = calcBaseSpeedLv50(base, slot.evs, slot.nature);
-      if (slot.stages > 0) speed = Math.floor(speed * ((2 + slot.stages) / 2));
-      if (slot.stages < 0) speed = Math.floor(speed * (2 / (2 - slot.stages)));
-      if (slot.isTailwind) speed = Math.floor(speed * 2);
-      if (slot.isScarf) speed = Math.floor(speed * 1.5);
-      if (slot.isAbilityBoost) speed = Math.floor(speed * slot.abilityMultiplier);
-      if (slot.isParalyzed) speed = Math.floor(speed * 0.5);
-      return speed;
-    };
-
     const hasPlayerA = playerA.baseSpeed !== undefined;
     const hasPlayerB = state.isDoubleBattle && playerB.baseSpeed !== undefined;
 
-    const speedA = hasPlayerA ? calcSpeed(playerA.baseSpeed!, playerA) : 0;
-    const speedB = hasPlayerB ? calcSpeed(playerB.baseSpeed!, playerB) : 0;
+    const speedA = hasPlayerA ? calcFinalSpeed(playerA.baseSpeed!, playerA) : 0;
+    const speedB = hasPlayerB ? calcFinalSpeed(playerB.baseSpeed!, playerB) : 0;
     const rowSpeedInfos: RowSpeedInfo[] = [];
     
     rows.forEach(row => {
@@ -185,7 +187,7 @@ export function renderSpeedTable(
       const dynamicEl = row.querySelector(`#dynamic-${base}`);
       
       if (dynamicEl) {
-        const enemySpeed = calcSpeed(base, enemy);
+        const enemySpeed = calcFinalSpeed(base, enemy);
         dynamicEl.textContent = enemySpeed.toString();
         rowSpeedInfos.push({ baseSpeed: base, dynamicSpeed: enemySpeed });
 
@@ -206,11 +208,8 @@ export function renderSpeedTable(
       }
     });
 
-    // Update Speed Watershed Pin Dividers
+    // Update Speed Watershed Pin Dividers (with diff check to skip redundant DOM work)
     if (tableContainer) {
-      // Remove previous pin dividers
-      tableContainer.querySelectorAll('.speed-pin-divider').forEach(el => el.remove());
-
       const pinItems = calcPinDividers(
         rowSpeedInfos,
         state.isDoubleBattle,
@@ -223,47 +222,60 @@ export function renderSpeedTable(
       // Sort descending by speed so faster divider appears above slower
       const sortedPins = [...pinItems].sort((a, b) => b.speed - a.speed);
 
-      sortedPins.forEach(item => {
-        const dividerHtml = createPinDividerHTML(item);
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = dividerHtml.trim();
-        const dividerEl = tempDiv.firstElementChild as HTMLElement;
-        if (!dividerEl) return;
+      // Build a serialized key to diff against last render
+      const pinKey = sortedPins.map(p =>
+        `${p.speed}|${p.position.type}|${p.position.afterBase ?? ''}|${p.isMerged}`
+      ).join(';');
 
-        if (item.position.type === 'top') {
-          const firstRow = tableContainer.querySelector('.speed-table-row');
-          if (firstRow) {
-            tableContainer.insertBefore(dividerEl, firstRow);
-          } else {
-            tableContainer.appendChild(dividerEl);
-          }
-        } else if (item.position.type === 'bottom') {
-          tableContainer.appendChild(dividerEl);
-        } else if (item.position.type === 'after' && item.position.afterBase !== undefined) {
-          const targetRow = tableContainer.querySelector(`.speed-table-row[data-base="${item.position.afterBase}"]`);
-          if (targetRow) {
-            let insertAfterNode: Element = targetRow;
-            while (
-              insertAfterNode.nextElementSibling && 
-              insertAfterNode.nextElementSibling.classList.contains('speed-pin-divider')
-            ) {
-              insertAfterNode = insertAfterNode.nextElementSibling;
+      // Only rebuild pin divider DOM when the layout actually changed
+      if (pinKey !== lastPinDividerKey) {
+        lastPinDividerKey = pinKey;
+
+        // Remove previous pin dividers
+        tableContainer.querySelectorAll('.speed-pin-divider').forEach(el => el.remove());
+
+        sortedPins.forEach(item => {
+          const dividerHtml = createPinDividerHTML(item);
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = dividerHtml.trim();
+          const dividerEl = tempDiv.firstElementChild as HTMLElement;
+          if (!dividerEl) return;
+
+          if (item.position.type === 'top') {
+            const firstRow = tableContainer.querySelector('.speed-table-row');
+            if (firstRow) {
+              tableContainer.insertBefore(dividerEl, firstRow);
+            } else {
+              tableContainer.appendChild(dividerEl);
             }
-            insertAfterNode.after(dividerEl);
+          } else if (item.position.type === 'bottom') {
+            tableContainer.appendChild(dividerEl);
+          } else if (item.position.type === 'after' && item.position.afterBase !== undefined) {
+            const targetRow = tableContainer.querySelector(`.speed-table-row[data-base="${item.position.afterBase}"]`);
+            if (targetRow) {
+              let insertAfterNode: Element = targetRow;
+              while (
+                insertAfterNode.nextElementSibling && 
+                insertAfterNode.nextElementSibling.classList.contains('speed-pin-divider')
+              ) {
+                insertAfterNode = insertAfterNode.nextElementSibling;
+              }
+              insertAfterNode.after(dividerEl);
+            }
           }
-        }
 
-        // Add touch/click listener on badge to toggle tooltip on mobile
-        const badge = dividerEl.querySelector('.pin-badge');
-        badge?.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const wasActive = badge.classList.contains('active-tooltip');
-          tableContainer.querySelectorAll('.pin-badge.active-tooltip').forEach(b => b.classList.remove('active-tooltip'));
-          if (!wasActive) {
-            badge.classList.add('active-tooltip');
-          }
+          // Add touch/click listener on badge to toggle tooltip on mobile
+          const badge = dividerEl.querySelector('.pin-badge');
+          badge?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const wasActive = badge.classList.contains('active-tooltip');
+            tableContainer.querySelectorAll('.pin-badge.active-tooltip').forEach(b => b.classList.remove('active-tooltip'));
+            if (!wasActive) {
+              badge.classList.add('active-tooltip');
+            }
+          });
         });
-      });
+      }
     }
   };
 
@@ -277,13 +289,7 @@ export function renderSpeedTable(
     const hiddenContainer = container.querySelector(`#hidden-sprites-${base}`);
     if (hiddenContainer && hiddenContainer.children.length === 0) {
       const list = activeHiddenPokemonsMap.get(Number(base)) || [];
-      hiddenContainer.innerHTML = list.map(p => `
-        <img src="${p.sprite || DEFAULT_SUBSTITUTE_SPRITE}" alt="${p.nameZh}" 
-             title="${p.nameZh} (${p.nameEn})\n單打排名: #${p.usageRankSingle}\n雙打排名: #${p.usageRankDouble}" 
-             class="sprite-img" data-form-id="${p.formId}"
-             loading="${AppConfig.table.sprites.loadingStrategy}"
-             onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
-      `).join('');
+      hiddenContainer.innerHTML = list.map(renderSpriteImg).join('');
     }
   };
 
@@ -360,13 +366,7 @@ export function focusAndHighlightPokemon(formId: string, baseSpeed: number | str
   // On-demand populate hidden sprites if not already populated
   if (hiddenContainer && hiddenContainer.children.length === 0) {
     const list = activeHiddenPokemonsMap.get(Number(baseSpeed)) || [];
-    hiddenContainer.innerHTML = list.map(p => `
-      <img src="${p.sprite || DEFAULT_SUBSTITUTE_SPRITE}" alt="${p.nameZh}" 
-           title="${p.nameZh} (${p.nameEn})\n單打排名: #${p.usageRankSingle}\n雙打排名: #${p.usageRankDouble}" 
-           class="sprite-img" data-form-id="${p.formId}"
-           loading="${AppConfig.table.sprites.loadingStrategy}"
-           onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
-    `).join('');
+    hiddenContainer.innerHTML = list.map(renderSpriteImg).join('');
   }
 
   const targetImg = row.querySelector(`img[data-form-id="${formId}"]`) as HTMLElement;

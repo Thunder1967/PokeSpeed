@@ -7,6 +7,19 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          // Separate the large, rarely-changing Pokemon data (~113KB)
+          // into its own chunk for independent long-term caching.
+          if (id.includes('champion-m-b.json')) {
+            return 'pokemon-data';
+          }
+        },
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
   },

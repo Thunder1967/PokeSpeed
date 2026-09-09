@@ -1,4 +1,28 @@
-import { PokemonSpeedData } from '../types/pokemon';
+import { PokemonSpeedData, SpeedTableData } from '../types/pokemon';
+
+/** WeakMap cache to avoid re-flattening the same data reference. */
+const flattenCache = new WeakMap<SpeedTableData, PokemonSpeedData[]>();
+
+/**
+ * Flattens all Pokemon from format speed table data into a single array.
+ * Results are memoized per data reference so repeated calls with the
+ * same object (e.g. from Header and Drawer) return a cached array.
+ */
+export function getAllPokemon(data: SpeedTableData): PokemonSpeedData[] {
+  const cached = flattenCache.get(data);
+  if (cached) return cached;
+
+  const list: PokemonSpeedData[] = [];
+  for (const base of Object.keys(data)) {
+    const pokemons = data[Number(base)];
+    if (pokemons) {
+      list.push(...pokemons);
+    }
+  }
+  flattenCache.set(data, list);
+  return list;
+}
+
 
 /**
  * Searches and ranks Pokemon by Chinese name, English name, or base speed stat.

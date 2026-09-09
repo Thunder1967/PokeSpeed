@@ -1,6 +1,7 @@
 import { SlotState } from '../types/pokemon';
+import { AppConfig } from '../config/appConfig';
 
-export const DEFAULT_SUBSTITUTE_SPRITE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png';
+export const DEFAULT_SUBSTITUTE_SPRITE = AppConfig.table.sprites.fallbackSubstitute;
 
 export interface RowSpeedInfo {
   baseSpeed: number;
@@ -59,6 +60,47 @@ export type PinDividerItem =
   | MergedPinInfo;
 
 /**
+ * Formats EVs count (0-32) to actual EV value (0-252).
+ */
+export function formatEvs(evs: number): { actualEv: number; evText: string } {
+  const actualEv = evs === 32 ? 252 : (evs === 0 ? 0 : evs * 8 - 4);
+  return { actualEv, evText: `${actualEv} (${evs})` };
+}
+
+/**
+ * Formats nature multiplier (1.1, 1.0, 0.9) to descriptive label and color class.
+ */
+export function formatNature(nature: number): { natureText: string; colorClass: string } {
+  if (nature === 1.1) return { natureText: '加速 (+10%)', colorClass: 'text-red-400 font-bold' };
+  if (nature === 0.9) return { natureText: '減速 (-10%)', colorClass: 'text-blue-400 font-bold' };
+  return { natureText: '無關 (0%)', colorClass: 'text-gray-300' };
+}
+
+/**
+ * Formats combat buffs/status of a slot into a string.
+ */
+export function formatSlotBuffs(slot: SlotState): string {
+  const buffs: string[] = [];
+  if (slot.isTailwind) buffs.push('順風 🌪️');
+  if (slot.isScarf) buffs.push('圍巾 🧣');
+  if (slot.isAbilityBoost) buffs.push('特性(2x) ⚡');
+  if (slot.isParalyzed) buffs.push('麻痺 🟡');
+  return buffs.length > 0 ? buffs.join(' ') : '常規狀態';
+}
+
+/**
+ * Normalizes Pokemon info from a SlotState with fallbacks.
+ */
+export function getSlotPokemonInfo(slot: SlotState, defaultZh: string, defaultEn: string) {
+  return {
+    nameZh: slot.pokemon?.nameZh ?? defaultZh,
+    nameEn: slot.pokemon?.nameEn ?? defaultEn,
+    sprite: (slot.pokemon?.sprite && slot.pokemon.sprite.trim() !== '') ? slot.pokemon.sprite : DEFAULT_SUBSTITUTE_SPRITE,
+    baseSpeed: slot.pokemon?.baseSpeed ?? slot.baseSpeed ?? 100
+  };
+}
+
+/**
  * Calculates where the divider should be placed given rows sorted descending by base/speed.
  * Everything ABOVE the divider has dynamicSpeed >= playerSpeed (faster or tied).
  * Everything BELOW the divider has dynamicSpeed < playerSpeed (slower).
@@ -98,17 +140,10 @@ export function findDividerPosition(rows: RowSpeedInfo[], playerSpeed: number): 
  * Formats a SlotState into a descriptive tooltip string.
  */
 export function formatSlotTooltip(slot: SlotState, label: string, realSpeed: number): string {
-  const actualEv = slot.evs === 32 ? 252 : (slot.evs === 0 ? 0 : slot.evs * 8 - 4);
-  const natureText = slot.nature === 1.1 ? '加速 (+10%)' : (slot.nature === 0.9 ? '減速 (-10%)' : '無關 (0%)');
+  const { actualEv } = formatEvs(slot.evs);
+  const { natureText } = formatNature(slot.nature);
   const stageText = slot.stages !== 0 ? `階級: ${slot.stages > 0 ? '+' : ''}${slot.stages}` : null;
-
-  const buffs: string[] = [];
-  if (slot.isTailwind) buffs.push('順風 🌪️');
-  if (slot.isScarf) buffs.push('圍巾 🧣');
-  if (slot.isAbilityBoost) buffs.push('特性(2x) ⚡');
-  if (slot.isParalyzed) buffs.push('麻痺 🟡');
-
-  const buffStr = buffs.length > 0 ? buffs.join(' ') : '常規狀態';
+  const buffStr = formatSlotBuffs(slot);
   const stageStr = stageText ? ` | ${stageText}` : '';
   const pokeName = slot.pokemon ? `${slot.pokemon.nameZh} (${slot.pokemon.nameEn})` : label;
   const baseSpeed = slot.pokemon?.baseSpeed ?? slot.baseSpeed ?? 100;
@@ -117,6 +152,28 @@ export function formatSlotTooltip(slot: SlotState, label: string, realSpeed: num
 實數: ${realSpeed}
 努力值: ${actualEv} (${slot.evs}) | 性格: ${natureText}${stageStr}
 狀態: ${buffStr}`;
+}
+
+function createSinglePin(
+  slotKey: 'playerA' | 'playerB',
+  poke: ReturnType<typeof getSlotPokemonInfo>,
+  slot: SlotState,
+  speed: number,
+  color: 'emerald' | 'violet',
+  rows: RowSpeedInfo[],
+  fallbackLabel: string
+): PinDividerItem {
+  return {
+    isMerged: false,
+    slotKey,
+    label: poke.nameZh,
+    speed,
+    color,
+    position: findDividerPosition(rows, speed),
+    pokemon: poke,
+    slotState: slot,
+    tooltip: formatSlotTooltip(slot, fallbackLabel, speed)
+  };
 }
 
 /**
@@ -139,61 +196,20 @@ export function calcPinDividers(
     return [];
   }
 
-  const pokeA = {
-    nameZh: slotA.pokemon?.nameZh ?? '我方 A',
-    nameEn: slotA.pokemon?.nameEn ?? 'Player A',
-    sprite: (slotA.pokemon?.sprite && slotA.pokemon.sprite.trim() !== '') ? slotA.pokemon.sprite : DEFAULT_SUBSTITUTE_SPRITE,
-    baseSpeed: slotA.baseSpeed ?? 100
-  };
-
-  const pokeB = {
-    nameZh: slotB.pokemon?.nameZh ?? '我方 B',
-    nameEn: slotB.pokemon?.nameEn ?? 'Player B',
-    sprite: (slotB.pokemon?.sprite && slotB.pokemon.sprite.trim() !== '') ? slotB.pokemon.sprite : DEFAULT_SUBSTITUTE_SPRITE,
-    baseSpeed: slotB.baseSpeed ?? 100
-  };
+  const pokeA = getSlotPokemonInfo(slotA, '我方 A', 'Player A');
+  const pokeB = getSlotPokemonInfo(slotB, '我方 B', 'Player B');
 
   if (hasA && !hasB) {
-    const posA = findDividerPosition(rows, speedA);
-    const tooltipA = formatSlotTooltip(slotA, '我方 A', speedA);
-    return [
-      {
-        isMerged: false,
-        slotKey: 'playerA',
-        label: pokeA.nameZh,
-        speed: speedA,
-        color: 'emerald',
-        position: posA,
-        pokemon: pokeA,
-        slotState: slotA,
-        tooltip: tooltipA
-      }
-    ];
+    return [createSinglePin('playerA', pokeA, slotA, speedA, 'emerald', rows, '我方 A')];
   }
 
   if (!hasA && hasB) {
-    const posB = findDividerPosition(rows, speedB);
-    const tooltipB = formatSlotTooltip(slotB, '我方 B', speedB);
-    return [
-      {
-        isMerged: false,
-        slotKey: 'playerB',
-        label: pokeB.nameZh,
-        speed: speedB,
-        color: 'violet',
-        position: posB,
-        pokemon: pokeB,
-        slotState: slotB,
-        tooltip: tooltipB
-      }
-    ];
+    return [createSinglePin('playerB', pokeB, slotB, speedB, 'violet', rows, '我方 B')];
   }
 
   // Both A and B are active
   const posA = findDividerPosition(rows, speedA);
-  const tooltipA = formatSlotTooltip(slotA, '我方 A', speedA);
   const posB = findDividerPosition(rows, speedB);
-  const tooltipB = formatSlotTooltip(slotB, '我方 B', speedB);
 
   // Check if speeds tie and positions are identical
   const isSamePos = posA.type === posB.type && posA.afterBase === posB.afterBase;
@@ -206,36 +222,17 @@ export function calcPinDividers(
         position: posA,
         pokemonA: pokeA,
         slotStateA: slotA,
-        tooltipA,
+        tooltipA: formatSlotTooltip(slotA, '我方 A', speedA),
         pokemonB: pokeB,
         slotStateB: slotB,
-        tooltipB
+        tooltipB: formatSlotTooltip(slotB, '我方 B', speedB)
       }
     ];
   }
 
   return [
-    {
-      isMerged: false,
-      slotKey: 'playerA',
-      label: pokeA.nameZh,
-      speed: speedA,
-      color: 'emerald',
-      position: posA,
-      pokemon: pokeA,
-      slotState: slotA,
-      tooltip: tooltipA
-    },
-    {
-      isMerged: false,
-      slotKey: 'playerB',
-      label: pokeB.nameZh,
-      speed: speedB,
-      color: 'violet',
-      position: posB,
-      pokemon: pokeB,
-      slotState: slotB,
-      tooltip: tooltipB
-    }
+    createSinglePin('playerA', pokeA, slotA, speedA, 'emerald', rows, '我方 A'),
+    createSinglePin('playerB', pokeB, slotB, speedB, 'violet', rows, '我方 B')
   ];
 }
+

@@ -25,3 +25,9 @@ dist-ssr
 
 # Data cache
 scripts/.cache
+
+# Environment variables
+.env
+.env.*
+!.env.example
+

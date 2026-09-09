@@ -29,8 +29,13 @@ jobs:
         run: npm ci
       - name: Run Tests
         run: npm run test
+      - name: Typecheck Lint
+        run: npm run lint
+      - name: Security Audit
+        run: npm audit --audit-level=high
       - name: Build
         run: npm run build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

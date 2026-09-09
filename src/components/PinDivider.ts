@@ -1,40 +1,44 @@
-import { PinDividerItem, DEFAULT_SUBSTITUTE_SPRITE } from '../utils/pinDividerCalc';
+import { 
+  PinDividerItem, 
+  DEFAULT_SUBSTITUTE_SPRITE,
+  formatEvs,
+  formatNature,
+  formatSlotBuffs
+} from '../utils/pinDividerCalc';
+import { SlotState } from '../types/pokemon';
+import { escapeHtml, sanitizeUrl } from '../utils/security';
 
 function renderSlotDetailHTML(
   pokemon: { nameZh: string; nameEn: string; sprite: string; baseSpeed: number },
-  slot: any,
+  slot: SlotState,
   speed: number,
   isEmerald: boolean
 ): string {
-  const actualEv = slot.evs === 32 ? 252 : (slot.evs === 0 ? 0 : slot.evs * 8 - 4);
-  const natureText = slot.nature === 1.1 ? '加速 (+10%)' : (slot.nature === 0.9 ? '減速 (-10%)' : '無關 (0%)');
+  const { actualEv } = formatEvs(slot.evs);
+  const { natureText, colorClass: natureColorClass } = formatNature(slot.nature);
   const stageText = slot.stages !== 0 ? `階級: ${slot.stages > 0 ? '+' : ''}${slot.stages}` : null;
-
-  const buffs: string[] = [];
-  if (slot.isTailwind) buffs.push('順風 🌪️');
-  if (slot.isScarf) buffs.push('圍巾 🧣');
-  if (slot.isAbilityBoost) buffs.push('特性(2x) ⚡');
-  if (slot.isParalyzed) buffs.push('麻痺 🟡');
-  const buffStr = buffs.length > 0 ? buffs.join(' ') : '常規狀態';
+  const buffStr = formatSlotBuffs(slot);
 
   const badgeColor = isEmerald 
     ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' 
     : 'bg-purple-500/20 text-purple-300 border-purple-500/30';
   const roleTitle = isEmerald ? '我方 A (綠)' : '我方 B (紫)';
+  const safeSprite = sanitizeUrl(pokemon.sprite, DEFAULT_SUBSTITUTE_SPRITE);
+  const safeNameZh = escapeHtml(pokemon.nameZh);
+  const safeNameEn = escapeHtml(pokemon.nameEn);
 
   return `
     <div class="flex items-center gap-2.5 pb-2 border-b border-white/10 mb-2">
-      <img src="${pokemon.sprite || DEFAULT_SUBSTITUTE_SPRITE}" class="w-10 h-10 object-contain p-0.5 rounded-lg bg-black/50 border border-white/10 filter drop-shadow flex-shrink-0" 
-           onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
+      <img src="${safeSprite}" alt="${safeNameZh}" class="w-10 h-10 object-contain p-0.5 rounded-lg bg-black/50 border border-white/10 filter drop-shadow flex-shrink-0" />
       <div class="flex flex-col flex-1 min-w-0">
         <div class="flex items-center justify-between gap-1.5">
-          <span class="font-bold text-sm text-white truncate">${pokemon.nameZh}</span>
+          <span class="font-bold text-sm text-white truncate">${safeNameZh}</span>
           <span class="text-xs font-mono font-bold px-2 py-0.5 rounded border ${badgeColor} whitespace-nowrap">
             實數: ${speed}
           </span>
         </div>
         <div class="flex items-center justify-between text-[11px] text-gray-400 gap-2">
-          <span class="truncate">${pokemon.nameEn}</span>
+          <span class="truncate">${safeNameEn}</span>
           <span class="font-mono text-gray-400 whitespace-nowrap">速度 ${pokemon.baseSpeed}</span>
         </div>
       </div>
@@ -51,7 +55,7 @@ function renderSlotDetailHTML(
       </div>
       <div class="flex justify-between items-center text-gray-300">
         <span class="text-gray-400 font-medium">性格修正</span>
-        <span class="font-medium ${slot.nature === 1.1 ? 'text-red-400 font-bold' : slot.nature === 0.9 ? 'text-blue-400 font-bold' : 'text-gray-300'}">${natureText}</span>
+        <span class="font-medium ${natureColorClass}">${natureText}</span>
       </div>
       ${stageText ? `
       <div class="flex justify-between items-center text-gray-300">
@@ -66,6 +70,7 @@ function renderSlotDetailHTML(
   `;
 }
 
+
 /**
  * Creates the HTML string for a Pokemon Avatar PinDivider element.
  */
@@ -79,12 +84,10 @@ export function createPinDividerHTML(item: PinDividerItem): string {
         <div class="col-dynamic divider-cell">
           <div class="pin-badge badge-merged group" tabindex="0">
             <div class="flex items-center -space-x-2.5 hover:space-x-1 transition-all">
-              <img src="${item.pokemonA.sprite || DEFAULT_SUBSTITUTE_SPRITE}" alt="${item.pokemonA.nameZh}"
-                   class="pin-avatar-img w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain p-0.5 bg-black/80 border-2 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.8)] ring-2 ring-emerald-500/40 filter drop-shadow z-10"
-                   onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
-              <img src="${item.pokemonB.sprite || DEFAULT_SUBSTITUTE_SPRITE}" alt="${item.pokemonB.nameZh}"
-                   class="pin-avatar-img w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain p-0.5 bg-black/80 border-2 border-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.8)] ring-2 ring-purple-500/40 filter drop-shadow z-20"
-                   onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
+              <img src="${sanitizeUrl(item.pokemonA.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" alt="${escapeHtml(item.pokemonA.nameZh)}"
+                   class="pin-avatar-img w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain p-0.5 bg-black/80 border-2 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.8)] ring-2 ring-emerald-500/40 filter drop-shadow z-10" />
+              <img src="${sanitizeUrl(item.pokemonB.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" alt="${escapeHtml(item.pokemonB.nameZh)}"
+                   class="pin-avatar-img w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain p-0.5 bg-black/80 border-2 border-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.8)] ring-2 ring-purple-500/40 filter drop-shadow z-20" />
             </div>
             <div class="pin-tooltip pin-tooltip-merged">
               <div class="text-xs font-bold text-amber-300 pb-1.5 mb-2 border-b border-amber-500/30 flex items-center justify-between">
@@ -114,9 +117,8 @@ export function createPinDividerHTML(item: PinDividerItem): string {
       <div class="col-sprites-container divider-cell"></div>
       <div class="col-dynamic divider-cell">
         <div class="pin-badge ${badgeClass} group" tabindex="0">
-          <img src="${item.pokemon.sprite || DEFAULT_SUBSTITUTE_SPRITE}" alt="${item.pokemon.nameZh}"
-               class="pin-avatar-img w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain p-0.5 bg-black/80 ${isEmerald ? 'border-2 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.8)] ring-2 ring-emerald-500/40' : 'border-2 border-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.8)] ring-2 ring-purple-500/40'} filter drop-shadow cursor-pointer transition-transform hover:scale-115"
-               onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
+          <img src="${sanitizeUrl(item.pokemon.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" alt="${escapeHtml(item.pokemon.nameZh)}"
+               class="pin-avatar-img w-9 h-9 sm:w-10 sm:h-10 rounded-full object-contain p-0.5 bg-black/80 ${isEmerald ? 'border-2 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.8)] ring-2 ring-emerald-500/40' : 'border-2 border-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.8)] ring-2 ring-purple-500/40'} filter drop-shadow cursor-pointer transition-transform hover:scale-115" />
           <div class="pin-tooltip">
             ${renderSlotDetailHTML(item.pokemon, item.slotState, item.speed, isEmerald)}
           </div>
@@ -124,6 +126,7 @@ export function createPinDividerHTML(item: PinDividerItem): string {
       </div>
       <div class="col-benchmarks-container divider-cell"></div>
     </div>
+
   `;
 }
 
@@ -232,13 +235,20 @@ export function initPinTooltipManager() {
     }
   });
 
-  window.addEventListener('scroll', () => {
-    if (activeBadge) updatePosition();
-  }, { passive: true });
+  // rAF-throttled position updates for scroll/resize to avoid layout thrashing
+  let positionRafPending = false;
+  const scheduleUpdatePosition = () => {
+    if (!activeBadge || positionRafPending) return;
+    positionRafPending = true;
+    requestAnimationFrame(() => {
+      positionRafPending = false;
+      updatePosition();
+    });
+  };
 
-  window.addEventListener('resize', () => {
-    if (activeBadge) updatePosition();
-  }, { passive: true });
+  window.addEventListener('scroll', scheduleUpdatePosition, { passive: true });
+
+  window.addEventListener('resize', scheduleUpdatePosition, { passive: true });
 }
 
 // Auto-init in browser environment

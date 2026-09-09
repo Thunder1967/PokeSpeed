@@ -1,30 +1,25 @@
 import { battleStore } from '../store/battleState';
 import { Icons } from '../assets/icons';
-import { calcBaseSpeedLv50 } from '../utils/speedCalc';
-import { SlotState, PokemonSpeedData, SpeedTableData } from '../types/pokemon';
+import { calcFinalSpeed } from '../utils/speedCalc';
+import { SpeedTableData, SlotState, PokemonSpeedData } from '../types/pokemon';
+
 import championMB from '../data/formats/champion-m-b.json';
 import { DEFAULT_SUBSTITUTE_SPRITE } from '../utils/pinDividerCalc';
-import { searchPokemon } from '../utils/pokemonSearch';
+import { searchPokemon, getAllPokemon } from '../utils/pokemonSearch';
+import { escapeHtml, clamp, sanitizeUrl } from '../utils/security';
 
 // Flatten all Pokemon from the format data
-const allPokemon: PokemonSpeedData[] = [];
-const tableData = championMB as any as SpeedTableData;
-Object.keys(tableData).forEach(base => {
-  tableData[Number(base)].forEach(p => {
-    allPokemon.push(p);
-  });
-});
+const allPokemon = getAllPokemon(championMB as unknown as SpeedTableData);
 
-function calcRealSpeed(slot: SlotState, baseSpeed: number): number {
-  let speed = calcBaseSpeedLv50(baseSpeed, slot.evs, slot.nature);
-  if (slot.stages > 0) speed = Math.floor(speed * ((2 + slot.stages) / 2));
-  if (slot.stages < 0) speed = Math.floor(speed * (2 / (2 - slot.stages)));
-  if (slot.isTailwind) speed = Math.floor(speed * 2);
-  if (slot.isScarf) speed = Math.floor(speed * 1.5);
-  if (slot.isAbilityBoost) speed = Math.floor(speed * slot.abilityMultiplier);
-  if (slot.isParalyzed) speed = Math.floor(speed * 0.5);
-  return speed;
+/** Simple debounce helper for high-frequency input events. */
+function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): T {
+  let timer: ReturnType<typeof setTimeout>;
+  return ((...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), ms);
+  }) as unknown as T;
 }
+
 
 interface SlotUIConfig {
   key: 'enemy' | 'playerA' | 'playerB';
@@ -109,6 +104,7 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
           </div>
           <div class="relative w-full">
             <input type="text" id="${key}-search-input" 
+                   maxlength="50"
                    placeholder="搜尋 中文 / 英文 / 速度種族..." 
                    autocomplete="off"
                    class="w-full bg-black/60 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-blue-400 transition-colors" />
@@ -123,8 +119,7 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
           <div class="flex items-center gap-2.5 min-w-0">
             <img id="${key}-selected-img" src="${DEFAULT_SUBSTITUTE_SPRITE}" 
                  alt="已選精靈" 
-                 class="w-10 h-10 object-contain p-0.5 bg-black/40 rounded-lg border border-white/10 flex-shrink-0"
-                 onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
+                 class="w-10 h-10 object-contain p-0.5 bg-black/40 rounded-lg border border-white/10 flex-shrink-0" />
             <div class="flex flex-col min-w-0">
               <div class="flex items-center gap-1.5">
                 <span id="${key}-selected-name-zh" class="text-xs sm:text-sm font-bold text-white truncate">--</span>
@@ -203,11 +198,8 @@ export function renderDrawer(container: HTMLElement) {
           <span id="drawer-mode-badge" class="text-xs px-2.5 py-0.5 rounded-full font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
             雙打 3 基準
           </span>
-          <span class="hidden sm:inline-flex items-center gap-1.5 text-xs text-emerald-400">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            即時連動
-          </span>
         </div>
+
         <button id="close-drawer" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300 bg-white/5 hover:bg-white/15 hover:text-white border border-white/10 transition-colors cursor-pointer active:scale-95">
           <span>收起設定</span>
           <span class="text-sm">✕</span>
@@ -265,8 +257,19 @@ export function renderDrawer(container: HTMLElement) {
   (window as any).closeSettingsDrawer = closeDrawer;
   (window as any).toggleSettingsDrawer = toggleDrawer;
 
-  window.addEventListener('resize', updateDrawerBounds, { passive: true });
-  window.addEventListener('scroll', updateDrawerBounds, { passive: true });
+  // rAF-throttled version of updateDrawerBounds to avoid layout thrashing on scroll
+  let boundsRafPending = false;
+  const scheduleUpdateDrawerBounds = () => {
+    if (boundsRafPending) return;
+    boundsRafPending = true;
+    requestAnimationFrame(() => {
+      boundsRafPending = false;
+      updateDrawerBounds();
+    });
+  };
+
+  window.addEventListener('resize', scheduleUpdateDrawerBounds, { passive: true });
+  window.addEventListener('scroll', scheduleUpdateDrawerBounds, { passive: true });
 
   // Handle Esc key to close drawer
   window.addEventListener('keydown', (e) => {
@@ -287,9 +290,8 @@ export function renderDrawer(container: HTMLElement) {
 
       let currentMatches: PokemonSpeedData[] = [];
 
-      // Search input handler
-      searchInput?.addEventListener('input', (e) => {
-        const query = (e.target as HTMLInputElement).value;
+      // Search input handler (debounced to reduce work during fast typing)
+      const handleSearchInput = debounce((query: string) => {
         if (!query.trim()) {
           currentMatches = [];
           searchDropdown?.classList.add('hidden');
@@ -302,12 +304,12 @@ export function renderDrawer(container: HTMLElement) {
         if (currentMatches.length > 0 && searchDropdown) {
           searchDropdown.innerHTML = currentMatches.map(p => `
             <div class="slot-search-item p-2 hover:bg-white/10 cursor-pointer flex items-center justify-between gap-2 transition-colors" 
-                 data-form-id="${p.formId}">
+                 data-form-id="${escapeHtml(p.formId)}">
               <div class="flex items-center gap-2 min-w-0">
-                <img src="${p.sprite || DEFAULT_SUBSTITUTE_SPRITE}" class="w-7 h-7 object-contain flex-shrink-0" onerror="if (this.src !== '${DEFAULT_SUBSTITUTE_SPRITE}') { this.src = '${DEFAULT_SUBSTITUTE_SPRITE}'; } else { this.onerror = null; }" />
+                <img src="${sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" class="w-7 h-7 object-contain flex-shrink-0" alt="${escapeHtml(p.nameZh)}" />
                 <div class="flex flex-col min-w-0">
-                  <span class="text-xs font-bold text-gray-200 truncate">${p.nameZh}</span>
-                  <span class="text-[10px] text-gray-400 truncate">${p.nameEn}</span>
+                  <span class="text-xs font-bold text-gray-200 truncate">${escapeHtml(p.nameZh)}</span>
+                  <span class="text-[10px] text-gray-400 truncate">${escapeHtml(p.nameEn)}</span>
                 </div>
               </div>
               <span class="text-xs font-mono font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded flex-shrink-0">
@@ -320,6 +322,10 @@ export function renderDrawer(container: HTMLElement) {
           searchDropdown.innerHTML = `<div class="p-2.5 text-xs text-gray-500 text-center">無符合精靈</div>`;
           searchDropdown.classList.remove('hidden');
         }
+      }, 150);
+
+      searchInput?.addEventListener('input', (e) => {
+        handleSearchInput((e.target as HTMLInputElement).value);
       });
 
       // Handle Enter key on drawer search input
@@ -375,7 +381,8 @@ export function renderDrawer(container: HTMLElement) {
     const evsInput = document.getElementById(`${key}-evs`) as HTMLInputElement;
     const evsVal = document.getElementById(`${key}-evs-val`)!;
     evsInput.addEventListener('input', (e) => {
-      const val = parseInt((e.target as HTMLInputElement).value, 10);
+      const rawVal = parseInt((e.target as HTMLInputElement).value, 10);
+      const val = clamp(rawVal, 0, 32, 32);
       const actualEv = val === 32 ? 252 : (val === 0 ? 0 : val * 8 - 4);
       evsVal.textContent = `${val} (${actualEv} EV)`;
       battleStore.set(state => state.slots[key].evs = val);
@@ -387,9 +394,11 @@ export function renderDrawer(container: HTMLElement) {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLButtonElement;
         const val = parseFloat(target.dataset.val!);
+        const validNatures: Array<1.1 | 1.0 | 0.9> = [1.1, 1.0, 0.9];
+        const safeNature = validNatures.includes(val as any) ? (val as 1.1 | 1.0 | 0.9) : 1.0;
         natureBtns.forEach(b => b.removeAttribute('data-active'));
         target.setAttribute('data-active', 'true');
-        battleStore.set(state => state.slots[key].nature = val as any);
+        battleStore.set(state => state.slots[key].nature = safeNature);
       });
     });
     // Default nature: 1.1 (first button)
@@ -399,7 +408,8 @@ export function renderDrawer(container: HTMLElement) {
     const stagesInput = document.getElementById(`${key}-stages`) as HTMLInputElement;
     const stagesVal = document.getElementById(`${key}-stages-val`)!;
     stagesInput.addEventListener('input', (e) => {
-      const val = parseInt((e.target as HTMLInputElement).value, 10);
+      const rawVal = parseInt((e.target as HTMLInputElement).value, 10);
+      const val = clamp(rawVal, -6, 6, 0);
       stagesVal.textContent = (val > 0 ? '+' : '') + val.toString();
       battleStore.set(state => state.slots[key].stages = val);
     });
@@ -487,7 +497,7 @@ export function renderDrawer(container: HTMLElement) {
       if (baseA) baseA.textContent = `速度 ${slotA.pokemon.baseSpeed}`;
 
       if (badgeA) {
-        const speedA = calcRealSpeed(slotA, slotA.pokemon.baseSpeed);
+        const speedA = calcFinalSpeed(slotA.pokemon.baseSpeed, slotA);
         badgeA.textContent = `實數: ${speedA}`;
       }
     } else {
@@ -520,7 +530,7 @@ export function renderDrawer(container: HTMLElement) {
       if (baseB) baseB.textContent = `速度 ${slotB.pokemon.baseSpeed}`;
 
       if (badgeB) {
-        const speedB = calcRealSpeed(slotB, slotB.pokemon.baseSpeed);
+        const speedB = calcFinalSpeed(slotB.pokemon.baseSpeed, slotB);
         badgeB.textContent = `實數: ${speedB}`;
       }
     } else {

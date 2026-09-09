@@ -87,7 +87,7 @@ describe('SpeedTable Component', () => {
     expect(divider?.querySelector('.pin-tooltip')).toBeTruthy();
   });
 
-  it('synchronizes horizontal scrolling across all benchmark containers', () => {
+  it('synchronizes horizontal scrolling across all benchmark containers', async () => {
     const multiRowData: SpeedTableData = {
       100: [
         {
@@ -136,6 +136,9 @@ describe('SpeedTable Component', () => {
 
     Object.defineProperty(first, 'scrollLeft', { value: 120, writable: true, configurable: true });
     first.dispatchEvent(new Event('scroll'));
+
+    // Scroll sync is now batched via rAF; flush it
+    await new Promise(resolve => requestAnimationFrame(resolve));
 
     targets.forEach((el, idx) => {
       expect(el.scrollLeft, `Target ${idx} of ${targets.length}`).toBe(120);

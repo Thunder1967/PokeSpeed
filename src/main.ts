@@ -2,7 +2,13 @@ import './styles/main.css';
 import { renderHeader } from './components/Header';
 import { renderSpeedTable } from './components/SpeedTable';
 import { renderDrawer, updateDrawerBounds } from './components/Drawer';
+import { battleStore } from './store/battleState';
+import { SpeedTableData } from './types/pokemon';
 import championMB from './data/formats/champion-m-b.json';
+import { initImageFallback } from './utils/imageFallback';
+
+initImageFallback();
+
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div class="min-h-screen p-4 flex flex-col items-center gap-4">
@@ -12,8 +18,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div id="drawer-mount"></div>
 `;
 
-import { battleStore } from './store/battleState';
-
 let cleanupTable: () => void;
 let currentMode = false; // false = single, true = double
 
@@ -21,11 +25,12 @@ function updateTable(isDouble: boolean) {
   if (cleanupTable) cleanupTable();
   cleanupTable = renderSpeedTable(
     document.getElementById('speed-table-mount')!,
-    championMB as any,
+    championMB as unknown as SpeedTableData,
     isDouble ? 'double' : 'single'
   );
   updateDrawerBounds();
 }
+
 
 // Initial render
 updateTable(battleStore.get().isDoubleBattle);

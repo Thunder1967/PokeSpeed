@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { searchPokemon } from './pokemonSearch';
-import { PokemonSpeedData } from '../types/pokemon';
+import { searchPokemon, getAllPokemon } from './pokemonSearch';
+import { PokemonSpeedData, SpeedTableData } from '../types/pokemon';
 
 describe('searchPokemon', () => {
   const mockPokemon: PokemonSpeedData[] = [
@@ -127,3 +127,44 @@ describe('searchPokemon', () => {
     expect(results).toEqual([]);
   });
 });
+
+describe('getAllPokemon', () => {
+  it('correctly flattens speed table data from all base speed tiers', () => {
+    const testTableData: SpeedTableData = {
+      100: [
+        {
+          id: 6,
+          formId: 'charizard',
+          nameZh: '噴火龍',
+          nameEn: 'Charizard',
+          baseSpeed: 100,
+          sprite: '',
+          usageRankSingle: 20,
+          usageRankDouble: 12
+        }
+      ],
+      135: [
+        {
+          id: 987,
+          formId: 'flutter-mane',
+          nameZh: '振翼髮',
+          nameEn: 'Flutter Mane',
+          baseSpeed: 135,
+          sprite: '',
+          usageRankSingle: 1,
+          usageRankDouble: 2
+        }
+      ]
+    };
+
+    const flat = getAllPokemon(testTableData);
+    expect(flat.length).toBe(2);
+    expect(flat.map(p => p.formId)).toContain('charizard');
+    expect(flat.map(p => p.formId)).toContain('flutter-mane');
+  });
+
+  it('returns an empty array for empty table data', () => {
+    expect(getAllPokemon({})).toEqual([]);
+  });
+});
+
