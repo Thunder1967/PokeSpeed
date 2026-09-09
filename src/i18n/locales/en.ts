@@ -12,6 +12,7 @@ export const en: TranslationSchema = {
     searchSinglesLabel: 'Singles',
     searchDoublesLabel: 'Doubles',
     morePokemon: (count: number) => `+${count} more`,
+    collapse: 'Collapse',
     about: 'About',
     backToTable: '← Back to Speed Table',
     aboutTitle: 'About PokéSpeed',

@@ -316,7 +316,7 @@ export function renderSpeedTable(
           hiddenContainer.classList.remove('is-hidden');
           row.classList.add('is-expanded');
           btn.classList.add('expanded');
-          btn.textContent = getLocale() === 'en' ? 'Collapse' : '收合';
+          btn.textContent = t().common.collapse;
         } else {
           hiddenContainer.classList.add('is-hidden');
           row.classList.remove('is-expanded');
@@ -383,7 +383,7 @@ export function focusAndHighlightPokemon(formId: string, baseSpeed: number | str
     row.classList.add('is-expanded');
     if (moreBtn) {
       moreBtn.classList.add('expanded');
-      moreBtn.textContent = '收合';
+      moreBtn.textContent = t().common.collapse;
     }
   }
 

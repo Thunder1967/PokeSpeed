@@ -427,28 +427,20 @@ export function renderDrawer(container: HTMLElement) {
       battleStore.set(state => state.slots[key].stages = val);
     });
 
-    // Tailwind
-    const tailwindInput = document.getElementById(`${key}-tailwind`) as HTMLInputElement;
-    tailwindInput.addEventListener('change', (e) => {
-      battleStore.set(state => state.slots[key].isTailwind = (e.target as HTMLInputElement).checked);
-    });
-
-    // Scarf
-    const scarfInput = document.getElementById(`${key}-scarf`) as HTMLInputElement;
-    scarfInput.addEventListener('change', (e) => {
-      battleStore.set(state => state.slots[key].isScarf = (e.target as HTMLInputElement).checked);
-    });
-
-    // Ability Boost
-    const abilityInput = document.getElementById(`${key}-ability`) as HTMLInputElement;
-    abilityInput.addEventListener('change', (e) => {
-      battleStore.set(state => state.slots[key].isAbilityBoost = (e.target as HTMLInputElement).checked);
-    });
-
-    // Paralysis
-    const paraInput = document.getElementById(`${key}-para`) as HTMLInputElement;
-    paraInput.addEventListener('change', (e) => {
-      battleStore.set(state => state.slots[key].isParalyzed = (e.target as HTMLInputElement).checked);
+    // Boolean modifiers (Tailwind, Scarf, Ability Boost, Paralysis)
+    const modifierCheckboxes: Array<{ id: string; prop: 'isTailwind' | 'isScarf' | 'isAbilityBoost' | 'isParalyzed' }> = [
+      { id: 'tailwind', prop: 'isTailwind' },
+      { id: 'scarf', prop: 'isScarf' },
+      { id: 'ability', prop: 'isAbilityBoost' },
+      { id: 'para', prop: 'isParalyzed' }
+    ];
+    modifierCheckboxes.forEach(({ id, prop }) => {
+      const input = document.getElementById(`${key}-${id}`) as HTMLInputElement | null;
+      input?.addEventListener('change', (e) => {
+        battleStore.set(state => {
+          state.slots[key][prop] = (e.target as HTMLInputElement).checked;
+        });
+      });
     });
   });
 
@@ -491,79 +483,45 @@ export function renderDrawer(container: HTMLElement) {
     }
     updateDrawerBounds();
 
-    // Update player A pokemon card & real speed badge
-    const slotA = state.slots.playerA;
-    const unselectedA = document.getElementById('playerA-pokemon-unselected');
-    const selectedA = document.getElementById('playerA-pokemon-selected');
-    const badgeA = document.getElementById('playerA-speed-badge');
+    // Helper to update player pokemon card & real speed badge
+    const updatePlayerSlotCard = (slotKey: 'playerA' | 'playerB', slot: SlotState) => {
+      const unselected = document.getElementById(`${slotKey}-pokemon-unselected`);
+      const selected = document.getElementById(`${slotKey}-pokemon-selected`);
+      const badge = document.getElementById(`${slotKey}-speed-badge`);
+      const img = document.getElementById(`${slotKey}-selected-img`) as HTMLImageElement | null;
 
-    if (slotA.pokemon) {
-      unselectedA?.classList.add('hidden');
-      selectedA?.classList.remove('hidden');
-      selectedA?.classList.add('flex');
-      
-      const isEn = locale === 'en';
-      const primaryNameA = isEn ? slotA.pokemon.nameEn : slotA.pokemon.nameZh;
-      const secondaryNameA = isEn ? slotA.pokemon.nameZh : slotA.pokemon.nameEn;
+      if (slot.pokemon) {
+        unselected?.classList.add('hidden');
+        selected?.classList.remove('hidden');
+        selected?.classList.add('flex');
 
-      const imgA = document.getElementById('playerA-selected-img') as HTMLImageElement;
-      if (imgA) imgA.src = slotA.pokemon.sprite || DEFAULT_SUBSTITUTE_SPRITE;
-      const nameZhA = document.getElementById('playerA-selected-name-zh');
-      if (nameZhA) nameZhA.textContent = primaryNameA;
-      const nameEnA = document.getElementById('playerA-selected-name-en');
-      if (nameEnA) nameEnA.textContent = secondaryNameA;
-      const baseA = document.getElementById('playerA-selected-base');
-      if (baseA) baseA.textContent = `${currentDict.common.searchSpeedLabel} ${slotA.pokemon.baseSpeed}`;
+        const isEn = locale === 'en';
+        const primaryName = isEn ? slot.pokemon.nameEn : slot.pokemon.nameZh;
+        const secondaryName = isEn ? slot.pokemon.nameZh : slot.pokemon.nameEn;
 
-      if (badgeA) {
-        const speedA = calcFinalSpeed(slotA.pokemon.baseSpeed, slotA);
-        badgeA.textContent = currentDict.drawer.realSpeedBadge(speedA);
+        if (img) img.src = slot.pokemon.sprite || DEFAULT_SUBSTITUTE_SPRITE;
+        const nameZh = document.getElementById(`${slotKey}-selected-name-zh`);
+        if (nameZh) nameZh.textContent = primaryName;
+        const nameEn = document.getElementById(`${slotKey}-selected-name-en`);
+        if (nameEn) nameEn.textContent = secondaryName;
+        const base = document.getElementById(`${slotKey}-selected-base`);
+        if (base) base.textContent = `${currentDict.common.searchSpeedLabel} ${slot.pokemon.baseSpeed}`;
+
+        if (badge) {
+          const speed = calcFinalSpeed(slot.pokemon.baseSpeed, slot);
+          badge.textContent = currentDict.drawer.realSpeedBadge(speed);
+        }
+      } else {
+        unselected?.classList.remove('hidden');
+        selected?.classList.add('hidden');
+        selected?.classList.remove('flex');
+        if (img) img.src = DEFAULT_SUBSTITUTE_SPRITE;
+        if (badge) badge.textContent = currentDict.drawer.realSpeedBadge('--');
       }
-    } else {
-      unselectedA?.classList.remove('hidden');
-      selectedA?.classList.add('hidden');
-      selectedA?.classList.remove('flex');
-      const imgA = document.getElementById('playerA-selected-img') as HTMLImageElement;
-      if (imgA) imgA.src = DEFAULT_SUBSTITUTE_SPRITE;
-      if (badgeA) badgeA.textContent = currentDict.drawer.realSpeedBadge('--');
-    }
+    };
 
-    // Update player B pokemon card & real speed badge
-    const slotB = state.slots.playerB;
-    const unselectedB = document.getElementById('playerB-pokemon-unselected');
-    const selectedB = document.getElementById('playerB-pokemon-selected');
-    const badgeB = document.getElementById('playerB-speed-badge');
-
-    if (slotB.pokemon) {
-      unselectedB?.classList.add('hidden');
-      selectedB?.classList.remove('hidden');
-      selectedB?.classList.add('flex');
-
-      const isEn = locale === 'en';
-      const primaryNameB = isEn ? slotB.pokemon.nameEn : slotB.pokemon.nameZh;
-      const secondaryNameB = isEn ? slotB.pokemon.nameZh : slotB.pokemon.nameEn;
-
-      const imgB = document.getElementById('playerB-selected-img') as HTMLImageElement;
-      if (imgB) imgB.src = slotB.pokemon.sprite || DEFAULT_SUBSTITUTE_SPRITE;
-      const nameZhB = document.getElementById('playerB-selected-name-zh');
-      if (nameZhB) nameZhB.textContent = primaryNameB;
-      const nameEnB = document.getElementById('playerB-selected-name-en');
-      if (nameEnB) nameEnB.textContent = secondaryNameB;
-      const baseB = document.getElementById('playerB-selected-base');
-      if (baseB) baseB.textContent = `${currentDict.common.searchSpeedLabel} ${slotB.pokemon.baseSpeed}`;
-
-      if (badgeB) {
-        const speedB = calcFinalSpeed(slotB.pokemon.baseSpeed, slotB);
-        badgeB.textContent = currentDict.drawer.realSpeedBadge(speedB);
-      }
-    } else {
-      unselectedB?.classList.remove('hidden');
-      selectedB?.classList.add('hidden');
-      selectedB?.classList.remove('flex');
-      const imgB = document.getElementById('playerB-selected-img') as HTMLImageElement;
-      if (imgB) imgB.src = DEFAULT_SUBSTITUTE_SPRITE;
-      if (badgeB) badgeB.textContent = currentDict.drawer.realSpeedBadge('--');
-    }
+    updatePlayerSlotCard('playerA', state.slots.playerA);
+    updatePlayerSlotCard('playerB', state.slots.playerB);
   };
 
   // Function to update all text elements in drawer when locale changes

@@ -12,6 +12,7 @@ export const zhTW: TranslationSchema = {
     searchSinglesLabel: '單打',
     searchDoublesLabel: '雙打',
     morePokemon: (count: number) => `+${count} 更多`,
+    collapse: '收合',
     about: '關於本站',
     backToTable: '← 返回速線表',
     aboutTitle: '關於 PokéSpeed',

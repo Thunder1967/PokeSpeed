@@ -12,6 +12,7 @@ export interface TranslationSchema {
     searchSinglesLabel: string;
     searchDoublesLabel: string;
     morePokemon: (count: number) => string;
+    collapse: string;
     about: string;
     backToTable: string;
     aboutTitle: string;

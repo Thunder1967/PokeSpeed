@@ -72,33 +72,27 @@ export function formatEvs(evs: number): { actualEv: number; evText: string } {
  * Formats nature multiplier (1.1, 1.0, 0.9) to descriptive label and color class.
  */
 export function formatNature(nature: number, locale: SupportedLocale = getLocale()): { natureText: string; colorClass: string } {
-  if (locale === 'en') {
-    if (nature === 1.1) return { natureText: '+10% (Speed+)', colorClass: 'text-red-400 font-bold' };
-    if (nature === 0.9) return { natureText: '-10% (Speed-)', colorClass: 'text-blue-400 font-bold' };
-    return { natureText: '0% (Neutral)', colorClass: 'text-gray-300' };
+  const isEn = locale === 'en';
+  if (nature === 1.1) {
+    return { natureText: isEn ? '+10% (Speed+)' : '加速 (+10%)', colorClass: 'text-red-400 font-bold' };
   }
-  if (nature === 1.1) return { natureText: '加速 (+10%)', colorClass: 'text-red-400 font-bold' };
-  if (nature === 0.9) return { natureText: '減速 (-10%)', colorClass: 'text-blue-400 font-bold' };
-  return { natureText: '無關 (0%)', colorClass: 'text-gray-300' };
+  if (nature === 0.9) {
+    return { natureText: isEn ? '-10% (Speed-)' : '減速 (-10%)', colorClass: 'text-blue-400 font-bold' };
+  }
+  return { natureText: isEn ? '0% (Neutral)' : '無關 (0%)', colorClass: 'text-gray-300' };
 }
 
 /**
  * Formats combat buffs/status of a slot into a string.
  */
 export function formatSlotBuffs(slot: SlotState, locale: SupportedLocale = getLocale()): string {
+  const isEn = locale === 'en';
   const buffs: string[] = [];
-  if (locale === 'en') {
-    if (slot.isTailwind) buffs.push('Tailwind 🌪️');
-    if (slot.isScarf) buffs.push('Scarf 🧣');
-    if (slot.isAbilityBoost) buffs.push('Ability(2x) ⚡');
-    if (slot.isParalyzed) buffs.push('Paralysis 🟡');
-    return buffs.length > 0 ? buffs.join(' ') : 'Standard';
-  }
-  if (slot.isTailwind) buffs.push('順風 🌪️');
-  if (slot.isScarf) buffs.push('圍巾 🧣');
-  if (slot.isAbilityBoost) buffs.push('特性(2x) ⚡');
-  if (slot.isParalyzed) buffs.push('麻痺 🟡');
-  return buffs.length > 0 ? buffs.join(' ') : '常規狀態';
+  if (slot.isTailwind) buffs.push(isEn ? 'Tailwind 🌪️' : '順風 🌪️');
+  if (slot.isScarf) buffs.push(isEn ? 'Scarf 🧣' : '圍巾 🧣');
+  if (slot.isAbilityBoost) buffs.push(isEn ? 'Ability(2x) ⚡' : '特性(2x) ⚡');
+  if (slot.isParalyzed) buffs.push(isEn ? 'Paralysis 🟡' : '麻痺 🟡');
+  return buffs.length > 0 ? buffs.join(' ') : (isEn ? 'Standard' : '常規狀態');
 }
 
 /**
@@ -153,15 +147,18 @@ export function findDividerPosition(rows: RowSpeedInfo[], playerSpeed: number): 
  * Formats a SlotState into a descriptive tooltip string.
  */
 export function formatSlotTooltip(slot: SlotState, label: string, realSpeed: number, locale: SupportedLocale = getLocale()): string {
+  const isEn = locale === 'en';
   const { actualEv } = formatEvs(slot.evs);
   const { natureText } = formatNature(slot.nature, locale);
-  const stageText = slot.stages !== 0 ? (locale === 'en' ? `Stage: ${slot.stages > 0 ? '+' : ''}${slot.stages}` : `階級: ${slot.stages > 0 ? '+' : ''}${slot.stages}`) : null;
+  const stageText = slot.stages !== 0 ? `${isEn ? 'Stage: ' : '階級: '}${slot.stages > 0 ? '+' : ''}${slot.stages}` : null;
   const buffStr = formatSlotBuffs(slot, locale);
   const stageStr = stageText ? ` | ${stageText}` : '';
-  const pokeName = slot.pokemon ? (locale === 'en' ? `${slot.pokemon.nameEn} (${slot.pokemon.nameZh})` : `${slot.pokemon.nameZh} (${slot.pokemon.nameEn})`) : label;
+  const pokeName = slot.pokemon 
+    ? (isEn ? `${slot.pokemon.nameEn} (${slot.pokemon.nameZh})` : `${slot.pokemon.nameZh} (${slot.pokemon.nameEn})`) 
+    : label;
   const baseSpeed = slot.pokemon?.baseSpeed ?? slot.baseSpeed ?? 100;
 
-  if (locale === 'en') {
+  if (isEn) {
     return `${pokeName} (Base ${baseSpeed})
 Speed: ${realSpeed}
 EVs: ${actualEv} (${slot.evs}) | Nature: ${natureText}${stageStr}

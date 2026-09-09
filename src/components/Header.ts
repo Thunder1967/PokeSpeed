@@ -109,25 +109,15 @@ export function renderHeader(container: HTMLElement) {
   const btnSingleM = document.getElementById('btn-mode-single-m');
   const btnDoubleM = document.getElementById('btn-mode-double-m');
 
-  btnSingle.addEventListener('click', () => {
+  const setBattleMode = (isDouble: boolean) => {
     ensureTableView();
-    battleStore.set(state => state.isDoubleBattle = false);
-  });
+    battleStore.set(state => state.isDoubleBattle = isDouble);
+  };
 
-  btnDouble.addEventListener('click', () => {
-    ensureTableView();
-    battleStore.set(state => state.isDoubleBattle = true);
-  });
-
-  btnSingleM?.addEventListener('click', () => {
-    ensureTableView();
-    battleStore.set(state => state.isDoubleBattle = false);
-  });
-
-  btnDoubleM?.addEventListener('click', () => {
-    ensureTableView();
-    battleStore.set(state => state.isDoubleBattle = true);
-  });
+  btnSingle.addEventListener('click', () => setBattleMode(false));
+  btnSingleM?.addEventListener('click', () => setBattleMode(false));
+  btnDouble.addEventListener('click', () => setBattleMode(true));
+  btnDoubleM?.addEventListener('click', () => setBattleMode(true));
 
   // Update UI on state change
   const updateModeButtons = (isDouble: boolean) => {
