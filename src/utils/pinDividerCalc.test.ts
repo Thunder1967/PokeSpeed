@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import {
   findDividerPosition,
   formatSlotTooltip,
@@ -6,6 +6,7 @@ import {
   RowSpeedInfo
 } from './pinDividerCalc';
 import { SlotState } from '../types/pokemon';
+import { setLocale } from '../i18n';
 
 describe('pinDividerCalc module', () => {
   const mockRows: RowSpeedInfo[] = [
@@ -73,6 +74,10 @@ describe('pinDividerCalc module', () => {
   });
 
   describe('formatSlotTooltip', () => {
+    beforeEach(() => {
+      setLocale('zh-TW');
+    });
+
     it('formats basic slot with standard text', () => {
       const slot: SlotState = {
         baseSpeed: 100,

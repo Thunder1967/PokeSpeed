@@ -4,8 +4,12 @@ import { SpeedTableData, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../
 import { focusAndHighlightPokemon } from './SpeedTable';
 import { searchPokemon, getAllPokemon } from '../utils/pokemonSearch';
 import { escapeHtml, sanitizeUrl } from '../utils/security';
+import { t, getLocale, toggleLocale } from '../i18n';
 
 export function renderHeader(container: HTMLElement) {
+  const text = t().header;
+  const isEn = getLocale() === 'en';
+
   const html = `
     <header class="w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center p-4 bg-surface rounded-xl border border-white/10 shadow-lg mt-4 mb-6 gap-4">
       <div class="flex items-center gap-4 w-full md:w-auto justify-between">
@@ -13,29 +17,39 @@ export function renderHeader(container: HTMLElement) {
           PokéSpeed
         </h1>
         <div class="flex md:hidden gap-2 bg-black/40 p-1 rounded-lg border border-white/5">
-          <button id="btn-mode-single-m" class="px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors">單打</button>
-          <button id="btn-mode-double-m" class="px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors">雙打</button>
+          <button id="btn-mode-single-m" class="px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors">${escapeHtml(text.single)}</button>
+          <button id="btn-mode-double-m" class="px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors">${escapeHtml(text.double)}</button>
         </div>
       </div>
       
       <div class="relative w-full md:w-72">
-        <input type="text" id="search-input" maxlength="50" placeholder="搜尋 中文 / 英文 / 速度種族..." class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors">
+        <input type="text" id="search-input" maxlength="50" placeholder="${escapeHtml(text.searchPlaceholder)}" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors">
         <div id="search-results" class="absolute top-full left-0 w-full mt-1 bg-surface border border-white/10 rounded-lg shadow-xl max-h-60 overflow-y-auto hidden z-50"></div>
       </div>
 
-      <div class="flex items-center gap-4 w-full md:w-auto justify-between">
+      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
         <div class="hidden md:flex gap-2 bg-black/40 p-1 rounded-lg border border-white/5">
-          <button id="btn-mode-single" class="px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors">單打</button>
-          <button id="btn-mode-double" class="px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors">雙打</button>
+          <button id="btn-mode-single" class="px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors">${escapeHtml(text.single)}</button>
+          <button id="btn-mode-double" class="px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors">${escapeHtml(text.double)}</button>
         </div>
-        <button id="open-settings-btn" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 transition-colors rounded-lg font-bold text-sm shadow-lg shadow-blue-500/20 active:scale-95">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-          對戰設定
-        </button>
+        <div class="flex items-center gap-2">
+          <button id="btn-lang-toggle" class="flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all rounded-lg font-bold text-xs sm:text-sm text-gray-200 active:scale-95 shadow cursor-pointer" title="Switch Language / 切換語言">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <span>${escapeHtml(text.langSwitchLabel)}</span>
+          </button>
+          <button id="open-settings-btn" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 transition-colors rounded-lg font-bold text-sm shadow-lg shadow-blue-500/20 active:scale-95 text-white cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            ${escapeHtml(text.battleSettings)}
+          </button>
+        </div>
       </div>
     </header>
   `;
   container.innerHTML = html;
+
+  document.getElementById('btn-lang-toggle')?.addEventListener('click', () => {
+    toggleLocale();
+  });
 
   document.getElementById('open-settings-btn')!.addEventListener('click', () => {
     if ((window as any).toggleSettingsDrawer) {
@@ -86,7 +100,6 @@ export function renderHeader(container: HTMLElement) {
 
   let currentMatches: PokemonSpeedData[] = [];
 
-
   searchInput.addEventListener('input', (e) => {
     const term = (e.target as HTMLInputElement).value;
     if (!term.trim()) {
@@ -99,19 +112,23 @@ export function renderHeader(container: HTMLElement) {
     currentMatches = searchPokemon(allPokemon, term, isDouble, 6);
 
     if (currentMatches.length > 0) {
-      searchResults.innerHTML = currentMatches.map(p => `
-        <div class="search-item p-2 hover:bg-white/10 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0" 
-             data-base="${p.baseSpeed}" data-form-id="${escapeHtml(p.formId)}">
-          <img src="${sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" class="w-8 h-8 object-contain" alt="${escapeHtml(p.nameZh)}">
-          <div class="flex flex-col min-w-0">
-            <span class="text-sm font-bold text-gray-200">${escapeHtml(p.nameZh)}</span>
-            <span class="text-xs text-gray-500">${escapeHtml(p.nameEn)} (速度: ${p.baseSpeed} | 雙打: #${p.usageRankDouble} | 單打: #${p.usageRankSingle})</span>
+      searchResults.innerHTML = currentMatches.map(p => {
+        const primaryName = isEn ? escapeHtml(p.nameEn) : escapeHtml(p.nameZh);
+        const secondaryName = isEn ? escapeHtml(p.nameZh) : escapeHtml(p.nameEn);
+        return `
+          <div class="search-item p-2 hover:bg-white/10 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0" 
+               data-base="${p.baseSpeed}" data-form-id="${escapeHtml(p.formId)}">
+            <img src="${sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE)}" class="w-8 h-8 object-contain" alt="${primaryName}">
+            <div class="flex flex-col min-w-0">
+              <span class="text-sm font-bold text-gray-200">${primaryName}</span>
+              <span class="text-xs text-gray-500">${secondaryName} (${escapeHtml(text.speed)}: ${p.baseSpeed} | ${escapeHtml(text.rankDouble)}: #${p.usageRankDouble} | ${escapeHtml(text.rankSingle)}: #${p.usageRankSingle})</span>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
       searchResults.classList.remove('hidden');
     } else {
-      searchResults.innerHTML = `<div class="p-3 text-sm text-gray-500 text-center">無符合結果</div>`;
+      searchResults.innerHTML = `<div class="p-3 text-sm text-gray-500 text-center">${escapeHtml(text.noSearchResults)}</div>`;
       searchResults.classList.remove('hidden');
     }
   });

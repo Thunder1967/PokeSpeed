@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { renderSpeedTable } from './SpeedTable';
 import { SpeedTableData } from '../types/pokemon';
 import { battleStore } from '../store/battleState';
+import { setLocale } from '../i18n';
 
 describe('SpeedTable Component', () => {
   let container: HTMLDivElement;
@@ -21,6 +22,7 @@ describe('SpeedTable Component', () => {
   };
 
   beforeEach(() => {
+    setLocale('zh-TW');
     container = document.createElement('div');
     battleStore.set(state => {
       state.slots.playerA.baseSpeed = undefined;
@@ -215,6 +217,26 @@ describe('SpeedTable Component', () => {
 
     const moreBtn = container.querySelector('.more-btn[data-base="100"]') as HTMLElement;
     expect(moreBtn.textContent?.trim()).toBe('+6 更多');
+  });
+
+  it('renders English headers and +more button when locale is en', () => {
+    setLocale('en');
+    const twoPkmnData: SpeedTableData = {
+      100: [
+        { id: 1, formId: 'p1', nameZh: '妙蛙種子', nameEn: 'Bulbasaur', baseSpeed: 100, sprite: '1.png', usageRankSingle: 1, usageRankDouble: 1 },
+        { id: 2, formId: 'p2', nameZh: '妙蛙草', nameEn: 'Ivysaur', baseSpeed: 100, sprite: '2.png', usageRankSingle: 2, usageRankDouble: 2 },
+      ]
+    };
+    renderSpeedTable(container, twoPkmnData, 'single');
+
+    const dynamicHeader = container.querySelector('.speed-table-header .col-dynamic');
+    expect(dynamicHeader?.textContent?.trim()).toBe('Enemy Stat');
+
+    const baseHeader = container.querySelector('.speed-table-header .col-base');
+    expect(baseHeader?.textContent?.trim()).toBe('Base');
+
+    const maxHeader = container.querySelector('.speed-table-header .benchmark-cell.header');
+    expect(maxHeader?.textContent?.trim()).toBe('Max (32+)');
   });
 });
 

@@ -6,9 +6,9 @@ import { battleStore } from './store/battleState';
 import { SpeedTableData } from './types/pokemon';
 import championMB from './data/formats/champion-m-b.json';
 import { initImageFallback } from './utils/imageFallback';
+import { t, getLocale, subscribeLocale } from './i18n';
 
 initImageFallback();
-
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div class="min-h-screen p-4 flex flex-col items-center gap-4">
@@ -19,7 +19,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 `;
 
 let cleanupTable: () => void;
-let currentMode = false; // false = single, true = double
+let currentMode = battleStore.get().isDoubleBattle;
 
 function updateTable(isDouble: boolean) {
   if (cleanupTable) cleanupTable();
@@ -31,11 +31,24 @@ function updateTable(isDouble: boolean) {
   updateDrawerBounds();
 }
 
+function applyLocale() {
+  const meta = t().meta;
+  document.title = meta.title;
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) {
+    metaDesc.setAttribute('content', meta.description);
+  }
+  document.documentElement.lang = getLocale();
 
-// Initial render
-updateTable(battleStore.get().isDoubleBattle);
+  renderHeader(document.getElementById('header-mount')!);
+  updateTable(battleStore.get().isDoubleBattle);
+  renderDrawer(document.getElementById('drawer-mount')!);
+}
 
-// Listen for mode changes
+// Initial full render with detected locale
+applyLocale();
+
+// Listen for mode changes (single / double)
 battleStore.subscribe(state => {
   if (state.isDoubleBattle !== currentMode) {
     currentMode = state.isDoubleBattle;
@@ -43,5 +56,7 @@ battleStore.subscribe(state => {
   }
 });
 
-renderHeader(document.getElementById('header-mount')!);
-renderDrawer(document.getElementById('drawer-mount')!);
+// Listen for locale changes (zh-TW <-> en)
+subscribeLocale(() => {
+  applyLocale();
+});

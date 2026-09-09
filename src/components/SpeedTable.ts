@@ -5,6 +5,7 @@ import { calcPinDividers, RowSpeedInfo } from '../utils/pinDividerCalc';
 import { createPinDividerHTML } from './PinDivider';
 import { AppConfig, getAdaptiveSpriteLimit } from '../config/appConfig';
 import { escapeHtml, sanitizeUrl } from '../utils/security';
+import { t, getLocale } from '../i18n';
 import '../styles/table.css';
 
 let lastBenchmarkScrollLeft = 0;
@@ -13,15 +14,18 @@ let activeHiddenPokemonsMap = new Map<number, PokemonSpeedData[]>();
 /** Tracks the serialized key of the last rendered pin dividers for diffing. */
 let lastPinDividerKey = '';
 
-function renderSpriteImg(p: PokemonSpeedData): string {
+function renderSpriteImg(p: PokemonSpeedData, isEn: boolean): string {
   const safeSprite = sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE);
   const safeNameZh = escapeHtml(p.nameZh);
   const safeNameEn = escapeHtml(p.nameEn);
+  const primaryName = isEn ? safeNameEn : safeNameZh;
+  const secondaryName = isEn ? safeNameZh : safeNameEn;
   const safeFormId = escapeHtml(p.formId);
+  const st = t().speedTable;
 
   return `
-    <img src="${safeSprite}" alt="${safeNameZh}" 
-         title="${safeNameZh} (${safeNameEn})\n單打排名: #${p.usageRankSingle}\n雙打排名: #${p.usageRankDouble}" 
+    <img src="${safeSprite}" alt="${primaryName}" 
+         title="${primaryName} (${secondaryName})\n${escapeHtml(st.rankSingle)}: #${p.usageRankSingle}\n${escapeHtml(st.rankDouble)}: #${p.usageRankDouble}" 
          class="sprite-img" data-form-id="${safeFormId}"
          loading="${AppConfig.table.sprites.loadingStrategy}" />
   `.trim();
@@ -35,6 +39,8 @@ export function renderSpeedTable(
 ) {
   const limit = getAdaptiveSpriteLimit();
   activeHiddenPokemonsMap.clear();
+  const st = t().speedTable;
+  const isEn = getLocale() === 'en';
 
   // Sort base speeds descending
   const baseSpeeds = Object.keys(data)
@@ -44,19 +50,19 @@ export function renderSpeedTable(
   let html = `
     <div class="speed-table-container">
       <div class="speed-table-header">
-        <div class="col-base">種族</div>
-        <div class="col-sprites-container">寶可夢</div>
-        <div class="col-dynamic">敵方實數</div>
+        <div class="col-base">${escapeHtml(st.baseCol)}</div>
+        <div class="col-sprites-container">${escapeHtml(st.pokemonCol)}</div>
+        <div class="col-dynamic">${escapeHtml(st.enemyActualCol)}</div>
         <div class="col-benchmarks-container">
           <div class="col-benchmarks">
-            <div class="benchmark-cell header">極速(32+)</div>
-            <div class="benchmark-cell header">準速(32)</div>
-            <div class="benchmark-cell header">無速(0)</div>
-            <div class="benchmark-cell header">慢速(0-)</div>
-            <div class="benchmark-cell header">極速圍巾</div>
-            <div class="benchmark-cell header">準速圍巾</div>
-            <div class="benchmark-cell header">極速-1</div>
-            <div class="benchmark-cell header">準速-1</div>
+            <div class="benchmark-cell header">${escapeHtml(st.maxSpeed)}</div>
+            <div class="benchmark-cell header">${escapeHtml(st.neutralSpeed)}</div>
+            <div class="benchmark-cell header">${escapeHtml(st.zeroEvSpeed)}</div>
+            <div class="benchmark-cell header">${escapeHtml(st.minSpeed)}</div>
+            <div class="benchmark-cell header">${escapeHtml(st.maxScarf)}</div>
+            <div class="benchmark-cell header">${escapeHtml(st.neutralScarf)}</div>
+            <div class="benchmark-cell header">${escapeHtml(st.maxMinus1)}</div>
+            <div class="benchmark-cell header">${escapeHtml(st.neutralMinus1)}</div>
           </div>
         </div>
       </div>
@@ -91,14 +97,14 @@ export function renderSpeedTable(
         <div class="col-base">${base}</div>
         <div class="col-sprites-container">
           <div class="col-sprites" data-base="${base}">
-            ${visiblePokemons.map(renderSpriteImg).join('')}
+            ${visiblePokemons.map(p => renderSpriteImg(p, isEn)).join('')}
             ${hiddenPokemons.length > 0 ? `
               <div class="hidden-sprites is-hidden" id="hidden-sprites-${base}"></div>
             ` : ''}
           </div>
           ${hiddenPokemons.length > 0 ? `
             <button type="button" class="more-btn" data-base="${base}" data-count="${hiddenPokemons.length}">
-              +${hiddenPokemons.length} 更多
+              ${escapeHtml(st.moreBtn(hiddenPokemons.length))}
             </button>
           ` : ''}
         </div>
@@ -289,7 +295,7 @@ export function renderSpeedTable(
     const hiddenContainer = container.querySelector(`#hidden-sprites-${base}`);
     if (hiddenContainer && hiddenContainer.children.length === 0) {
       const list = activeHiddenPokemonsMap.get(Number(base)) || [];
-      hiddenContainer.innerHTML = list.map(renderSpriteImg).join('');
+      hiddenContainer.innerHTML = list.map(p => renderSpriteImg(p, isEn)).join('');
     }
   };
 
@@ -309,12 +315,12 @@ export function renderSpeedTable(
           hiddenContainer.classList.remove('is-hidden');
           row.classList.add('is-expanded');
           btn.classList.add('expanded');
-          btn.textContent = '收合';
+          btn.textContent = st.collapseBtn;
         } else {
           hiddenContainer.classList.add('is-hidden');
           row.classList.remove('is-expanded');
           btn.classList.remove('expanded');
-          btn.textContent = `+${count} 更多`;
+          btn.textContent = st.moreBtn(Number(count));
         }
       }
     }
@@ -366,7 +372,8 @@ export function focusAndHighlightPokemon(formId: string, baseSpeed: number | str
   // On-demand populate hidden sprites if not already populated
   if (hiddenContainer && hiddenContainer.children.length === 0) {
     const list = activeHiddenPokemonsMap.get(Number(baseSpeed)) || [];
-    hiddenContainer.innerHTML = list.map(renderSpriteImg).join('');
+    const isEn = getLocale() === 'en';
+    hiddenContainer.innerHTML = list.map(p => renderSpriteImg(p, isEn)).join('');
   }
 
   const targetImg = row.querySelector(`img[data-form-id="${formId}"]`) as HTMLElement;
@@ -376,7 +383,7 @@ export function focusAndHighlightPokemon(formId: string, baseSpeed: number | str
     row.classList.add('is-expanded');
     if (moreBtn) {
       moreBtn.classList.add('expanded');
-      moreBtn.textContent = '收合';
+      moreBtn.textContent = t().speedTable.collapseBtn;
     }
   }
 
