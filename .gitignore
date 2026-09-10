@@ -23,8 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# Data cache
+# Data cache & logs
 scripts/.cache
+scripts/logs
 
 # Environment variables
 .env

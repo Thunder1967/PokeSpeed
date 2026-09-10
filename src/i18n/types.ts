@@ -5,6 +5,7 @@ export interface TranslationSchema {
     appTitle: string;
     singleBattle: string;
     doubleBattle: string;
+    seasonAria: string;
     battleSettings: string;
     searchPlaceholder: string;
     searchNoResults: string;
@@ -17,10 +18,14 @@ export interface TranslationSchema {
     backToTable: string;
     aboutTitle: string;
     aboutSubtitle: string;
+    appTitleFull: string;
+    metaDescription: string;
   };
   drawer: {
     title: string;
     close: string;
+    modeDoublesBadge: string;
+    modeSinglesBadge: string;
     enemyBenchmarkTitle: string;
     playerATitle: string;
     playerBTitle: string;
@@ -34,7 +39,6 @@ export interface TranslationSchema {
     clearSelection: string;
     baseSpeed: string;
     evs: string;
-    ivs: string;
     nature: string;
     naturePositive: string;
     natureNeutral: string;
@@ -43,11 +47,10 @@ export interface TranslationSchema {
     tailwind: string;
     choiceScarf: string;
     speedAbility: string;
-    speedAbilityDesc: string;
+    abilityNone: string;
+    abilityProtoQuark: string;
+    abilityWeather: string;
     paralysis: string;
-    paralysisDesc: string;
-    singleBattleHint: string;
-    reset: string;
   };
   table: {
     colBase: string;
@@ -67,7 +70,6 @@ export interface TranslationSchema {
   pinDivider: {
     playerA: string;
     playerB: string;
-    enemyBenchmark: string;
     speedTieTitle: string;
     speedLabel: (speed: number) => string;
     slotPosition: string;
@@ -80,8 +82,5 @@ export interface TranslationSchema {
     scarfShort: string;
     abilityBoostShort: string;
     paralyzedShort: string;
-    comparisonFaster: (diff: number) => string;
-    comparisonSlower: (diff: number) => string;
-    comparisonTie: string;
   };
 }

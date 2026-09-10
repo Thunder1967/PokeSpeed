@@ -1,12 +1,13 @@
 import { BattleState, SlotState } from '../types/pokemon';
+import { AppConfig } from '../config/appConfig';
 
 /**
  * Creates a default SlotState with optional overrides.
  */
 export function createDefaultSlot(overrides?: Partial<SlotState>): SlotState {
   return {
-    evs: 32,
-    nature: 1.1,
+    evs: AppConfig.battle.defaultEvs,
+    nature: AppConfig.battle.defaultNature,
     stages: 0,
     isTailwind: false,
     isScarf: false,
@@ -21,7 +22,7 @@ export function createDefaultSlot(overrides?: Partial<SlotState>): SlotState {
 
 export const initialState: BattleState = {
   isDoubleBattle: false,
-  activeFormat: 'champion-m-b',
+  activeFormat: AppConfig.season.currentSeason,
   slots: {
     enemy: createDefaultSlot(),
     playerA: createDefaultSlot(),

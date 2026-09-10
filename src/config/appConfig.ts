@@ -3,6 +3,8 @@
 export interface TableConfig {
   /** 預設顯示的寶可夢圖示隻數 (基準值) */
   defaultVisibleSprites: number;
+  /** 寶可夢搜尋自動補全建議上限 */
+  searchLimit: number;
   /** 網路與視口自適應調節設定 */
   adaptive: {
     enabled: boolean;
@@ -29,19 +31,80 @@ export interface TableConfig {
 
 export interface BattleDefaultsConfig {
   defaultEvs: number;
-  defaultNature: number;
+  defaultNature: 0.9 | 1.0 | 1.1;
+  /** 官方 VGC / 級位對戰標準等級基準 (Lv.50，速度能力值計算核心常數) */
   defaultLevel: number;
+  /** 官方標準頂個體值 (31 IV，無隨機或自訂時的速線基準常數) */
   defaultIv: number;
 }
 
+export interface SeasonDefinition {
+  /** 唯一識別代號，對應 formatName (如 'champion-m-b') */
+  id: string;
+  /** 賽制代號 (如 'm-b') */
+  regulation: string;
+  /** 繁體中文顯示名稱 (如 'Regulation M-B') */
+  nameZh: string;
+  /** 英文顯示名稱 (如 'Regulation M-B') */
+  nameEn: string;
+  /** 建立/發布時間註記 (可選) */
+  releaseDate?: string;
+  /** Smogon 雙打格式前綴覆蓋 (可選，預設依 AppConfig.smogon.defaultDoublesPrefix) */
+  smogonDoublesPrefix?: string;
+  /** Smogon 單打格式前綴覆蓋 (可選，預設依 AppConfig.smogon.defaultSinglesPrefix) */
+  smogonSinglesPrefix?: string;
+}
+
+export interface SeasonConfig {
+  /** 網站預設載入賽季 ID (GitHub Action 每 7 天亦依此更新排名) */
+  currentSeason: string;
+  /** 系統中已收錄並開放切換的賽季清單 (依重要/最新順序排列) */
+  availableSeasons: SeasonDefinition[];
+}
+
+export interface SmogonConfig {
+  /** 預設天梯分數排名門檻 (如 1500) */
+  defaultCutoff: number;
+  /** 雙打 Smogon 格式前綴 (如 'gen9championsvgc2026') */
+  defaultDoublesPrefix: string;
+  /** 單打 Smogon 格式前綴 (如 'gen9championsbss') */
+  defaultSinglesPrefix: string;
+}
+
+export interface RankingConfig {
+  /** 爬蟲未上榜預設排名 (0 代表未上榜，排序時安全置底) */
+  unrankedRank: number;
+}
+
 export interface AppConfigType {
+  season: SeasonConfig;
   table: TableConfig;
   battle: BattleDefaultsConfig;
+  smogon: SmogonConfig;
+  ranking: RankingConfig;
 }
 
 export const AppConfig: AppConfigType = {
+  season: {
+    currentSeason: 'champion-m-b',
+    availableSeasons: [
+      {
+        id: 'champion-m-c',
+        regulation: 'm-c',
+        nameZh: 'Regulation M-C',
+        nameEn: 'Regulation M-C',
+      },
+      {
+        id: 'champion-m-b',
+        regulation: 'm-b',
+        nameZh: 'Regulation M-B',
+        nameEn: 'Regulation M-B',
+      },
+    ],
+  },
   table: {
     defaultVisibleSprites: 6,
+    searchLimit: 6,
     adaptive: {
       enabled: true,
       saveDataLimit: 4,
@@ -58,9 +121,17 @@ export const AppConfig: AppConfigType = {
   },
   battle: {
     defaultEvs: 32,
-    defaultNature: 1.0,
+    defaultNature: 1.1,
     defaultLevel: 50,
     defaultIv: 31,
+  },
+  smogon: {
+    defaultCutoff: 1500,
+    defaultDoublesPrefix: 'gen9championsvgc2026',
+    defaultSinglesPrefix: 'gen9championsbss',
+  },
+  ranking: {
+    unrankedRank: 0,
   },
 };
 

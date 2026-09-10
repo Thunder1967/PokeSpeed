@@ -1,6 +1,6 @@
 import { SlotState } from '../types/pokemon';
 import { AppConfig } from '../config/appConfig';
-import { getLocale, SupportedLocale } from '../i18n';
+import { t, getLocale, SupportedLocale } from '../i18n';
 
 export const DEFAULT_SUBSTITUTE_SPRITE = AppConfig.table.sprites.fallbackSubstitute;
 
@@ -72,27 +72,34 @@ export function formatEvs(evs: number): { actualEv: number; evText: string } {
  * Formats nature multiplier (1.1, 1.0, 0.9) to descriptive label and color class.
  */
 export function formatNature(nature: number, locale: SupportedLocale = getLocale()): { natureText: string; colorClass: string } {
-  const isEn = locale === 'en';
+  const dict = t(locale);
   if (nature === 1.1) {
-    return { natureText: isEn ? '+10% (Speed+)' : '加速 (+10%)', colorClass: 'text-red-400 font-bold' };
+    return { natureText: dict.drawer.naturePositive, colorClass: 'text-red-400 font-bold' };
   }
   if (nature === 0.9) {
-    return { natureText: isEn ? '-10% (Speed-)' : '減速 (-10%)', colorClass: 'text-blue-400 font-bold' };
+    return { natureText: dict.drawer.natureNegative, colorClass: 'text-blue-400 font-bold' };
   }
-  return { natureText: isEn ? '0% (Neutral)' : '無關 (0%)', colorClass: 'text-gray-300' };
+  return { natureText: dict.drawer.natureNeutral, colorClass: 'text-gray-300' };
 }
 
 /**
  * Formats combat buffs/status of a slot into a string.
  */
 export function formatSlotBuffs(slot: SlotState, locale: SupportedLocale = getLocale()): string {
+  const dict = t(locale);
   const isEn = locale === 'en';
   const buffs: string[] = [];
-  if (slot.isTailwind) buffs.push(isEn ? 'Tailwind' : '順風');
-  if (slot.isScarf) buffs.push(isEn ? 'Scarf' : '圍巾');
-  if (slot.isAbilityBoost) buffs.push(isEn ? 'Ability(2x)' : '特性(2x)');
-  if (slot.isParalyzed) buffs.push(isEn ? 'Paralysis' : '麻痺');
-  return buffs.length > 0 ? buffs.join(' ') : (isEn ? 'Standard' : '常規狀態');
+  if (slot.isTailwind) buffs.push(dict.pinDivider.tailwindShort);
+  if (slot.isScarf) buffs.push(dict.pinDivider.scarfShort);
+  if (slot.isAbilityBoost) {
+    if (slot.abilityMultiplier === 1.5) {
+      buffs.push(isEn ? 'Ability (×1.5)' : '特性 (×1.5)');
+    } else {
+      buffs.push(dict.pinDivider.abilityBoostShort);
+    }
+  }
+  if (slot.isParalyzed) buffs.push(dict.pinDivider.paralyzedShort);
+  return buffs.length > 0 ? buffs.join(' ') : dict.pinDivider.normalStatus;
 }
 
 /**
@@ -147,28 +154,26 @@ export function findDividerPosition(rows: RowSpeedInfo[], playerSpeed: number): 
  * Formats a SlotState into a descriptive tooltip string.
  */
 export function formatSlotTooltip(slot: SlotState, label: string, realSpeed: number, locale: SupportedLocale = getLocale()): string {
+  const dict = t(locale);
   const isEn = locale === 'en';
   const { actualEv } = formatEvs(slot.evs);
   const { natureText } = formatNature(slot.nature, locale);
-  const stageText = slot.stages !== 0 ? `${isEn ? 'Stage: ' : '階級: '}${slot.stages > 0 ? '+' : ''}${slot.stages}` : null;
+  const stageText = slot.stages !== 0 ? `${dict.pinDivider.stageLabel}: ${slot.stages > 0 ? '+' : ''}${slot.stages}` : null;
   const buffStr = formatSlotBuffs(slot, locale);
   const stageStr = stageText ? ` | ${stageText}` : '';
   const pokeName = slot.pokemon 
     ? (isEn ? `${slot.pokemon.nameEn} (${slot.pokemon.nameZh})` : `${slot.pokemon.nameZh} (${slot.pokemon.nameEn})`) 
     : label;
   const baseSpeed = slot.pokemon?.baseSpeed ?? slot.baseSpeed ?? 100;
+  const baseLabel = isEn ? 'Base' : '種族';
+  const evLabel = isEn ? 'EVs' : '努力值';
+  const natureLabel = isEn ? 'Nature' : '性格';
+  const statusLabel = isEn ? 'Status' : '狀態';
 
-  if (isEn) {
-    return `${pokeName} (Base ${baseSpeed})
-Speed: ${realSpeed}
-EVs: ${actualEv} (${slot.evs}) | Nature: ${natureText}${stageStr}
-Status: ${buffStr}`;
-  }
-
-  return `${pokeName} (種族 ${baseSpeed})
-實數: ${realSpeed}
-努力值: ${actualEv} (${slot.evs}) | 性格: ${natureText}${stageStr}
-狀態: ${buffStr}`;
+  return `${pokeName} (${baseLabel} ${baseSpeed})
+${dict.pinDivider.speedLabel(realSpeed)}
+${evLabel}: ${actualEv} (${slot.evs}) | ${natureLabel}: ${natureText}${stageStr}
+${statusLabel}: ${buffStr}`;
 }
 
 function createSinglePin(
@@ -178,18 +183,20 @@ function createSinglePin(
   speed: number,
   color: 'emerald' | 'violet',
   rows: RowSpeedInfo[],
-  fallbackLabel: string
+  fallbackLabel: string,
+  locale: SupportedLocale = getLocale()
 ): PinDividerItem {
+  const isEn = locale === 'en';
   return {
     isMerged: false,
     slotKey,
-    label: poke.nameZh,
+    label: isEn ? poke.nameEn : poke.nameZh,
     speed,
     color,
     position: findDividerPosition(rows, speed),
     pokemon: poke,
     slotState: slot,
-    tooltip: formatSlotTooltip(slot, fallbackLabel, speed)
+    tooltip: formatSlotTooltip(slot, fallbackLabel, speed, locale)
   };
 }
 
@@ -204,7 +211,8 @@ export function calcPinDividers(
   slotA: SlotState,
   speedA: number,
   slotB: SlotState,
-  speedB: number
+  speedB: number,
+  locale: SupportedLocale = getLocale()
 ): PinDividerItem[] {
   const hasA = slotA.baseSpeed !== undefined;
   const hasB = isDouble && slotB.baseSpeed !== undefined;
@@ -213,15 +221,19 @@ export function calcPinDividers(
     return [];
   }
 
+  const isEn = locale === 'en';
+  const labelA = isEn ? 'Player A' : '我方 A';
+  const labelB = isEn ? 'Player B' : '我方 B';
+
   const pokeA = getSlotPokemonInfo(slotA, '我方 A', 'Player A');
   const pokeB = getSlotPokemonInfo(slotB, '我方 B', 'Player B');
 
   if (hasA && !hasB) {
-    return [createSinglePin('playerA', pokeA, slotA, speedA, 'emerald', rows, '我方 A')];
+    return [createSinglePin('playerA', pokeA, slotA, speedA, 'emerald', rows, labelA, locale)];
   }
 
   if (!hasA && hasB) {
-    return [createSinglePin('playerB', pokeB, slotB, speedB, 'violet', rows, '我方 B')];
+    return [createSinglePin('playerB', pokeB, slotB, speedB, 'violet', rows, labelB, locale)];
   }
 
   // Both A and B are active
@@ -231,25 +243,27 @@ export function calcPinDividers(
   // Check if speeds tie and positions are identical
   const isSamePos = posA.type === posB.type && posA.afterBase === posB.afterBase;
   if (speedA === speedB && isSamePos) {
+    const nameA = isEn ? pokeA.nameEn : pokeA.nameZh;
+    const nameB = isEn ? pokeB.nameEn : pokeB.nameZh;
     return [
       {
         isMerged: true,
-        label: `${pokeA.nameZh} & ${pokeB.nameZh}`,
+        label: `${nameA} & ${nameB}`,
         speed: speedA,
         position: posA,
         pokemonA: pokeA,
         slotStateA: slotA,
-        tooltipA: formatSlotTooltip(slotA, '我方 A', speedA),
+        tooltipA: formatSlotTooltip(slotA, labelA, speedA, locale),
         pokemonB: pokeB,
         slotStateB: slotB,
-        tooltipB: formatSlotTooltip(slotB, '我方 B', speedB)
+        tooltipB: formatSlotTooltip(slotB, labelB, speedB, locale)
       }
     ];
   }
 
   return [
-    createSinglePin('playerA', pokeA, slotA, speedA, 'emerald', rows, '我方 A'),
-    createSinglePin('playerB', pokeB, slotB, speedB, 'violet', rows, '我方 B')
+    createSinglePin('playerA', pokeA, slotA, speedA, 'emerald', rows, labelA, locale),
+    createSinglePin('playerB', pokeB, slotB, speedB, 'violet', rows, labelB, locale)
   ];
 }
 

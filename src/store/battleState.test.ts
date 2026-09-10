@@ -1,11 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import { battleStore, createDefaultSlot } from './battleState';
+import { AppConfig } from '../config/appConfig';
 
 describe('battleState Store', () => {
-  it('initializes with default state', () => {
+  it('initializes with default state matching AppConfig', () => {
     const state = battleStore.get();
-    expect(state.slots.enemy.evs).toBe(32);
-    expect(state.slots.enemy.nature).toBe(1.1);
+    expect(state.slots.enemy.evs).toBe(AppConfig.battle.defaultEvs);
+    expect(state.slots.enemy.nature).toBe(AppConfig.battle.defaultNature);
   });
 
   it('updates state and notifies listeners', async () => {
@@ -44,8 +45,8 @@ describe('battleState Store', () => {
 
   it('creates default slot with default values or custom overrides', () => {
     const defaultSlot = createDefaultSlot();
-    expect(defaultSlot.evs).toBe(32);
-    expect(defaultSlot.nature).toBe(1.1);
+    expect(defaultSlot.evs).toBe(AppConfig.battle.defaultEvs);
+    expect(defaultSlot.nature).toBe(AppConfig.battle.defaultNature);
     expect(defaultSlot.stages).toBe(0);
     expect(defaultSlot.isScarf).toBe(false);
 

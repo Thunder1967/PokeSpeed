@@ -11,9 +11,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id: string) {
-          // Separate the large, rarely-changing Pokemon data (~113KB)
-          // into its own chunk for independent long-term caching.
-          if (id.includes('champion-m-b.json')) {
+          // Separate large, rarely-changing format data into pokemon-data chunk
+          if ((id.includes('src/data/formats') || id.includes('src\\data\\formats')) && id.endsWith('.json')) {
             return 'pokemon-data';
           }
         },

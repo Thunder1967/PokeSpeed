@@ -147,11 +147,31 @@ describe('pinDividerCalc module', () => {
       const result = formatSlotTooltip(slot, '我方 B', 250);
       expect(result).toContain('清洗洛托姆 (Rotom-Wash)');
       expect(result).toContain('(種族 80)');
-      expect(result).toContain('階級: +2');
-      expect(result).toContain('順風');
-      expect(result).toContain('圍巾');
-      expect(result).toContain('特性(2x)');
-      expect(result).toContain('麻痺');
+      expect(result).toContain('能力階級: +2');
+      expect(result).toContain('順風 (+100%)');
+      expect(result).toContain('圍巾 (+50%)');
+      expect(result).toContain('特性 (×2.0)');
+      expect(result).toContain('麻痺 (50%)');
+    });
+
+    it('formats slot with 1.5x ability boost in English and Chinese', () => {
+      const slot: SlotState = {
+        baseSpeed: 100,
+        evs: 0,
+        nature: 1.0,
+        stages: 0,
+        isTailwind: false,
+        isScarf: false,
+        isAbilityBoost: true,
+        abilityMultiplier: 1.5,
+        isParalyzed: false
+      };
+
+      const zhResult = formatSlotTooltip(slot, '我方 A', 150, 'zh-TW');
+      expect(zhResult).toContain('特性 (×1.5)');
+
+      const enResult = formatSlotTooltip(slot, 'Player A', 150, 'en');
+      expect(enResult).toContain('Ability (×1.5)');
     });
   });
 
@@ -239,8 +259,22 @@ describe('pinDividerCalc module', () => {
       expect(result[0].isMerged).toBe(true);
       if (result[0].isMerged) {
         expect(result[0].speed).toBe(150);
+        expect(result[0].label).toBe('夢幻 & 雷丘');
         expect(result[0].pokemonA.nameZh).toBe('夢幻');
         expect(result[0].pokemonB.nameZh).toBe('雷丘');
+      }
+    });
+
+    it('merges pins in English when locale is en with English names and tooltip', () => {
+      setLocale('en');
+      const result = calcPinDividers(mockRows, true, slotA, 150, slotB, 150, 'en');
+      expect(result.length).toBe(1);
+      expect(result[0].isMerged).toBe(true);
+      if (result[0].isMerged) {
+        expect(result[0].speed).toBe(150);
+        expect(result[0].label).toBe('Mew & Raichu');
+        expect(result[0].tooltipA).toContain('Mew (夢幻)');
+        expect(result[0].tooltipA).toContain('Speed: 150');
       }
     });
   });

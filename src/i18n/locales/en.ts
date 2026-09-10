@@ -5,6 +5,7 @@ export const en: TranslationSchema = {
     appTitle: 'PokéSpeed',
     singleBattle: 'Singles',
     doubleBattle: 'Doubles',
+    seasonAria: 'Select Battle Season',
     battleSettings: 'Battle Settings',
     searchPlaceholder: 'Search Name / English / Base Speed...',
     searchNoResults: 'No matching Pokémon',
@@ -16,11 +17,15 @@ export const en: TranslationSchema = {
     about: 'About',
     backToTable: '← Back to Speed Table',
     aboutTitle: 'About PokéSpeed',
-    aboutSubtitle: 'VGC Speed Tier & Battle Benchmark Tool'
+    aboutSubtitle: 'VGC Speed Tier & Battle Benchmark Tool',
+    appTitleFull: 'PokéSpeed Champion - Pokémon Speed Tier & Battle Benchmark Tool',
+    metaDescription: 'PokéSpeed Champion — Pokémon Speed Tier and Battle Benchmark Tool, supporting Singles and Doubles settings.',
   },
   drawer: {
     title: 'Battle Settings',
     close: 'Close',
+    modeDoublesBadge: 'Doubles (3 Slots)',
+    modeSinglesBadge: 'Singles (2 Slots)',
     enemyBenchmarkTitle: 'Enemy Benchmark',
     playerATitle: 'Player A (Green)',
     playerBTitle: 'Player B (Purple)',
@@ -34,7 +39,6 @@ export const en: TranslationSchema = {
     clearSelection: 'Clear',
     baseSpeed: 'Base Speed',
     evs: 'EVs (0~32)',
-    ivs: 'IVs',
     nature: 'Nature Modifier',
     naturePositive: '+10% (Speed+)',
     natureNeutral: '0% (Neutral)',
@@ -42,12 +46,11 @@ export const en: TranslationSchema = {
     stages: 'Stat Stage (-6 ~ +6)',
     tailwind: 'Tailwind (+100%)',
     choiceScarf: 'Choice Scarf (+50%)',
-    speedAbility: 'Speed Ability (×2)',
-    speedAbilityDesc: 'Chlorophyll, Swift Swim, Sand Rush, etc.',
-    paralysis: 'Paralysis (-50%)',
-    paralysisDesc: 'Speed halved',
-    singleBattleHint: '(Singles mode only uses Player A)',
-    reset: 'Reset All'
+    speedAbility: 'Speed Ability',
+    abilityNone: 'None (1.0x)',
+    abilityProtoQuark: 'Ability 1.5x (Protosynthesis/Quark Drive)',
+    abilityWeather: 'Ability 2.0x (Swift Swim/Chlorophyll/Sand Rush)',
+    paralysis: 'Paralysis (-50%)'
   },
   table: {
     colBase: 'Base',
@@ -67,7 +70,6 @@ export const en: TranslationSchema = {
   pinDivider: {
     playerA: 'Player A (Green)',
     playerB: 'Player B (Purple)',
-    enemyBenchmark: 'Enemy Benchmark',
     speedTieTitle: '📌 Doubles Speed Tie Threshold',
     speedLabel: (speed: number) => `Speed: ${speed}`,
     slotPosition: 'Slot Position',
@@ -80,8 +82,5 @@ export const en: TranslationSchema = {
     scarfShort: 'Scarf (+50%)',
     abilityBoostShort: 'Ability (×2.0)',
     paralyzedShort: 'Paralyzed (50%)',
-    comparisonFaster: (diff: number) => `Faster +${diff}`,
-    comparisonSlower: (diff: number) => `Slower -${diff}`,
-    comparisonTie: 'Speed Tie'
   }
 };

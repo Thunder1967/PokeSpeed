@@ -117,9 +117,24 @@ describe('searchPokemon', () => {
     expect(results[1].formId).toBe('charizard');        // single rank 20
   });
 
-  it('respects the limit argument', () => {
+  it('respects the limit argument and defaults to AppConfig.table.searchLimit', () => {
     const results = searchPokemon(mockPokemon, 'a', true, 1);
     expect(results.length).toBe(1);
+
+    const defaultLimitResults = searchPokemon(mockPokemon, 'a', true);
+    expect(defaultLimitResults.length).toBeLessThanOrEqual(6);
+  });
+
+  it('places unranked Pokemon (rank 0) at the end of ranked matches', () => {
+    const pRank1: PokemonSpeedData = { ...mockPokemon[0], formId: 'p1', nameEn: 'poke-one', usageRankDouble: 1 };
+    const pRank50: PokemonSpeedData = { ...mockPokemon[1], formId: 'p50', nameEn: 'poke-fifty', usageRankDouble: 50 };
+    const pUnranked: PokemonSpeedData = { ...mockPokemon[2], formId: 'p0', nameEn: 'poke-zero', usageRankDouble: 0 };
+
+    const results = searchPokemon([pUnranked, pRank50, pRank1], 'poke', true);
+    expect(results.length).toBe(3);
+    expect(results[0].formId).toBe('p1');
+    expect(results[1].formId).toBe('p50');
+    expect(results[2].formId).toBe('p0');
   });
 
   it('returns empty array when no Pokemon matches', () => {
@@ -189,6 +204,17 @@ describe('Search Dropdown Renderers', () => {
 
     const htmlEn = renderHeaderSearchItem(samplePokemon, 'en');
     expect(htmlEn).toContain('Flutter Mane');
+  });
+
+  it('renders #-- for unranked Pokemon with rank 0', () => {
+    const unrankedPokemon: PokemonSpeedData = {
+      ...samplePokemon,
+      usageRankSingle: 0,
+      usageRankDouble: 0
+    };
+    const htmlZh = renderHeaderSearchItem(unrankedPokemon, 'zh-TW');
+    expect(htmlZh).toContain('雙打: #--');
+    expect(htmlZh).toContain('單打: #--');
   });
 
   it('renders drawer search item with speed badge', () => {

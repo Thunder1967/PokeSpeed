@@ -263,6 +263,41 @@ describe('SpeedTable Component', () => {
     // Reset locale back to zh-TW
     setLocale('zh-TW');
   });
+
+  it('correctly sorts unranked Pokemon (rank 0) to the end and formats tooltip with #--', () => {
+    const tableDataWithUnranked: SpeedTableData = {
+      100: [
+        {
+          id: 1,
+          formId: 'unranked-poke',
+          nameZh: '未上榜寶可夢',
+          nameEn: 'Unranked Poke',
+          baseSpeed: 100,
+          sprite: 'unranked.png',
+          usageRankSingle: 0,
+          usageRankDouble: 0
+        },
+        {
+          id: 2,
+          formId: 'ranked-poke',
+          nameZh: '上榜寶可夢',
+          nameEn: 'Ranked Poke',
+          baseSpeed: 100,
+          sprite: 'ranked.png',
+          usageRankSingle: 5,
+          usageRankDouble: 5
+        }
+      ]
+    };
+
+    renderSpeedTable(container, tableDataWithUnranked, 'double');
+    const imgs = container.querySelectorAll('.col-sprites img.sprite-img');
+    expect(imgs.length).toBe(2);
+    // Ranked Pokemon should come first even though unranked had rank value 0
+    expect(imgs[0].getAttribute('data-form-id')).toBe('ranked-poke');
+    expect(imgs[1].getAttribute('data-form-id')).toBe('unranked-poke');
+    expect(imgs[1].getAttribute('title')).toContain('#--');
+  });
 });
 
 

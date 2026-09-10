@@ -4,8 +4,7 @@ import { renderSpeedTable } from './components/SpeedTable';
 import { renderAboutPage } from './components/AboutPage';
 import { renderDrawer, updateDrawerBounds } from './components/Drawer';
 import { battleStore } from './store/battleState';
-import { SpeedTableData } from './types/pokemon';
-import championMB from './data/formats/champion-m-b.json';
+import { getFormatData } from './data/formats';
 import { initImageFallback } from './utils/imageFallback';
 import { subscribeLocale } from './i18n';
 
@@ -24,16 +23,18 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
 let cleanupTable: (() => void) | undefined;
 let cleanupAbout: (() => void) | null = null;
-let currentMode = false; // false = single, true = double
+let currentFormat = battleStore.get().activeFormat;
+let currentMode = battleStore.get().isDoubleBattle; // false = single, true = double
 
 const tableMount = document.getElementById('speed-table-mount')!;
 const aboutMount = document.getElementById('about-mount')!;
 
-function updateTable(isDouble: boolean) {
+function updateTable(formatId: string, isDouble: boolean) {
   if (cleanupTable) cleanupTable();
+  const formatData = getFormatData(formatId);
   cleanupTable = renderSpeedTable(
     tableMount,
-    championMB as unknown as SpeedTableData,
+    formatData,
     isDouble ? 'double' : 'single'
   );
   updateDrawerBounds();
@@ -61,7 +62,7 @@ function handleRoute() {
 }
 
 // Initial table render
-updateTable(battleStore.get().isDoubleBattle);
+updateTable(currentFormat, currentMode);
 
 // Render header & battle settings drawer
 renderHeader(document.getElementById('header-mount')!);
@@ -71,15 +72,17 @@ renderDrawer(document.getElementById('drawer-mount')!);
 window.addEventListener('hashchange', handleRoute);
 handleRoute();
 
-// Listen for mode changes
+// Listen for mode or season changes
 battleStore.subscribe(state => {
-  if (state.isDoubleBattle !== currentMode) {
+  if (state.isDoubleBattle !== currentMode || state.activeFormat !== currentFormat) {
     currentMode = state.isDoubleBattle;
-    updateTable(currentMode);
+    currentFormat = state.activeFormat;
+    updateTable(currentFormat, currentMode);
   }
 });
 
 // Listen for locale changes to re-render table with new language
 subscribeLocale(() => {
-  updateTable(battleStore.get().isDoubleBattle);
+  const state = battleStore.get();
+  updateTable(state.activeFormat, state.isDoubleBattle);
 });

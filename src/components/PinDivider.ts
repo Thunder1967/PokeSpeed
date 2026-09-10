@@ -19,8 +19,7 @@ function renderSlotDetailHTML(
   const dict = t(locale);
   const { actualEv } = formatEvs(slot.evs);
   const { natureText, colorClass: natureColorClass } = formatNature(slot.nature, locale);
-  const stagePrefix = locale === 'en' ? 'Stage: ' : '階級: ';
-  const stageText = slot.stages !== 0 ? `${stagePrefix}${slot.stages > 0 ? '+' : ''}${slot.stages}` : null;
+  const stageText = slot.stages !== 0 ? `${dict.pinDivider.stageLabel}: ${slot.stages > 0 ? '+' : ''}${slot.stages}` : null;
   const buffStr = formatSlotBuffs(slot, locale);
 
   const badgeColor = isEmerald 

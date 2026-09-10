@@ -8,6 +8,15 @@ import { escapeHtml, sanitizeUrl } from '../utils/security';
 import { t, getLocale, getPokemonDisplayNames } from '../i18n';
 import '../styles/table.css';
 
+/** Benchmark speed multipliers */
+const SCARF_MULTIPLIER = 1.5;
+const MINUS_1_STAGE_MULTIPLIER = 2 / 3;
+
+/** UI Interaction timer constants (ms) */
+const SCROLL_RESET_DELAY_MS = 400;
+const RESIZE_DEBOUNCE_MS = 200;
+const SPRITE_GLOW_DURATION_MS = 2500;
+
 let lastBenchmarkScrollLeft = 0;
 let activeHiddenPokemonsMap = new Map<number, PokemonSpeedData[]>();
 
@@ -20,9 +29,12 @@ function renderSpriteImg(p: PokemonSpeedData): string {
   const safeSecondary = escapeHtml(secondary);
   const safeFormId = escapeHtml(p.formId);
 
+  const singleRankStr = p.usageRankSingle > 0 ? `#${p.usageRankSingle}` : '#--';
+  const doubleRankStr = p.usageRankDouble > 0 ? `#${p.usageRankDouble}` : '#--';
+
   return `
     <img src="${safeSprite}" alt="${safePrimary}" 
-         title="${safePrimary} (${safeSecondary})\n${dict.table.rankTooltipSingles}: #${p.usageRankSingle}\n${dict.table.rankTooltipDoubles}: #${p.usageRankDouble}" 
+         title="${safePrimary} (${safeSecondary})\n${dict.table.rankTooltipSingles}: ${singleRankStr}\n${dict.table.rankTooltipDoubles}: ${doubleRankStr}" 
          class="sprite-img" data-form-id="${safeFormId}"
          loading="${AppConfig.table.sprites.loadingStrategy}" />
   `.trim();
@@ -50,10 +62,10 @@ function calcRowBenchmarkValues(base: number): RowBenchmarkValues {
     neu,
     zero,
     neg,
-    mScarf: Math.floor(max * 1.5),
-    nScarf: Math.floor(neu * 1.5),
-    mMinus1: Math.floor(max * (2 / 3)),
-    nMinus1: Math.floor(neu * (2 / 3))
+    mScarf: Math.floor(max * SCARF_MULTIPLIER),
+    nScarf: Math.floor(neu * SCARF_MULTIPLIER),
+    mMinus1: Math.floor(max * MINUS_1_STAGE_MULTIPLIER),
+    nMinus1: Math.floor(neu * MINUS_1_STAGE_MULTIPLIER)
   };
 }
 
@@ -137,10 +149,15 @@ export function renderSpeedTable(
   for (const base of baseSpeeds) {
     let pokemons = data[base];
     
-    // Sort by usage rank
-    pokemons.sort((a, b) => 
-      mode === 'single' ? a.usageRankSingle - b.usageRankSingle : a.usageRankDouble - b.usageRankDouble
-    );
+    // Sort by usage rank (unranked = 0 pushed to end using rawRank || Infinity)
+    pokemons.sort((a, b) => {
+      const rawRankA = mode === 'single' ? a.usageRankSingle : a.usageRankDouble;
+      const rawRankB = mode === 'single' ? b.usageRankSingle : b.usageRankDouble;
+      const rankA = rawRankA || Infinity;
+      const rankB = rawRankB || Infinity;
+      if (rankA !== rankB) return rankA - rankB;
+      return a.id - b.id;
+    });
 
     const visiblePokemons = pokemons.slice(0, limit);
     const hiddenPokemons = pokemons.slice(limit);
@@ -214,7 +231,7 @@ export function renderSpeedTable(
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
         headerBenchmarkContainer.classList.remove('is-scrolling');
-      }, 400);
+      }, SCROLL_RESET_DELAY_MS);
     }
 
     // Batch scrollLeft writes inside rAF to avoid layout thrashing
@@ -375,7 +392,7 @@ export function renderSpeedTable(
         currentLimit = newLimit;
         renderSpeedTable(container, data, mode);
       }
-    }, 200);
+    }, RESIZE_DEBOUNCE_MS);
   };
   window.addEventListener('resize', onResize);
 
@@ -457,7 +474,7 @@ export function focusAndHighlightPokemon(formId: string, baseSpeed: number | str
     targetImg.classList.add('sprite-focus-glow');
     setTimeout(() => {
       targetImg.classList.remove('sprite-focus-glow');
-    }, 2500);
+    }, SPRITE_GLOW_DURATION_MS);
   }
 }
 

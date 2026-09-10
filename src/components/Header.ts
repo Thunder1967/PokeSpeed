@@ -1,15 +1,27 @@
 import { battleStore } from '../store/battleState';
-import championMB from '../data/formats/champion-m-b.json';
-import { SpeedTableData, PokemonSpeedData } from '../types/pokemon';
+import { AppConfig } from '../config/appConfig';
+import { getFormatData } from '../data/formats';
+import { PokemonSpeedData } from '../types/pokemon';
 import { focusAndHighlightPokemon } from './SpeedTable';
 import { searchPokemon, getAllPokemon, renderHeaderSearchItem } from '../utils/pokemonSearch';
 import { escapeHtml } from '../utils/security';
 import { getLocale, setLocale, t, subscribeLocale, SupportedLocale } from '../i18n';
 import { toggleSettingsDrawer } from './Drawer';
 
+function renderSeasonOptions(locale: SupportedLocale, activeId: string): string {
+  return AppConfig.season.availableSeasons
+    .map(s => {
+      const label = locale === 'zh-TW' ? s.nameZh : s.nameEn;
+      const selected = s.id === activeId ? 'selected' : '';
+      return `<option value="${escapeHtml(s.id)}" class="bg-slate-900 text-white" ${selected}>${escapeHtml(label)}</option>`;
+    })
+    .join('');
+}
+
 export function renderHeader(container: HTMLElement) {
   const currentLang = getLocale();
   const dict = t(currentLang);
+  const currentFormat = battleStore.get().activeFormat;
 
   const html = `
     <header class="w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center py-2.5 px-3 sm:px-4 gap-3 md:gap-4">
@@ -17,9 +29,26 @@ export function renderHeader(container: HTMLElement) {
         <a href="#/" id="logo-link" class="text-2xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 select-none cursor-pointer hover:opacity-90 transition-opacity" title="PokéSpeed">
           PokéSpeed
         </a>
-        <div class="flex md:hidden gap-2 bg-black/40 p-1 rounded-lg border border-white/5">
-          <button id="btn-mode-single-m" class="px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors">${dict.common.singleBattle}</button>
-          <button id="btn-mode-double-m" class="px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors">${dict.common.doubleBattle}</button>
+        <div class="flex md:hidden items-center gap-1.5">
+          <!-- Mobile Season Selector -->
+          <div class="relative flex items-center bg-black/40 border border-white/10 rounded-lg px-2 py-1 transition-colors shadow-sm cursor-pointer">
+            <svg class="text-amber-400 flex-shrink-0 mr-1" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2" />
+              <path d="M6 5v8a6 6 0 0 0 12 0V5" />
+              <line x1="12" y1="19" x2="12" y2="22" />
+            </svg>
+            <select id="season-select-m" aria-label="${escapeHtml(dict.common.seasonAria)}" class="bg-transparent text-xs font-semibold text-gray-200 focus:outline-none cursor-pointer appearance-none pl-0.5 pr-3.5 z-10 max-w-[120px] truncate">
+              ${renderSeasonOptions(currentLang, currentFormat)}
+            </select>
+            <svg class="w-2.5 h-2.5 text-gray-400 pointer-events-none absolute right-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <!-- Mobile Mode Toggle -->
+          <div class="flex gap-1 bg-black/40 p-1 rounded-lg border border-white/5">
+            <button id="btn-mode-single-m" class="px-2.5 py-1 rounded text-xs font-bold bg-white/10 text-white shadow transition-colors">${dict.common.singleBattle}</button>
+            <button id="btn-mode-double-m" class="px-2.5 py-1 rounded text-xs font-bold text-gray-400 hover:text-white transition-colors">${dict.common.doubleBattle}</button>
+          </div>
         </div>
       </div>
       
@@ -29,6 +58,22 @@ export function renderHeader(container: HTMLElement) {
       </div>
 
       <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+        <!-- Desktop Season Selector -->
+        <div class="hidden md:flex relative items-center bg-black/40 hover:bg-black/60 border border-white/10 hover:border-white/20 rounded-lg px-2.5 py-1.5 transition-colors shadow-sm cursor-pointer group flex-shrink-0">
+          <svg class="text-amber-400 group-hover:text-amber-300 transition-colors flex-shrink-0 mr-1.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2" />
+            <path d="M6 5v8a6 6 0 0 0 12 0V5" />
+            <line x1="12" y1="19" x2="12" y2="22" />
+          </svg>
+          <select id="season-select" aria-label="${escapeHtml(dict.common.seasonAria)}" class="bg-transparent text-xs font-semibold text-gray-200 focus:outline-none cursor-pointer appearance-none pl-0.5 pr-4 z-10">
+            ${renderSeasonOptions(currentLang, currentFormat)}
+          </select>
+          <svg class="w-3 h-3 text-gray-400 pointer-events-none absolute right-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
+
+        <!-- Desktop Battle Mode Toggle -->
         <div class="hidden md:flex gap-2 bg-black/40 p-1 rounded-lg border border-white/5">
           <button id="btn-mode-single" class="px-3 py-1 rounded text-sm font-bold bg-white/10 text-white shadow transition-colors">${dict.common.singleBattle}</button>
           <button id="btn-mode-double" class="px-3 py-1 rounded text-sm font-bold text-gray-400 hover:text-white transition-colors">${dict.common.doubleBattle}</button>
@@ -125,14 +170,32 @@ export function renderHeader(container: HTMLElement) {
     if (btnSingleM) btnSingleM.className = isDouble ? inactiveClass : activeClass;
     if (btnDoubleM) btnDoubleM.className = isDouble ? activeClass : inactiveClass;
   };
-  battleStore.subscribe(state => updateModeButtons(state.isDoubleBattle));
+
+  // Season Select Event Listeners
+  const seasonSelect = document.getElementById('season-select') as HTMLSelectElement | null;
+  const seasonSelectM = document.getElementById('season-select-m') as HTMLSelectElement | null;
+
+  const onSeasonChange = (newFormatId: string) => {
+    ensureTableView();
+    battleStore.set(state => {
+      state.activeFormat = newFormatId;
+    });
+  };
+
+  seasonSelect?.addEventListener('change', (e) => {
+    onSeasonChange((e.target as HTMLSelectElement).value);
+  });
+  seasonSelectM?.addEventListener('change', (e) => {
+    onSeasonChange((e.target as HTMLSelectElement).value);
+  });
 
   // Search Logic
   const searchInput = document.getElementById('search-input') as HTMLInputElement;
   const searchResults = document.getElementById('search-results')!;
   
-  // Flatten data for search
-  const allPokemon = getAllPokemon(championMB as unknown as SpeedTableData);
+  // Flatten data for search based on active format
+  let currentFormatId = battleStore.get().activeFormat;
+  let allPokemon = getAllPokemon(getFormatData(currentFormatId));
   let currentMatches: PokemonSpeedData[] = [];
 
   const renderSearchResults = () => {
@@ -149,6 +212,25 @@ export function renderHeader(container: HTMLElement) {
       searchResults.classList.remove('hidden');
     }
   };
+
+  // Update UI on battleStore state change
+  battleStore.subscribe(state => {
+    updateModeButtons(state.isDoubleBattle);
+    if (state.activeFormat !== currentFormatId) {
+      currentFormatId = state.activeFormat;
+      if (seasonSelect && seasonSelect.value !== currentFormatId) {
+        seasonSelect.value = currentFormatId;
+      }
+      if (seasonSelectM && seasonSelectM.value !== currentFormatId) {
+        seasonSelectM.value = currentFormatId;
+      }
+      allPokemon = getAllPokemon(getFormatData(currentFormatId));
+      if (searchInput && searchInput.value.trim()) {
+        currentMatches = searchPokemon(allPokemon, searchInput.value.trim(), state.isDoubleBattle, 6);
+        renderSearchResults();
+      }
+    }
+  });
 
   searchInput.addEventListener('input', (e) => {
     const term = (e.target as HTMLInputElement).value;
@@ -205,6 +287,12 @@ export function renderHeader(container: HTMLElement) {
   subscribeLocale((newLocale, newDict) => {
     if (langSelect && langSelect.value !== newLocale) {
       langSelect.value = newLocale;
+    }
+    if (seasonSelect) {
+      seasonSelect.innerHTML = renderSeasonOptions(newLocale, currentFormatId);
+    }
+    if (seasonSelectM) {
+      seasonSelectM.innerHTML = renderSeasonOptions(newLocale, currentFormatId);
     }
     if (searchInput) {
       searchInput.placeholder = newDict.common.searchPlaceholder;

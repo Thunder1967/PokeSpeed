@@ -5,6 +5,7 @@ export const zhTW: TranslationSchema = {
     appTitle: 'PokéSpeed',
     singleBattle: '單打',
     doubleBattle: '雙打',
+    seasonAria: '選擇對戰賽季',
     battleSettings: '對戰設定',
     searchPlaceholder: '搜尋 中文 / 英文 / 速度種族...',
     searchNoResults: '無符合結果',
@@ -16,11 +17,15 @@ export const zhTW: TranslationSchema = {
     about: '關於本站',
     backToTable: '← 返回速線表',
     aboutTitle: '關於 PokéSpeed',
-    aboutSubtitle: '對戰速度線查詢與基準計算工具'
+    aboutSubtitle: '對戰速度線查詢與基準計算工具',
+    appTitleFull: 'PokéSpeed Champion - 寶可夢速度計算器與速度線查詢工具',
+    metaDescription: 'PokéSpeed Champion — 寶可夢速度計算器與速度線查詢工具，支援單打雙打對戰設定',
   },
   drawer: {
     title: '對戰設定',
     close: '關閉',
+    modeDoublesBadge: '雙打 3 基準',
+    modeSinglesBadge: '單打 2 基準',
     enemyBenchmarkTitle: '敵方基準設定',
     playerATitle: '我方 A (綠)',
     playerBTitle: '我方 B (紫)',
@@ -34,7 +39,6 @@ export const zhTW: TranslationSchema = {
     clearSelection: '清除選取',
     baseSpeed: '速度種族',
     evs: '努力值 (0~32)',
-    ivs: '個體值',
     nature: '性格修正',
     naturePositive: '加速 (+10%)',
     natureNeutral: '不變 (0%)',
@@ -42,12 +46,11 @@ export const zhTW: TranslationSchema = {
     stages: '能力階級 (-6 ~ +6)',
     tailwind: '順風 (+100%)',
     choiceScarf: '講究圍巾 (+50%)',
-    speedAbility: '特性增速 (×2)',
-    speedAbilityDesc: '葉綠素、悠游自如、撥沙、順風等',
-    paralysis: '麻痺 (-50%)',
-    paralysisDesc: '速度減半',
-    singleBattleHint: '（單打模式下僅顯示我方 A）',
-    reset: '重設所有設定'
+    speedAbility: '特性加成',
+    abilityNone: '無 (1.0x)',
+    abilityProtoQuark: '特性 1.5x (古代活性/夸克充能)',
+    abilityWeather: '特性 2.0x (葉綠素/悠游自如/撥沙)',
+    paralysis: '麻痺 (-50%)'
   },
   table: {
     colBase: '種族',
@@ -67,7 +70,6 @@ export const zhTW: TranslationSchema = {
   pinDivider: {
     playerA: '我方 A (綠)',
     playerB: '我方 B (紫)',
-    enemyBenchmark: '敵方基準',
     speedTieTitle: '📌 我方雙打同速分水嶺',
     speedLabel: (speed: number) => `實數: ${speed}`,
     slotPosition: '配置位置',
@@ -80,8 +82,5 @@ export const zhTW: TranslationSchema = {
     scarfShort: '圍巾 (+50%)',
     abilityBoostShort: '特性 (×2.0)',
     paralyzedShort: '麻痺 (50%)',
-    comparisonFaster: (diff: number) => `超前 +${diff}`,
-    comparisonSlower: (diff: number) => `落後 -${diff}`,
-    comparisonTie: '同速'
   }
 };

@@ -11,11 +11,38 @@ describe('AppConfig & getAdaptiveSpriteLimit', () => {
 
   it('should have sensible defaults in AppConfig', () => {
     expect(AppConfig.table.defaultVisibleSprites).toBe(6);
+    expect(AppConfig.table.searchLimit).toBe(6);
     expect(AppConfig.table.adaptive.enabled).toBe(true);
     expect(AppConfig.table.adaptive.saveDataLimit).toBe(4);
     expect(AppConfig.table.adaptive.breakpoints.mobile).toBe(4);
     expect(AppConfig.table.adaptive.breakpoints.desktop).toBe(6);
     expect(AppConfig.table.adaptive.breakpoints.wide).toBe(8);
+
+    expect(AppConfig.battle.defaultEvs).toBe(32);
+    expect(AppConfig.battle.defaultNature).toBe(1.1);
+    expect(AppConfig.battle.defaultLevel).toBe(50);
+    expect(AppConfig.battle.defaultIv).toBe(31);
+
+    expect(AppConfig.smogon.defaultCutoff).toBe(1500);
+    expect(AppConfig.smogon.defaultDoublesPrefix).toBe('gen9championsvgc2026');
+    expect(AppConfig.smogon.defaultSinglesPrefix).toBe('gen9championsbss');
+
+    expect(AppConfig.ranking.unrankedRank).toBe(0);
+  });
+
+  it('should have valid season configuration in AppConfig', () => {
+    expect(AppConfig.season).toBeDefined();
+    expect(AppConfig.season.currentSeason).toBe('champion-m-b');
+    expect(Array.isArray(AppConfig.season.availableSeasons)).toBe(true);
+    expect(AppConfig.season.availableSeasons.length).toBeGreaterThanOrEqual(1);
+
+    const current = AppConfig.season.availableSeasons.find(
+      s => s.id === AppConfig.season.currentSeason
+    );
+    expect(current).toBeDefined();
+    expect(current?.regulation).toBe('m-b');
+    expect(current?.nameZh).toBeTruthy();
+    expect(current?.nameEn).toBeTruthy();
   });
 
   it('should return mobile limit (4) when window.innerWidth < 768', () => {

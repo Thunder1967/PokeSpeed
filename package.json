@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "tsc --noEmit",
-    "sync:data": "tsx scripts/sync-data.ts"
+    "fetch:season": "tsx scripts/fetch-season.ts",
+    "update:rankings": "tsx scripts/update-rankings.ts"
   },
   "keywords": [],
   "author": "",

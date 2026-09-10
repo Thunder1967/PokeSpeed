@@ -1,15 +1,18 @@
 import { battleStore } from '../store/battleState';
 import { Icons } from '../assets/icons';
 import { calcFinalSpeed } from '../utils/speedCalc';
-import { SpeedTableData, SlotState, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
+import { SlotState, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
 
-import championMB from '../data/formats/champion-m-b.json';
+import { getFormatData } from '../data/formats';
 import { searchPokemon, getAllPokemon, renderDrawerSearchItem } from '../utils/pokemonSearch';
 import { escapeHtml, clamp, sanitizeUrl } from '../utils/security';
 import { t, getLocale, subscribeLocale, TranslationSchema, SupportedLocale } from '../i18n';
+import { AppConfig } from '../config/appConfig';
 
-// Flatten all Pokemon from the format data
-const allPokemon = getAllPokemon(championMB as unknown as SpeedTableData);
+function getActivePokemonList(): PokemonSpeedData[] {
+  const currentFormat = battleStore.get().activeFormat;
+  return getAllPokemon(getFormatData(currentFormat));
+}
 
 /** Simple debounce helper for high-frequency input events. */
 function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): T {
@@ -78,6 +81,8 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
   const { key, theme, isPlayerSlot } = cfg;
   const dict = t();
   const title = getSlotTitle(key, dict);
+  const defaultEvVal = AppConfig.battle.defaultEvs;
+  const defaultActualEv = defaultEvVal === 32 ? 252 : (defaultEvVal === 0 ? 0 : defaultEvVal * 8 - 4);
 
   return `
     <div id="${key}-section" class="bg-white/[0.03] border ${theme.border} rounded-xl p-3.5 sm:p-4 flex flex-col gap-3.5 shadow-lg backdrop-blur-sm transition-all ${key === 'playerB' ? 'hidden' : ''}">
@@ -146,9 +151,9 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
       <div>
         <div class="flex justify-between text-xs text-gray-400 mb-1">
           <span id="${key}-evs-label">${dict.drawer.evs}</span>
-          <span class="font-mono text-xs font-bold text-gray-200" id="${key}-evs-val">32 (252 EV)</span>
+          <span class="font-mono text-xs font-bold text-gray-200" id="${key}-evs-val">${defaultEvVal} (${defaultActualEv} EV)</span>
         </div>
-        <input type="range" id="${key}-evs" min="0" max="32" value="32" class="w-full ${theme.accent} cursor-pointer">
+        <input type="range" id="${key}-evs" min="0" max="32" value="${defaultEvVal}" class="w-full ${theme.accent} cursor-pointer">
       </div>
 
       <div>
@@ -177,14 +182,21 @@ function renderSlotHTML(cfg: SlotUIConfig): string {
           <input type="checkbox" id="${key}-scarf" class="${theme.accent} rounded">
           <span id="${key}-scarf-text" class="flex items-center gap-1">${Icons.scarf} ${dict.drawer.choiceScarf}</span>
         </label>
-        <label class="flex items-center gap-2 bg-white/5 border border-white/5 p-2 rounded-lg cursor-pointer hover:bg-white/10 select-none transition-colors">
-          <input type="checkbox" id="${key}-ability" class="${theme.accent} rounded">
-          <span id="${key}-ability-text" class="flex items-center gap-1">${Icons.abilityBoost} ${dict.drawer.speedAbility}</span>
-        </label>
-        <label class="flex items-center gap-2 bg-white/5 border border-white/5 p-2 rounded-lg cursor-pointer hover:bg-white/10 select-none transition-colors">
+        <label class="flex items-center gap-2 bg-white/5 border border-white/5 p-2 rounded-lg cursor-pointer hover:bg-white/10 select-none transition-colors col-span-2">
           <input type="checkbox" id="${key}-para" class="${theme.accent} rounded">
           <span id="${key}-para-text" class="flex items-center gap-1">${Icons.paralysis} ${dict.drawer.paralysis}</span>
         </label>
+      </div>
+
+      <div>
+        <div class="flex justify-between text-xs text-gray-400 mb-1">
+          <span id="${key}-ability-label" class="flex items-center gap-1">${Icons.abilityBoost} ${dict.drawer.speedAbility}</span>
+        </div>
+        <select id="${key}-ability-select" class="w-full bg-black/60 border border-white/15 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-blue-400 transition-colors cursor-pointer">
+          <option value="1.0" id="${key}-ability-opt-none">${dict.drawer.abilityNone}</option>
+          <option value="1.5" id="${key}-ability-opt-proto">${dict.drawer.abilityProtoQuark}</option>
+          <option value="2.0" id="${key}-ability-opt-weather">${dict.drawer.abilityWeather}</option>
+        </select>
       </div>
     </div>
   `;
@@ -218,7 +230,7 @@ export function renderDrawer(container: HTMLElement) {
             <span id="drawer-title-text">${t().drawer.title}</span>
           </h2>
           <span id="drawer-mode-badge" class="text-xs px-2.5 py-0.5 rounded-full font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
-            ${getLocale() === 'en' ? 'Doubles (3 Slots)' : '雙打 3 基準'}
+            ${t().drawer.modeDoublesBadge}
           </span>
         </div>
 
@@ -306,7 +318,7 @@ export function renderDrawer(container: HTMLElement) {
     }
   });
 
-function bindPlayerSlotSearch(key: 'playerA' | 'playerB', pokemonList: PokemonSpeedData[]) {
+function bindPlayerSlotSearch(key: 'playerA' | 'playerB') {
   const searchInput = document.getElementById(`${key}-search-input`) as HTMLInputElement | null;
   const searchDropdown = document.getElementById(`${key}-search-dropdown`);
   const clearBtn = document.getElementById(`${key}-clear-pokemon`);
@@ -320,8 +332,9 @@ function bindPlayerSlotSearch(key: 'playerA' | 'playerB', pokemonList: PokemonSp
       return;
     }
 
+    const pokemonList = getActivePokemonList();
     const isDouble = battleStore.get().isDoubleBattle;
-    currentMatches = searchPokemon(pokemonList, query, isDouble, 6);
+    currentMatches = searchPokemon(pokemonList, query, isDouble, AppConfig.table.searchLimit);
 
     if (currentMatches.length > 0 && searchDropdown) {
       const locale = getLocale();
@@ -358,6 +371,7 @@ function bindPlayerSlotSearch(key: 'playerA' | 'playerB', pokemonList: PokemonSp
     const item = (e.target as HTMLElement).closest('.slot-search-item') as HTMLElement;
     if (item) {
       const formId = item.getAttribute('data-form-id');
+      const pokemonList = getActivePokemonList();
       const found = pokemonList.find(p => p.formId === formId);
       if (found) {
         battleStore.set(state => {
@@ -390,7 +404,7 @@ function bindSlotControls(key: 'enemy' | 'playerA' | 'playerB') {
   const evsVal = document.getElementById(`${key}-evs-val`);
   evsInput?.addEventListener('input', (e) => {
     const rawVal = parseInt((e.target as HTMLInputElement).value, 10);
-    const val = clamp(rawVal, 0, 32, 32);
+    const val = clamp(rawVal, 0, 32, AppConfig.battle.defaultEvs);
     const actualEv = val === 32 ? 252 : (val === 0 ? 0 : val * 8 - 4);
     if (evsVal) evsVal.textContent = `${val} (${actualEv} EV)`;
     battleStore.set(state => { state.slots[key].evs = val; });
@@ -407,7 +421,9 @@ function bindSlotControls(key: 'enemy' | 'playerA' | 'playerB') {
       battleStore.set(state => { state.slots[key].nature = safeNature; });
     });
   });
-  (natureBtns[0] as HTMLButtonElement)?.setAttribute('data-active', 'true');
+  const defaultNatureStr = AppConfig.battle.defaultNature.toFixed(1);
+  const initialNatureBtn = Array.from(natureBtns).find(btn => (btn as HTMLElement).dataset.val === defaultNatureStr) || natureBtns[0];
+  (initialNatureBtn as HTMLButtonElement)?.setAttribute('data-active', 'true');
 
   const stagesInput = document.getElementById(`${key}-stages`) as HTMLInputElement | null;
   const stagesVal = document.getElementById(`${key}-stages-val`);
@@ -418,10 +434,9 @@ function bindSlotControls(key: 'enemy' | 'playerA' | 'playerB') {
     battleStore.set(state => { state.slots[key].stages = val; });
   });
 
-  const modifierCheckboxes: Array<{ id: string; prop: 'isTailwind' | 'isScarf' | 'isAbilityBoost' | 'isParalyzed' }> = [
+  const modifierCheckboxes: Array<{ id: string; prop: 'isTailwind' | 'isScarf' | 'isParalyzed' }> = [
     { id: 'tailwind', prop: 'isTailwind' },
     { id: 'scarf', prop: 'isScarf' },
-    { id: 'ability', prop: 'isAbilityBoost' },
     { id: 'para', prop: 'isParalyzed' }
   ];
   modifierCheckboxes.forEach(({ id, prop }) => {
@@ -430,10 +445,16 @@ function bindSlotControls(key: 'enemy' | 'playerA' | 'playerB') {
       const checked = (e.target as HTMLInputElement).checked;
       battleStore.set(state => {
         state.slots[key][prop] = checked;
-        if (prop === 'isAbilityBoost') {
-          state.slots[key].abilityMultiplier = checked ? 2.0 : 1.0;
-        }
       });
+    });
+  });
+
+  const abilitySelect = document.getElementById(`${key}-ability-select`) as HTMLSelectElement | null;
+  abilitySelect?.addEventListener('change', (e) => {
+    const mult = parseFloat((e.target as HTMLSelectElement).value) || 1.0;
+    battleStore.set(state => {
+      state.slots[key].abilityMultiplier = mult;
+      state.slots[key].isAbilityBoost = mult > 1.0;
     });
   });
 }
@@ -529,17 +550,26 @@ function updateSlotTranslations(cfg: SlotUIConfig, dict: TranslationSchema) {
   const scText = document.getElementById(`${key}-scarf-text`);
   if (scText) scText.innerHTML = `${Icons.scarf} ${dict.drawer.choiceScarf}`;
 
-  const abText = document.getElementById(`${key}-ability-text`);
-  if (abText) abText.innerHTML = `${Icons.abilityBoost} ${dict.drawer.speedAbility}`;
-
   const paText = document.getElementById(`${key}-para-text`);
   if (paText) paText.innerHTML = `${Icons.paralysis} ${dict.drawer.paralysis}`;
+
+  const abLabel = document.getElementById(`${key}-ability-label`);
+  if (abLabel) abLabel.innerHTML = `${Icons.abilityBoost} ${dict.drawer.speedAbility}`;
+
+  const optNone = document.getElementById(`${key}-ability-opt-none`);
+  if (optNone) optNone.textContent = dict.drawer.abilityNone;
+
+  const optProto = document.getElementById(`${key}-ability-opt-proto`);
+  if (optProto) optProto.textContent = dict.drawer.abilityProtoQuark;
+
+  const optWeather = document.getElementById(`${key}-ability-opt-weather`);
+  if (optWeather) optWeather.textContent = dict.drawer.abilityWeather;
 }
 
   // Setup bindings for each slot
   slotConfigs.forEach(cfg => {
     if (cfg.isPlayerSlot) {
-      bindPlayerSlotSearch(cfg.key as 'playerA' | 'playerB', allPokemon);
+      bindPlayerSlotSearch(cfg.key as 'playerA' | 'playerB');
     }
     bindSlotControls(cfg.key);
   });
@@ -574,13 +604,25 @@ function updateSlotTranslations(cfg: SlotUIConfig, dict: TranslationSchema) {
     }
     if (modeBadge) {
       if (isDouble) {
-        modeBadge.textContent = locale === 'en' ? 'Doubles (3 Slots)' : '雙打 3 基準';
+        modeBadge.textContent = currentDict.drawer.modeDoublesBadge;
         modeBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30";
       } else {
-        modeBadge.textContent = locale === 'en' ? 'Singles (2 Slots)' : '單打 2 基準';
+        modeBadge.textContent = currentDict.drawer.modeSinglesBadge;
         modeBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30";
       }
     }
+
+    // Sync ability selects
+    (['enemy', 'playerA', 'playerB'] as const).forEach(k => {
+      const abSelect = document.getElementById(`${k}-ability-select`) as HTMLSelectElement | null;
+      if (abSelect) {
+        const currentVal = state.slots[k].abilityMultiplier ? state.slots[k].abilityMultiplier.toFixed(1) : '1.0';
+        if (abSelect.value !== currentVal) {
+          abSelect.value = currentVal;
+        }
+      }
+    });
+
     updateDrawerBounds();
 
     updatePlayerSlotCard('playerA', state.slots.playerA, locale, currentDict);

@@ -7,14 +7,14 @@
 [![Vite](https://img.shields.io/badge/Vite-8.x-646CFF?logo=vite)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 [![Vitest](https://img.shields.io/badge/Vitest-5.x-729B1B?logo=vitest)](https://vitest.dev/)
-[![Tests](https://img.shields.io/badge/Tests-82%20passed-success)](https://github.com/)
+[![Tests](https://img.shields.io/badge/Tests-100%20passed-success)](https://github.com/)
 
 ---
 
 ## 🌟 核心特色 (Core Features)
 
 ### 1. 🏎️ 完整 VGC 冠軍規速度線矩陣 (Comprehensive Speed Tiers)
-- 收錄最新規排位（Champion MB）環境主流寶可夢之速度種族值與常用型態。
+- 收錄排位賽制（如 Regulation M-B, M-C 等）環境主流寶可夢之速度種族值與常用型態。
 - 橫向同步速線基準欄位：
   - **極速 (Max 252+ EV)**：性格 +1.1 修正、252 努力值。
   - **準速 (Neutral 252 EV)**：性格 1.0 修正、252 努力值。
@@ -26,22 +26,23 @@
 ### 2. ⚙️ 對戰設定抽屜與即時實數重算 (Live Battle Drawer & Calcs)
 - **單打 / 雙打基準切換**：單打提供 2 基準 Slot（對手基準 + 我方 A），雙打提供 3 基準 Slot（對手基準 + 我方 A + 我方 B）。
 - **細緻化即時調配**：
-  - 努力值滑條：支援 0～32 檔次（0 至 252 EV）精確調節。
+  - 努力值滑條：依 `AppConfig.battle.defaultEvs` 動態初始化，支援 0～32 檔次（0 至 252 EV）精確調節。
   - 性格修正三態按鈕：`+` (+10%)、`=` (無修正)、`-` (-10%)。
   - 能力階級滑條：支援 -6 至 +6 階速升降。
-  - 實戰修正複選框：順風（Tailwind 2x）、講究圍巾（Choice Scarf 1.5x）、特性加速（Speed Boost / 葉綠素 / 撥沙等 2x）、麻痺（Paralysis 0.5x）。
+  - 特性倍率下拉選單：支援「無 (1.0x)」、「特性 1.5x (古代活性/夸克充能)」、「特性 2.0x (葉綠素/悠游自如/撥沙)」完整切換。
+  - 戰場修正複選框：順風（Tailwind 2x）、講究圍巾（Choice Scarf 1.5x）、麻痺（Paralysis 0.5x）。
 - 實時展示 Lv.50 實際速度數值（Real Speed Value）。
 
 ### 3. 📌 實時動態圖釘分割線 (Dynamic Pin Dividers)
 - 根據玩家當前配置的寶可夢與對抗基準，即時計算其在速線表中的絕對位階。
 - 在速線表對應列自動插入發光的圖釘分割線（Pin Divider），支援：
   - 跨速度區間插入（精確落在比它快與比它慢的種族值列之間）。
-  - 當我方 A 與我方 B 處於同速區間時，自動合併渲染並列頭像與各自配置，避免視覺衝突。
+  - 當我方 A 與我方 B 處於同速區間時，自動合併渲染並列頭像與各自配置，支援多語系動態名稱與 Player A/B 提示，避免視覺衝突。
   - 支援點擊/懸停圖釘查看詳細加成配點資訊。
 
 ### 4. 🌐 即時雙語系統 (Internationalization / i18n)
 - 支援 **繁體中文 (Traditional Chinese)** 與 **English** 一鍵無縫即時切換。
-- 全站標題、搜尋欄、各項修正標籤、寶可夢名稱（主名與副名動態對調）、單位標籤、佈告欄資訊均具備完整多語系支援。
+- 全站標題、搜尋欄（支援 `AppConfig.table.searchLimit` 上限與未上榜 `#--` 友善顯示）、各項修正標籤、寶可夢名稱（主名與副名動態對調）、單位標籤、佈告欄資訊均具備完整多語系支援。
 
 ### 5. 📋 獨立「關於本站」動態佈告欄 (Bulletin Board)
 - 獨立 SPA 路由（`#/about` 與 `#/` 互相切換）。
@@ -62,31 +63,38 @@
 | **Build Tool** | **Vite 8.x**（極速熱重載與 Production Bundle Tree-shaking） |
 | **Styling** | **TailwindCSS 3.x** + 模組化 Vanilla CSS（深色主題、玻璃擬態） |
 | **State Management** | **輕量微型訂閱 Store (`battleStore`)**（以發布訂閱驅動 UI 重算） |
-| **Testing** | **Vitest 5.x**（10 個測試檔案、82 項單元測試，涵蓋各項公式與邊界） |
+| **Testing** | **Vitest 5.x**（12 個測試檔案、91 項單元測試，涵蓋各項公式與邊界） |
 | **Security** | 嚴格防禦 XSS，所有使用者輸入皆經過 `escapeHtml`，圖片 URL 經 `sanitizeUrl` 驗證 |
 
 ### 目錄結構 (Project Structure)
 
 ```text
 PokeSpeed/
+├── .github/
+│   └── workflows/          # GitHub Actions (定時更新天梯排名, 自動部署 Pages)
 ├── public/                 # 靜態資源檔案
+├── scripts/
+│   ├── fetch-season.ts     # 下載新賽季合法寶可夢名單 (無排名，自動註冊)
+│   ├── update-rankings.ts  # 獨立自 Smogon 更新單雙打天梯排名 (404 容錯)
+│   ├── lib/                # Showdown/Smogon/PokeAPI 解析與本地快取模組
+│   └── rosters/            # 賽季合法精靈名冊快照
 ├── src/
 │   ├── assets/
 │   │   └── icons/          # SVG 圖示集中庫 (順風, 圍巾, 特性, 麻痺等)
 │   ├── components/
 │   │   ├── AboutPage.ts    # 關於本站 / 獨立佈告欄畫面
 │   │   ├── Drawer.ts       # 對戰設定側邊抽屜 (Slot A/B, 數值滑條, 修正項)
-│   │   ├── Header.ts       # 頂部吸附導航列 (搜尋, 語言切換, 抽屜按鈕)
+│   │   ├── Header.ts       # 頂部吸附導航列 (賽季切換, 單雙打, 搜尋, 語言切換)
 │   │   ├── PinDivider.ts   # 速線表動態插入之發光圖釘分割線
 │   │   └── SpeedTable.ts   # 核心速線表 (凍結標頭, 基準格計算, 批次捲動)
 │   ├── config/
-│   │   └── appConfig.ts    # 全域設定常數 (圖釘限制, 預設頭像, 算式檔次)
+│   │   └── appConfig.ts    # 全域設定常數 (當前賽季, 可選賽季列表, 圖釘限制)
 │   ├── data/
 │   │   ├── aboutInfo.ts    # 佈告欄自訂文字區塊與超連結資訊
-│   │   └── formats/        # 排位主流寶可夢數據 (champion-m-b.json)
+│   │   └── formats/        # 賽季速線資料庫 (champion-m-b.json, index.ts 註冊表)
 │   ├── i18n/               # 多語系字典與語系狀態訂閱器
 │   ├── store/
-│   │   └── battleState.ts  # 對戰設定狀態 Store (單雙打、各 Slot 配置)
+│   │   └── battleState.ts  # 對戰設定狀態 Store (賽季代號、單雙打、各 Slot 配置)
 │   ├── styles/
 │   │   ├── main.css        # 全域樣式、動畫與吸附導航設定
 │   │   └── table.css       # 速線表格網格佈局、凍結定位與霓虹捲動軸
@@ -96,11 +104,9 @@ PokeSpeed/
 │   │   ├── imageFallback.ts    # 圖片破損自動替換為替代身頭像
 │   │   ├── pinDividerCalc.ts   # 圖釘分割線相對排序與合併邏輯
 │   │   ├── pokemonSearch.ts    # 寶可夢搜尋、快取與下拉選單渲染器
-│   │   ├── reverseCalc.ts      # 速度實數反推配點演算法
 │   │   ├── security.ts         # escapeHtml, sanitizeUrl, clamp 安全防護
 │   │   └── speedCalc.ts        # 寶可夢 Lv.50 速度實數核心計算公式
 │   └── main.ts             # 應用程式入口點與 SPA 路由掛載
-├── tests/                  # 單元測試集 (*.test.ts)
 ├── package.json
 ├── tailwind.config.js
 ├── tsconfig.json
@@ -136,31 +142,72 @@ PokeSpeed/
 
 ---
 
-## 🔄 更新單雙打數據 (Updating Pokémon Data)
+## 🔄 賽季名冊下載與天梯數據更新 (Season Management & Data Pipelines)
 
-寶可夢速度與排位熱門度數據儲存於 `src/data/formats/champion-m-b.json`。專案提供**自動化管線**與**手動微調**兩種更新方式：
+本專案將「**賽季可用寶可夢名冊下載**」與「**單雙打天梯排名更新**」全面解耦，支援多賽季切換與 GitHub Actions 7 天自動化排程：
 
-### 方式一：使用自動化同步腳本 (推薦)
-專案在 `scripts/sync-data.ts` 中封裝了自動化管線，可自動自 **Pokémon Showdown**、**PokeAPI** 與 **Smogon 天梯榜單**抓取並組裝最新單雙打數據：
+### 1. 下載指定(新)賽季可用寶可夢 (`npm run fetch:season`)
+當官方公布新賽季規則時，由**人工手動執行**此指令下載該賽季之合法寶可夢名單、速度種族值、PokeAPI 官方繁體中文譯名與點陣 Sprites：
+- **不包含天梯排名**：初始單雙打排名預設為 `999`（使用率 `0%`）。
+- **全自動追加註冊**：自動將新賽季註冊至 `src/config/appConfig.ts`（可用賽季清單）與 `src/data/formats/index.ts`，前端頂部導覽列的賽季下拉選單將自動可選該新賽季。
+- **僅能由人為手動 Commit 更新**，維持版本庫穩定性與嚴謹性。
 
 ```bash
-# 預設執行：自動探測最新月份與 1500 分段，更新 champion-m-b.json
-npm run sync:data
+# 預設下載 Regulation M-B 名冊
+npm run fetch:season
 
-# 強制略過本機快取，重新抓取遠端資料
-npx tsx scripts/sync-data.ts --force
+# 下載指定新賽季 (如 Regulation M-C)
+npm run fetch:season -- --format=m-c
 
-# 指定月份 (如 2026-02)
-npx tsx scripts/sync-data.ts --month=2026-02
-
-# 指定天梯分段門檻 (如 1760 高端分段)
-npx tsx scripts/sync-data.ts --cutoff=1760
-
-# 組合參數範例
-npx tsx scripts/sync-data.ts --month=2026-02 --cutoff=1760 --force
+# 強制略過快取重新下載
+npm run fetch:season -- --format=m-c --force
 ```
 
-### 方式二：手動修改資料檔
+### 2. 獨立更新單雙打天梯排名 (`npm run update:rankings`)
+獨立自 **Smogon Stats (1500+ 切分)** 抓取權威天梯榜單，僅更新既有名冊中寶可夢的單打 (BSS) 與雙打 (VGC) 排名與使用率數值，並將同速階層重新按雙打排名排列：
+- **自動對齊當前賽季**：預設自動讀取 `src/config/appConfig.ts` 宣告之 `currentSeason`。
+- **404 容錯防禦與日誌記錄**：若目標月份數據尚未產生或新賽季尚無官方統計（回傳 404），詳細錯誤將記錄至 `scripts/logs/update-error.log`（納入 `.gitignore` 不污染版本庫），單雙打獨立容錯，所有寶可夢維持現有數值不變，腳本以狀態碼 `0` 正常結束，靜候下次更新。
+
+```bash
+# 預設執行：自動更新 appConfig.ts 當前賽季 (如 champion-m-b) 最新天梯排名
+npm run update:rankings
+
+# 手動指定更新特定賽季 (如歷史賽季 champion-m-a)
+npm run update:rankings -- --format=m-a
+
+# 手動指定特定天梯月份 (如 2026-08)
+npm run update:rankings -- --month=2026-08
+
+# 手動指定天梯分段門檻 (如 1760 高端分段)
+npm run update:rankings -- --cutoff=1760
+
+# 組合參數範例
+npm run update:rankings -- --format=m-b --month=2026-08 --cutoff=1500 --force
+```
+
+### 3. GitHub Actions 每 7 天全自動排程更新
+專案設定了 `.github/workflows/update-rankings.yml`：
+- **定時排程**：每週日 UTC 00:00 (Cron: `0 0 * * 0`) 自動針對 `appConfig.currentSeason` 執行 `npm run update:rankings`。
+- **自動 Commit & Push**：若檢測到數據變更，自動以 `github-actions[bot]` 提交含 `[skip ci]` 標籤的 Commit 並 Push 回 `main` 分支。
+- **自動發布**：Push 回 `main` 後將自動觸發 `.github/workflows/deploy.yml` 重新建置並部署至 GitHub Pages，全程無須人工介入。
+- **手動觸發**：支援在 GitHub Actions 頁面隨時點擊 **Run workflow** 進行手動更新。
+
+### 4. 當前賽季與預設值設定 (`src/config/appConfig.ts`)
+網站預設載入之賽季由此處設定，**只有當前賽季會被 GitHub Action 每 7 天自動更新單雙打排名**：
+```typescript
+export const AppConfig: AppConfigType = {
+  season: {
+    currentSeason: 'champion-m-b', // 預設與定時更新目標
+    availableSeasons: [
+      { id: 'champion-m-b', regulation: 'm-b', nameZh: 'Regulation M-B', nameEn: 'Regulation M-B' },
+      { id: 'champion-m-a', regulation: 'm-a', nameZh: 'Regulation M-A (歷史)', nameEn: 'Regulation M-A (Historical)' },
+    ],
+  },
+  // ...
+};
+```
+
+### 5. 手動微調特定精靈數據
 若僅需個別微調少數寶可夢的單雙打排名或百分比，可直接編輯 `src/data/formats/champion-m-b.json`：
 ```json
 {

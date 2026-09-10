@@ -39,6 +39,36 @@ let currentLocale: SupportedLocale = getInitialLocale();
 const listeners: Set<LocaleListener> = new Set();
 
 /**
+ * Synchronizes HTML document attributes (lang, title, meta description)
+ * with the current locale and translation dictionary.
+ */
+export function syncDocumentMetadata(
+  locale: SupportedLocale = currentLocale,
+  dict: TranslationSchema = t(locale)
+): void {
+  if (typeof document === 'undefined') return;
+
+  document.documentElement.lang = locale;
+  if (dict.common.appTitleFull) {
+    document.title = dict.common.appTitleFull;
+  }
+
+  let metaDesc = document.querySelector('meta[name="description"]');
+  if (dict.common.metaDescription) {
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head?.appendChild(metaDesc);
+    }
+    metaDesc.setAttribute('content', dict.common.metaDescription);
+  }
+}
+
+if (typeof document !== 'undefined') {
+  syncDocumentMetadata(currentLocale);
+}
+
+/**
  * Returns the currently active locale.
  */
 export function getLocale(): SupportedLocale {
@@ -67,6 +97,7 @@ export function setLocale(locale: SupportedLocale): void {
   }
 
   const dict = t(currentLocale);
+  syncDocumentMetadata(currentLocale, dict);
   listeners.forEach(fn => {
     try {
       fn(currentLocale, dict);

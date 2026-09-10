@@ -46,11 +46,28 @@ export async function loadShowdownPokedex(force: boolean = false): Promise<Recor
  * Loads and parses Showdown's Champions formats-data for a specific regulation
  */
 export async function loadChampionsFormatsData(regulation: string = 'm-b', force: boolean = false): Promise<Record<string, ShowdownFormatEntry>> {
-  const modName = regulation.toLowerCase() === 'm-a' ? 'championsregma' : 'champions';
-  const url = `https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/${modName}/formats-data.ts`;
-  const text = await fetchWithCache(url, 24 * 60 * 60 * 1000, force);
-  const cleaned = text.replace(/export const FormatsData:[^=]+=\s*/, 'return ');
-  return new Function(cleaned)() as Record<string, ShowdownFormatEntry>;
+  const clean = regulation.toLowerCase().replace(/^champion-/, '').replace(/[^a-z0-9]/g, '');
+  const regCode = clean.startsWith('reg') ? clean : `reg${clean}`;
+
+  // 優先嘗試專屬 mod 目錄 (例如 championsregma, championsregmc)，若不存在則回退至現行主目錄 champions
+  const modCandidates = [
+    `champions${regCode}`,
+    'champions',
+  ];
+
+  let lastError: unknown;
+  for (const modName of modCandidates) {
+    const url = `https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/${modName}/formats-data.ts`;
+    try {
+      const text = await fetchWithCache(url, 24 * 60 * 60 * 1000, force);
+      const cleaned = text.replace(/export const FormatsData:[^=]+=\s*/, 'return ');
+      return new Function(cleaned)() as Record<string, ShowdownFormatEntry>;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  throw lastError || new Error(`Failed to load Showdown formats-data for regulation ${regulation}`);
 }
 
 /**
