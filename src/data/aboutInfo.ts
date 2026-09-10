@@ -42,7 +42,7 @@ export const aboutInfo: AboutData = {
       id: 'github',
       title: 'GitHub',
       tag: '開源',
-      content: '[Github 連結](https://github.com/Thunder1967/PokéSpeed)'
+      content: '[Github 連結](https://github.com/Thunder1967/PokeSpeed)'
     },
     {
       id: 'sources',
