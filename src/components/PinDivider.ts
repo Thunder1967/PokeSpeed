@@ -1,11 +1,11 @@
 import { 
   PinDividerItem, 
-  DEFAULT_SUBSTITUTE_SPRITE,
   formatEvs,
   formatNature,
   formatSlotBuffs
 } from '../utils/pinDividerCalc';
 import { SlotState } from '../types/pokemon';
+import { DEFAULT_SUBSTITUTE_SPRITE } from '../config/appConfig';
 import { escapeHtml, sanitizeUrl } from '../utils/security';
 import { t, getLocale, getPokemonDisplayNames } from '../i18n';
 

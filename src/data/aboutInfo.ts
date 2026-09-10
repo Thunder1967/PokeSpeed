@@ -28,56 +28,78 @@ export const aboutInfo: AboutData = {
   'zh-TW': [
     {
       id: 'intro',
-      title: '🎯 關於 PokéSpeed 冠軍速線表',
-      date: '2026-09-09',
+      title: '關於 PokéSpeed',
       tag: '網站簡介',
-      content: 'PokéSpeed 是專為第 9 世代（朱/紫）對戰環境設計的即時速度線查詢與基準計算工具。提供單打與雙打環境完整的使用率排名、速度種族值階梯、極速/準速/圍巾即時速線，以及動態戰場狀態（順風、圍巾、能力階級、麻痺）試算。'
+      content: 'PokéSpeed 是專為 pokémon champion 對戰環境設計的即時速線查詢與速度比較工具。提供速度種族值階梯、動態戰場速線比較。'
     },
     {
       id: 'features',
-      title: '⚡ 核心功能與特色',
-      tag: '功能指南',
-      content: '1. **雙打 3 基準與即時速線**：在「對戰設定」中可同時配置我方 A、我方 B 與敵方基準，並在速線表中以頭像標籤動態呈現超越/落後分水嶺。\n2. **多維度極速搜尋**：支援透過中文名稱、英文名稱或速度種族值（如輸入 100）快速聚焦高亮目標寶可夢。\n3. **自適應排版與雙語系**：支援繁體中文與 English 雙語切換，且在手機、平板與桌機上均具備流暢的自適應佈局。'
+      title: '功能介紹',
+      tag: '功能',
+      content: '**速線比較介紹：**可在 "對戰設定" 中設置要比較的敵方狀態和我方寶可夢狀態。敵方狀態會被套用至所有種族值，計算出對應的速度實數，也就是 "敵方實數" 項 ; 比較器會依照我方寶可夢速度實數標示出指定敵方狀態下比我方快的寶可夢。此外，比較器支援雙打比較。\n**搜尋框介紹：**可用寶可夢中文名、英文名、速度種族值進行查尋。\n**備註：**站上顯示的寶可夢排名僅供參考，不一定是最新資料'
+    },
+    {
+      id: 'github',
+      title: 'GitHub',
+      tag: '開源',
+      content: '[Github 連結](https://github.com/Thunder1967/PokéSpeed)'
     },
     {
       id: 'sources',
-      title: '📚 數據來源與技術致謝',
-      tag: '致謝與參考',
-      content: '本站對戰數據與點陣精靈圖標參考自全球知名對戰平台 [Pokémon Showdown](https://play.pokemonshowdown.com) 以及對戰社群 [Smogon University](https://www.smogon.com/)。\n寶可夢所有版權歸 © Nintendo, Creatures, GAME FREAK 與 The Pokémon Company 所有。'
+      title: '數據來源與致謝',
+      tag: '資料與致謝',
+      content: '本站對戰數據與部份寶可夢圖參考自知名對戰平台 [Pokémon Showdown](https://play.pokemonshowdown.com)\n部份寶可夢圖參考自 [PokeAPI](https://github.com/PokeAPI/sprites/)\n對戰數據參考自 [Smogon University](https://www.smogon.com/)\n寶可夢所有版權歸 Nintendo、Creatures Inc.、GAME FREAK inc. 及 The Pokémon Company 所有。'
+    },
+    {
+      id: 'disclaimer',
+      title: '免責聲明',
+      tag: '聲明',
+      content: 'PokéSpeed 為非官方、免費的粉絲自製工具，與 Nintendo、Creatures Inc.、GAME FREAK inc. 及 The Pokémon Company 無任何關聯，亦未獲得其授權或背書。Pokémon 及所有相關名稱之商標與著作權均屬各原權利人所有。'
     },
     {
       id: 'feedback',
-      title: '💬 回饋與開源社群',
-      tag: '社群互動',
-      content: '若在對戰計算或使用上有任何建議、錯誤回報，歡迎隨時至社群討論或查看開源專案與更新紀錄。祝各位訓練家在排位賽中連戰連勝！'
+      title: '意見回饋',
+      tag: '意見回饋',
+      content: '若在對戰計算或使用上有任何建議、錯誤回報，歡迎填寫 [意見回饋表單](https://docs.google.com/forms/d/e/1FAIpQLSecYgH3X76K7zKufvV6WSz6BzuUEddqg50dCHFEB6EVYcTrdw/viewform?usp=publish-editor)。'
     }
   ],
 
   'en': [
     {
       id: 'intro',
-      title: '🎯 About PokéSpeed Champion',
-      date: '2026-09-09',
+      title: 'About PokéSpeed',
       tag: 'Overview',
-      content: 'PokéSpeed is a competitive speed tier and battle benchmark tool tailored for Generation 9 VGC and Singles formats. It provides comprehensive usage rankings, base speed tiers, real-time speed calculation, and dynamic battle modifier testing (Tailwind, Choice Scarf, stat stages, and paralysis).'
+      content: 'PokéSpeed is a real-time speed tier and benchmark tool tailored for Pokémon Champions competitive battle formats. It provides base speed tiers and dynamic in-battle speed comparisons.'
     },
     {
       id: 'features',
-      title: '⚡ Core Features & Highlights',
-      tag: 'Guide',
-      content: '1. **Doubles 3-Slot Benchmark & Speed Watersheds**: Configure Player A, Player B, and Enemy Benchmark simultaneously in Battle Settings to visualize speed tiers with avatar pin dividers.\n2. **Multi-dimensional Instant Search**: Search by Chinese name, English name, or base speed (e.g. typing 100) to instantly scroll and highlight target Pokémon.\n3. **Adaptive Layout & Bilingual Support**: Instant switching between Traditional Chinese and English with responsive layout tailored for mobile and desktop screens.'
+      title: 'Features',
+      tag: 'Features',
+      content: '**Speed Tier Comparison:** In "Battle Settings", you can configure battle modifiers for both the enemy benchmark and your own Pokémon. The enemy modifiers are applied across all base speed tiers to calculate corresponding actual speed stats (shown in the "Enemy Speed" column). The comparator marks Pokémon that outspeed yours under the specified enemy conditions. In addition, the comparator fully supports Doubles comparison.\n**Search Bar:** Search instantly by Pokémon Chinese name, English name, or base speed stat.\n**Note:** The Pokémon usage rankings displayed on the site are for reference and may not always reflect real-time live ladder data.'
+    },
+    {
+      id: 'github',
+      title: 'GitHub',
+      tag: 'Open Source',
+      content: '[GitHub Link](https://github.com/Thunder1967/PokéSpeed)'
     },
     {
       id: 'sources',
-      title: '📚 Data Sources & Acknowledgments',
+      title: 'Data Sources & Acknowledgments',
       tag: 'Credits',
-      content: 'Battle statistics and sprite icons are referenced from [Pokémon Showdown](https://play.pokemonshowdown.com) and competitive analytics by [Smogon University](https://www.smogon.com/).\nPokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc., GAME FREAK inc., and The Pokémon Company.'
+      content: 'Battle data and select Pokémon sprites referenced from [Pokémon Showdown](https://play.pokemonshowdown.com)\nSelect Pokémon sprites referenced from [PokeAPI](https://github.com/PokeAPI/sprites/)\nBattle data and usage statistics referenced from [Smogon University](https://www.smogon.com/)\nAll Pokémon copyright belongs to Nintendo, Creatures Inc., GAME FREAK inc., and The Pokémon Company.'
+    },
+    {
+      id: 'disclaimer',
+      title: 'Disclaimer',
+      tag: 'Disclaimer',
+      content: 'PokéSpeed is an unofficial, free fan-made tool with no affiliation to, endorsement from, or authorization by Nintendo, Creatures Inc., GAME FREAK inc., or The Pokémon Company. Pokémon and all related names, trademarks, and copyrights belong to their respective owners.'
     },
     {
       id: 'feedback',
-      title: '💬 Community & Feedback',
-      tag: 'Community',
-      content: 'If you encounter any calculation discrepancies or have feature suggestions, feel free to reach out. Best of luck on the ladder, Trainers!'
+      title: 'Feedback',
+      tag: 'Feedback',
+      content: 'If you have any suggestions, calculation discrepancies, or bug reports, feel free to fill out the [Feedback Form](https://docs.google.com/forms/d/e/1FAIpQLSecYgH3X76K7zKufvV6WSz6BzuUEddqg50dCHFEB6EVYcTrdw/viewform?usp=publish-editor).'
     }
   ]
 };

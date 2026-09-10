@@ -32,7 +32,7 @@ describe('AppConfig & getAdaptiveSpriteLimit', () => {
 
   it('should have valid season configuration in AppConfig', () => {
     expect(AppConfig.season).toBeDefined();
-    expect(AppConfig.season.currentSeason).toBe('champion-m-b');
+    expect(AppConfig.season.currentSeason).toBe('champion-m-c');
     expect(Array.isArray(AppConfig.season.availableSeasons)).toBe(true);
     expect(AppConfig.season.availableSeasons.length).toBeGreaterThanOrEqual(1);
 
@@ -40,7 +40,7 @@ describe('AppConfig & getAdaptiveSpriteLimit', () => {
       s => s.id === AppConfig.season.currentSeason
     );
     expect(current).toBeDefined();
-    expect(current?.regulation).toBe('m-b');
+    expect(current?.regulation).toBe('m-c');
     expect(current?.nameZh).toBeTruthy();
     expect(current?.nameEn).toBeTruthy();
   });

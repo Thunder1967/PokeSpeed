@@ -17,7 +17,7 @@ export const zhTW: TranslationSchema = {
     about: '關於本站',
     backToTable: '← 返回速線表',
     aboutTitle: '關於 PokéSpeed',
-    aboutSubtitle: '對戰速度線查詢與基準計算工具',
+    aboutSubtitle: '速線查詢與速線比較工具',
     appTitleFull: 'PokéSpeed Champion - 寶可夢速度計算器與速度線查詢工具',
     metaDescription: 'PokéSpeed Champion — 寶可夢速度計算器與速度線查詢工具，支援單打雙打對戰設定',
   },

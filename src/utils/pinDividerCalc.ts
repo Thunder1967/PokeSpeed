@@ -1,8 +1,6 @@
 import { SlotState } from '../types/pokemon';
-import { AppConfig } from '../config/appConfig';
+import { DEFAULT_SUBSTITUTE_SPRITE } from '../config/appConfig';
 import { t, getLocale, SupportedLocale } from '../i18n';
-
-export const DEFAULT_SUBSTITUTE_SPRITE = AppConfig.table.sprites.fallbackSubstitute;
 
 export interface RowSpeedInfo {
   baseSpeed: number;

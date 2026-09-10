@@ -1,11 +1,11 @@
-import { SpeedTableData, PokemonSpeedData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
+import { SpeedTableData, PokemonSpeedData } from '../types/pokemon';
 import { calcBaseSpeedLv50, calcFinalSpeed } from '../utils/speedCalc';
 import { battleStore } from '../store/battleState';
 import { calcPinDividers, RowSpeedInfo, PinDividerItem } from '../utils/pinDividerCalc';
 import { createPinDividerHTML } from './PinDivider';
-import { AppConfig, getAdaptiveSpriteLimit } from '../config/appConfig';
+import { AppConfig, DEFAULT_SUBSTITUTE_SPRITE, getAdaptiveSpriteLimit } from '../config/appConfig';
 import { escapeHtml, sanitizeUrl } from '../utils/security';
-import { t, getLocale, getPokemonDisplayNames } from '../i18n';
+import { t, getLocale, getPokemonDisplayNames, SupportedLocale, TranslationSchema } from '../i18n';
 import '../styles/table.css';
 
 /** Benchmark speed multipliers */
@@ -17,13 +17,17 @@ const SCROLL_RESET_DELAY_MS = 400;
 const RESIZE_DEBOUNCE_MS = 200;
 const SPRITE_GLOW_DURATION_MS = 2500;
 
+/** Persists horizontal scroll position across table re-renders (e.g. mode/season switch). */
 let lastBenchmarkScrollLeft = 0;
+/** Shared between renderSpeedTable (populates) and focusAndHighlightPokemon (reads) — must be module-level. */
 let activeHiddenPokemonsMap = new Map<number, PokemonSpeedData[]>();
 
-function renderSpriteImg(p: PokemonSpeedData): string {
+function renderSpriteImg(
+  p: PokemonSpeedData,
+  locale: SupportedLocale = getLocale(),
+  dict: TranslationSchema = t(locale)
+): string {
   const safeSprite = sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE);
-  const locale = getLocale();
-  const dict = t(locale);
   const { primary, secondary } = getPokemonDisplayNames(p, locale);
   const safePrimary = escapeHtml(primary);
   const safeSecondary = escapeHtml(secondary);
@@ -33,10 +37,10 @@ function renderSpriteImg(p: PokemonSpeedData): string {
   const doubleRankStr = p.usageRankDouble > 0 ? `#${p.usageRankDouble}` : '#--';
 
   return `
-    <img src="${safeSprite}" alt="${safePrimary}" 
+    <img src="${safeSprite}" alt="${safePrimary}" width="48" height="48"
          title="${safePrimary} (${safeSecondary})\n${dict.table.rankTooltipSingles}: ${singleRankStr}\n${dict.table.rankTooltipDoubles}: ${doubleRankStr}" 
          class="sprite-img" data-form-id="${safeFormId}"
-         loading="${AppConfig.table.sprites.loadingStrategy}" />
+         loading="${AppConfig.table.sprites.loadingStrategy}" decoding="async" />
   `.trim();
 }
 
@@ -122,7 +126,8 @@ export function renderSpeedTable(
     .map(Number)
     .sort((a, b) => b - a);
 
-  const dict = t();
+  const currentLocale = getLocale();
+  const dict = t(currentLocale);
 
   let html = `
     <div class="speed-table-container">
@@ -173,7 +178,7 @@ export function renderSpeedTable(
         <div class="col-base">${base}</div>
         <div class="col-sprites-container">
           <div class="col-sprites" data-base="${base}">
-            ${visiblePokemons.map(renderSpriteImg).join('')}
+            ${visiblePokemons.map(p => renderSpriteImg(p, currentLocale, dict)).join('')}
             ${hiddenPokemons.length > 0 ? `
               <div class="hidden-sprites is-hidden" id="hidden-sprites-${base}"></div>
             ` : ''}
@@ -249,6 +254,30 @@ export function renderSpeedTable(
     el.addEventListener('scroll', handleBenchmarkScroll, { passive: true });
   });
 
+  interface CachedRow {
+    row: HTMLElement;
+    base: number;
+    dynamicEl: HTMLElement;
+    currentThreat: string;
+    currentSpeed: number;
+  }
+
+  const cachedRows: CachedRow[] = [];
+  rows.forEach(rowEl => {
+    const row = rowEl as HTMLElement;
+    const base = parseInt(row.dataset.base!, 10);
+    const dynamicEl = row.querySelector(`#dynamic-${base}`) as HTMLElement | null;
+    if (dynamicEl) {
+      cachedRows.push({
+        row,
+        base,
+        dynamicEl,
+        currentThreat: '',
+        currentSpeed: -1,
+      });
+    }
+  });
+
   // Add store listener to update dynamic column & pin divider
   const updateDynamicColumn = () => {
     const state = battleStore.get();
@@ -262,32 +291,32 @@ export function renderSpeedTable(
     const speedA = hasPlayerA ? calcFinalSpeed(playerA.baseSpeed!, playerA) : 0;
     const speedB = hasPlayerB ? calcFinalSpeed(playerB.baseSpeed!, playerB) : 0;
     const rowSpeedInfos: RowSpeedInfo[] = [];
-    
-    rows.forEach(row => {
-      const base = parseInt((row as HTMLElement).dataset.base!, 10);
-      const dynamicEl = row.querySelector(`#dynamic-${base}`);
-      
-      if (dynamicEl) {
-        const enemySpeed = calcFinalSpeed(base, enemy);
-        dynamicEl.textContent = enemySpeed.toString();
-        rowSpeedInfos.push({ baseSpeed: base, dynamicSpeed: enemySpeed });
 
-        // Remove previous threat classes
-        row.classList.remove('threat-a', 'threat-b', 'threat-both');
+    for (let i = 0; i < cachedRows.length; i++) {
+      const item = cachedRows[i];
+      const enemySpeed = calcFinalSpeed(item.base, enemy);
 
-        // Apply new threat classes only if players are actively configured
-        const threatA = hasPlayerA && enemySpeed > speedA;
-        const threatB = hasPlayerB && enemySpeed > speedB;
-
-        if (threatA && threatB) {
-          row.classList.add('threat-both');
-        } else if (threatA) {
-          row.classList.add('threat-a');
-        } else if (threatB) {
-          row.classList.add('threat-b');
-        }
+      if (item.currentSpeed !== enemySpeed) {
+        item.dynamicEl.textContent = enemySpeed.toString();
+        item.currentSpeed = enemySpeed;
       }
-    });
+      rowSpeedInfos.push({ baseSpeed: item.base, dynamicSpeed: enemySpeed });
+
+      // Apply threat classes with diff check to avoid unnecessary DOM classList mutations
+      const threatA = hasPlayerA && enemySpeed > speedA;
+      const threatB = hasPlayerB && enemySpeed > speedB;
+      const targetThreat = (threatA && threatB) ? 'threat-both' : threatA ? 'threat-a' : threatB ? 'threat-b' : '';
+
+      if (item.currentThreat !== targetThreat) {
+        if (item.currentThreat) {
+          item.row.classList.remove(item.currentThreat);
+        }
+        if (targetThreat) {
+          item.row.classList.add(targetThreat);
+        }
+        item.currentThreat = targetThreat;
+      }
+    }
 
     // Update Speed Watershed Pin Dividers (with diff check to skip redundant DOM work)
     if (tableContainer) {
@@ -349,7 +378,7 @@ export function renderSpeedTable(
     const hiddenContainer = container.querySelector(`#hidden-sprites-${base}`);
     if (hiddenContainer && hiddenContainer.children.length === 0) {
       const list = activeHiddenPokemonsMap.get(Number(base)) || [];
-      hiddenContainer.innerHTML = list.map(renderSpriteImg).join('');
+      hiddenContainer.innerHTML = list.map(p => renderSpriteImg(p, currentLocale, dict)).join('');
     }
   };
 
@@ -426,7 +455,7 @@ export function focusAndHighlightPokemon(formId: string, baseSpeed: number | str
   // On-demand populate hidden sprites if not already populated
   if (hiddenContainer && hiddenContainer.children.length === 0) {
     const list = activeHiddenPokemonsMap.get(Number(baseSpeed)) || [];
-    hiddenContainer.innerHTML = list.map(renderSpriteImg).join('');
+    hiddenContainer.innerHTML = list.map(p => renderSpriteImg(p)).join('');
   }
 
   const targetImg = row.querySelector(`img[data-form-id="${formId}"]`) as HTMLElement;

@@ -1,4 +1,4 @@
-import { DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
+import { DEFAULT_SUBSTITUTE_SPRITE } from '../config/appConfig';
 
 /**
  * Initializes global image error delegation in capture phase.

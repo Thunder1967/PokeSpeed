@@ -81,7 +81,7 @@ describe('AboutPage & Markdown Parser', () => {
 
       // Check switching locale updates content
       setLocale('en');
-      expect(container.textContent).toContain('About PokéSpeed Champion');
+      expect(container.textContent).toContain('About PokéSpeed');
 
       cleanup();
     });

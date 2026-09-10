@@ -1,7 +1,7 @@
-import { PokemonSpeedData, SpeedTableData, DEFAULT_SUBSTITUTE_SPRITE } from '../types/pokemon';
+import { PokemonSpeedData, SpeedTableData } from '../types/pokemon';
 import { escapeHtml, sanitizeUrl } from './security';
 import { getPokemonDisplayNames, t, SupportedLocale } from '../i18n';
-import { AppConfig } from '../config/appConfig';
+import { AppConfig, DEFAULT_SUBSTITUTE_SPRITE } from '../config/appConfig';
 
 /** WeakMap cache to avoid re-flattening the same data reference. */
 const flattenCache = new WeakMap<SpeedTableData, PokemonSpeedData[]>();
@@ -26,16 +26,24 @@ export function getAllPokemon(data: SpeedTableData): PokemonSpeedData[] {
   return list;
 }
 
+/** Shared data preparation for search result rendering. */
+function prepareSearchItemData(p: PokemonSpeedData, locale: SupportedLocale) {
+  const dict = t(locale);
+  const { primary, secondary } = getPokemonDisplayNames(p, locale);
+  return {
+    dict,
+    safePrimary: escapeHtml(primary),
+    safeSecondary: escapeHtml(secondary),
+    safeSprite: sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE),
+    safeFormId: escapeHtml(p.formId),
+  };
+}
+
 /**
  * Renders HTML for a single search result item in the global Header search dropdown.
  */
 export function renderHeaderSearchItem(p: PokemonSpeedData, locale: SupportedLocale): string {
-  const dict = t(locale);
-  const { primary, secondary } = getPokemonDisplayNames(p, locale);
-  const safePrimary = escapeHtml(primary);
-  const safeSecondary = escapeHtml(secondary);
-  const safeSprite = sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE);
-  const safeFormId = escapeHtml(p.formId);
+  const { dict, safePrimary, safeSecondary, safeSprite, safeFormId } = prepareSearchItemData(p, locale);
 
   const doubleRankStr = p.usageRankDouble > 0 ? `#${p.usageRankDouble}` : '#--';
   const singleRankStr = p.usageRankSingle > 0 ? `#${p.usageRankSingle}` : '#--';
@@ -56,12 +64,7 @@ export function renderHeaderSearchItem(p: PokemonSpeedData, locale: SupportedLoc
  * Renders HTML for a single search result item in the Battle Settings Drawer Pokemon dropdown.
  */
 export function renderDrawerSearchItem(p: PokemonSpeedData, locale: SupportedLocale): string {
-  const dict = t(locale);
-  const { primary, secondary } = getPokemonDisplayNames(p, locale);
-  const safePrimary = escapeHtml(primary);
-  const safeSecondary = escapeHtml(secondary);
-  const safeSprite = sanitizeUrl(p.sprite, DEFAULT_SUBSTITUTE_SPRITE);
-  const safeFormId = escapeHtml(p.formId);
+  const { dict, safePrimary, safeSecondary, safeSprite, safeFormId } = prepareSearchItemData(p, locale);
 
   return `
     <div class="slot-search-item p-2 hover:bg-white/10 cursor-pointer flex items-center justify-between gap-2 transition-colors" 
@@ -81,14 +84,37 @@ export function renderDrawerSearchItem(p: PokemonSpeedData, locale: SupportedLoc
 }
 
 
+interface SearchIndexEntry {
+  pokemon: PokemonSpeedData;
+  nameZh: string;
+  nameEnLower: string;
+  speedStr: string;
+}
+
+/** Memoized search index cache to avoid per-keystroke toLowerCase() and toString() string allocations. */
+const searchIndexMap = new WeakMap<PokemonSpeedData[], SearchIndexEntry[]>();
+
+function getSearchIndex(allPokemon: PokemonSpeedData[]): SearchIndexEntry[] {
+  let index = searchIndexMap.get(allPokemon);
+  if (!index) {
+    index = allPokemon.map(p => ({
+      pokemon: p,
+      nameZh: p.nameZh,
+      nameEnLower: p.nameEn.toLowerCase(),
+      speedStr: p.baseSpeed.toString(),
+    }));
+    searchIndexMap.set(allPokemon, index);
+  }
+  return index;
+}
+
 /**
  * Searches and ranks Pokemon by Chinese name, English name, or base speed stat.
  *
  * Matching rules:
  * 1. Chinese name contains query
  * 2. English name contains query (case-insensitive)
- * 3. Base speed exactly equals query
- * 4. Base speed starts with query
+ * 3. Base speed starts with query (covers exact match)
  *
  * Ranking rule:
  * Sorted ascendingly by usageRankDouble or usageRankSingle based on current mode,
@@ -111,15 +137,18 @@ export function searchPokemon(
     return [];
   }
 
-  const matches = allPokemon.filter(p => {
-    const nameZhMatch = p.nameZh.includes(normalizedQuery);
-    const nameEnMatch = p.nameEn.toLowerCase().includes(normalizedQuery);
-    const baseSpeedStr = p.baseSpeed.toString();
-    const speedExactMatch = baseSpeedStr === normalizedQuery;
-    const speedPrefixMatch = baseSpeedStr.startsWith(normalizedQuery);
-
-    return nameZhMatch || nameEnMatch || speedExactMatch || speedPrefixMatch;
-  });
+  const index = getSearchIndex(allPokemon);
+  const matches: PokemonSpeedData[] = [];
+  for (let i = 0; i < index.length; i++) {
+    const item = index[i];
+    if (
+      item.nameZh.includes(normalizedQuery) ||
+      item.nameEnLower.includes(normalizedQuery) ||
+      item.speedStr.startsWith(normalizedQuery)
+    ) {
+      matches.push(item.pokemon);
+    }
+  }
 
   return matches
     .sort((a, b) => {

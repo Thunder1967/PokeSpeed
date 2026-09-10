@@ -1,5 +1,3 @@
-import { AppConfig } from '../config/appConfig';
-
 export interface PokemonSpeedData {
   id: number;                // 全國圖鑑編號
   formId: string;            // 形態唯一代號
@@ -36,7 +34,5 @@ export interface SlotState {
   baseSpeed?: number;
   pokemon?: PokemonSpeedData | null;
 }
-
-export const DEFAULT_SUBSTITUTE_SPRITE = AppConfig.table.sprites.fallbackSubstitute;
 
 

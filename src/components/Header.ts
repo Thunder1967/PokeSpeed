@@ -7,6 +7,7 @@ import { searchPokemon, getAllPokemon, renderHeaderSearchItem } from '../utils/p
 import { escapeHtml } from '../utils/security';
 import { getLocale, setLocale, t, subscribeLocale, SupportedLocale } from '../i18n';
 import { toggleSettingsDrawer } from './Drawer';
+import { debounce } from '../utils/timing';
 
 function renderSeasonOptions(locale: SupportedLocale, activeId: string): string {
   return AppConfig.season.availableSeasons
@@ -232,8 +233,7 @@ export function renderHeader(container: HTMLElement) {
     }
   });
 
-  searchInput.addEventListener('input', (e) => {
-    const term = (e.target as HTMLInputElement).value;
+  const handleSearchInput = debounce((term: string) => {
     if (!term.trim()) {
       currentMatches = [];
       searchResults.classList.add('hidden');
@@ -243,6 +243,16 @@ export function renderHeader(container: HTMLElement) {
     const isDouble = battleStore.get().isDoubleBattle;
     currentMatches = searchPokemon(allPokemon, term, isDouble, 6);
     renderSearchResults();
+  }, 120);
+
+  searchInput.addEventListener('input', (e) => {
+    const term = (e.target as HTMLInputElement).value;
+    if (!term.trim()) {
+      currentMatches = [];
+      searchResults.classList.add('hidden');
+      return;
+    }
+    handleSearchInput(term);
   });
 
   // Handle Enter key on search input

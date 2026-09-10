@@ -86,7 +86,7 @@ export interface AppConfigType {
 
 export const AppConfig: AppConfigType = {
   season: {
-    currentSeason: 'champion-m-b',
+    currentSeason: 'champion-m-c',
     availableSeasons: [
       {
         id: 'champion-m-c',
@@ -165,3 +165,6 @@ export function getAdaptiveSpriteLimit(config: TableConfig = AppConfig.table): n
 
   return config.defaultVisibleSprites;
 }
+
+/** 替換圖片 / 破圖預設回退網址 */
+export const DEFAULT_SUBSTITUTE_SPRITE = AppConfig.table.sprites.fallbackSubstitute;

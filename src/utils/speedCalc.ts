@@ -28,23 +28,20 @@ export function calcFinalSpeed(base: number, state: SlotState): number {
 
   // Step 1: Stat Stages (-6 to +6)
   const stageMult = stageMultipliers[state.stages] ?? 1.0;
-  let s1 = Math.floor(speedBase * stageMult);
+  const afterStages = Math.floor(speedBase * stageMult);
 
   // Step 2: Item (Choice Scarf)
-  let s2 = state.isScarf ? Math.floor(s1 * 1.5) : s1;
+  const afterScarf = state.isScarf ? Math.floor(afterStages * 1.5) : afterStages;
 
   // Step 3: Ability (Weather x2.0 or Protosynthesis/Quark Drive x1.5)
-  let s3 = s2;
-  if (state.isAbilityBoost) {
-    const mult = (state.abilityMultiplier && state.abilityMultiplier > 1.0) ? state.abilityMultiplier : 2.0;
-    s3 = Math.floor(s2 * mult);
-  }
+  const abilityMult = (state.abilityMultiplier && state.abilityMultiplier > 1.0) ? state.abilityMultiplier : 2.0;
+  const afterAbility = state.isAbilityBoost ? Math.floor(afterScarf * abilityMult) : afterScarf;
 
   // Step 4: Tailwind
-  let s4 = state.isTailwind ? Math.floor(s3 * 2.0) : s3;
+  const afterTailwind = state.isTailwind ? Math.floor(afterAbility * 2.0) : afterAbility;
 
   // Step 5: Status (Paralysis)
-  let sFinal = state.isParalyzed ? Math.floor(s4 * 0.5) : s4;
+  const finalSpeed = state.isParalyzed ? Math.floor(afterTailwind * 0.5) : afterTailwind;
 
-  return sFinal;
+  return finalSpeed;
 }
